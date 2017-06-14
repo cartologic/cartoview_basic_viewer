@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Configration Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+        crossorigin="anonymous">
+    <style>
+        html {
+            height: 100%;
+            margin: 0px;
+        }
+
+        body {
+            overflow: hidden;
+            height: 100%;
+            margin: 0px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div style="height:100%" id="root"></div>
+    <script src="{% static 'cartoview_map_viewer_client/dist/edit.bundle.js' %}"></script>
+</body>
+
+</html>
