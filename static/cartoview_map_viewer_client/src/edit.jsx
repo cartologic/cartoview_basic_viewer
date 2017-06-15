@@ -1,6 +1,6 @@
 import React from 'react';
 import {render, findDOMNode} from 'react-dom';
-import CartoModal from './cartoModal.jsx'
+import CartoModal from './cartoModal.jsx';
 import {
   Navbar,
   Nav,
@@ -11,26 +11,32 @@ import {
   Button,
   ListGroup,
   ListGroupItem,
-  Container
+  Container,
+  Row,
+  Col
 } from 'react-bootstrap';
+import MapForm from './form.jsx'
 import Events from './Events.jsx';
-import './app.css';
-import EditService from './services/editService.jsx';
 export default class CartoviewEdit extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      maps: [],
-      selected_map:undefined
-    }
-    this.EditService = new EditService('/api/')
+  state = {
+    maps: []
   }
-
+  componentDidMount() {
+    if (typeof map_id !== 'undefined') {
+      Events.on("mapsReady", (maps) => {
+        maps.map((m) => {
+          if (m.id === map_id) {
+            this.onMapSelected(m)
+          }
+        })
+      })
+    }
+  }
+  onMapSelected = (map) => {
+    this.setState({selectedMap: map})
+  }
   render() {
-    Events.on("mapSelected",(map)=>{
-      this.setState({selected_map:map})
-    })
-    let m= this.state.selected_map ? this.state.selected_map.title : ""
+    let {selectedMap} = this.state;
     return (
       <div className="full-height-width">
         <Navbar collapseOnSelect>
@@ -41,8 +47,17 @@ export default class CartoviewEdit extends React.Component {
             <Navbar.Toggle/>
           </Navbar.Header>
         </Navbar>
-        <div className="container"><CartoModal></CartoModal>
-        {m}
+        <div className="container">
+          <Row>
+            <Col md={6}>
+              <CartoModal onMapSelected={this.onMapSelected} selectedMap={selectedMap}></CartoModal>
+            </Col>
+          </Row>
+          <hr></hr>
+          <Row>
+            <MapForm map={this.state.selectedMap}></MapForm>
+          </Row>
+
         </div>
 
       </div>

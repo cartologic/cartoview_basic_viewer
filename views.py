@@ -12,10 +12,11 @@ from . import APP_NAME
 def save(request, instance_id=None, app_name=APP_NAME):
     res_json = dict(success=False)
     # try:
-    map_id = request.POST.get('map', None)
-    title = request.POST.get('title', "")
-    config = request.POST.get('config', None)
-    abstract = request.POST.get('abstract', "")
+    data = json.loads(request.body)
+    map_id = data.get('map', None)
+    title = data.get('title', "")
+    config = json.dumps(data.get('config', None))
+    abstract = data.get('abstract', "")
     if instance_id is None:
         instance_obj = AppInstance()
         instance_obj.app = App.objects.get(name=app_name)
