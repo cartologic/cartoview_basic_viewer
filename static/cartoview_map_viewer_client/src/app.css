@@ -1,6 +1,6 @@
 .map {
   height: 100%;
-  width: 70%;
+  width: 100%;
   margin: 0;
 }
 
@@ -52,7 +52,7 @@
 .zoom {
   position: fixed;
   left: 20px;
-  top: 220px !important
+  top: 120px !important
 }
 
 .about-ico{

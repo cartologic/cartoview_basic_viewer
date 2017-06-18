@@ -54,9 +54,9 @@ export default class CartoviewEdit extends React.Component {
             </Col>
           </Row>
           <hr></hr>
-          <Row>
+          {this.state.selectedMap && <Row>
             <MapForm map={this.state.selectedMap}></MapForm>
-          </Row>
+          </Row>}
 
         </div>
 

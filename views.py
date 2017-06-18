@@ -51,7 +51,7 @@ def edit(request, instance_id, template="%s/edit.html" % APP_NAME, context={}):
     return render(request, template, context)
 
 
-def view_app(request, instance_id, template="%s/view_app.html" % APP_NAME, context={}):
+def view_app(request, instance_id, template="%s/view.html" % APP_NAME, context={}):
     instance = _resolve_appinstance(
         request, instance_id, 'base.view_resourcebase', _PERMISSION_MSG_VIEW)
     context.update({

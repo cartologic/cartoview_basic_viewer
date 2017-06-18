@@ -6,7 +6,7 @@ const mapConfig = t.struct({
   abstract: t.String,
   showZoombar: t.Boolean,
   showLayerSwitcher: t.Boolean,
-  showBaseMap: t.Boolean,
+  showBaseMapSwitcher: t.Boolean,
   showLegend: t.Boolean
 });
 const options = {
@@ -32,6 +32,17 @@ export default class MapForm extends React.Component {
       defaultconf.title=title;
       defaultconf.abstract=abstract
       this.setState({defaultconf:defaultconf})
+    }else{
+      this.setState({
+        defaultconf: {
+         title: this.props.map.title ===''? 'No title': this.props.map.title ,
+         abstract: this.props.map.abstract ===''? 'No abstract': this.props.map.abstract,
+         showZoombar: true,
+         showLayerSwitcher: true,
+         showBaseMapSwitcher: true,
+         showLegend: true
+       }
+      })
     }
   }
   save() {
@@ -44,7 +55,7 @@ export default class MapForm extends React.Component {
       let coreConfig = {
         showZoombar:value.showZoombar,
         showLayerSwitcher:value.showLayerSwitcher,
-        showBaseMap:value.showBaseMap,
+        showBaseMapSwitcher:value.showBaseMapSwitcher,
         showLegend:value.showLegend
 
       }
@@ -55,7 +66,7 @@ export default class MapForm extends React.Component {
         abstract:value.abstract,
         config:coreConfig
       }
-      console.log(config);
+      console.log(instance_id);
       this.EditService.save(config,typeof instance_id ==='undefined' ? undefined : instance_id).then((res)=>{
           window.location.href="/apps/cartoview_map_viewer_client/"+res.id+"/edit";
       })
@@ -66,19 +77,23 @@ export default class MapForm extends React.Component {
 
     return (
       <div>
-        <Row>
-          <Col md={6}>
-            <Form ref="form" options={options} value={this.state.defaultconf} type={mapConfig}/>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={2}>
-              <Button bsStyle="primary" onClick={this.save.bind(this)}>Save</Button>
-          </Col>
-          <Col md={2}>
-              {typeof instance_id === 'undefined' ? "" : <Button bsStyle="primary" onClick={()=>window.location.href="/apps/cartoview_map_viewer_client/"+instance_id+"/view"}>View</Button>}
-          </Col>
-        </Row>
+        {this.props.map && <div>
+          <Row>
+            <Col md={6}>
+              <Form ref="form" options={options} value={this.state.defaultconf} type={mapConfig}/>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={2}>
+                <Button bsStyle="primary" onClick={this.save.bind(this)}>Save</Button>
+            </Col>
+            <Col md={2}>
+                {typeof instance_id === 'undefined' ? "" : <Button bsStyle="primary" onClick={()=>window.location.href="/apps/cartoview_map_viewer_client/"+instance_id+"/view"}>View</Button>}
+            </Col>
+          </Row>
+        </div>}
+
+
 
       </div>
     )

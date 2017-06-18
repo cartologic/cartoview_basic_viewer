@@ -7,6 +7,7 @@ var filename = '[name].bundle.js';
 module.exports = {
   entry: {
     edit: path.join(APP_DIR, 'edit.jsx'),
+    ReactClient: path.join(APP_DIR, 'view.jsx'),
   },
   output: {
     path: BUILD_DIR,
