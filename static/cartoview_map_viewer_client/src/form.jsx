@@ -66,7 +66,6 @@ export default class MapForm extends React.Component {
         abstract:value.abstract,
         config:coreConfig
       }
-      console.log(instance_id);
       this.EditService.save(config,typeof instance_id ==='undefined' ? undefined : instance_id).then((res)=>{
           window.location.href="/apps/cartoview_map_viewer_client/"+res.id+"/edit";
       })
