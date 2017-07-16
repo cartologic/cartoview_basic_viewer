@@ -28,7 +28,7 @@ module.exports = {
     }),
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.optimize.DedupePlugin(),
-    new webpack.NoErrorsPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: true

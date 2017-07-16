@@ -55,12 +55,14 @@ export default class BasicConfig extends Component {
           <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
             <h2>General & Tools</h2>
           </div>
-          <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-            <button className="btn btn-primary pull-right" onClick={this.save.bind(this)}>Next</button>
-          </div>
-
         </div>
         <Form ref="form" value={this.state.defaultconf} type={mapConfig}/>
+          <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <button className="btn btn-primary pull-right" onClick={this.save.bind(this)}>Submit</button>
+          </div>
+          {this.props.id&&<div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <a className="btn btn-primary" href={this.props.urls.view}>View</a>
+          </div>}
       </div>
     )
   }
