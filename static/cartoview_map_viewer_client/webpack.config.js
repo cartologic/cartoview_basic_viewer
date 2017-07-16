@@ -6,7 +6,7 @@ var plugins = [];
 var filename = '[name].bundle.js';
 module.exports = {
   entry: {
-    edit: path.join(APP_DIR, 'edit.jsx'),
+    config: path.join(APP_DIR, 'AppRender.jsx'),
     ReactClient: path.join(APP_DIR, 'view.jsx'),
   },
   output: {

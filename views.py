@@ -11,7 +11,6 @@ from . import APP_NAME
 
 def save(request, instance_id=None, app_name=APP_NAME):
     res_json = dict(success=False)
-    # try:
     data = json.loads(request.body)
     map_id = data.get('map', None)
     title = data.get('title', "")
@@ -29,14 +28,11 @@ def save(request, instance_id=None, app_name=APP_NAME):
     instance_obj.map_id = map_id
     instance_obj.save()
     res_json.update(dict(success=True, id=instance_obj.id))
-    # except Exception, e:
-    #     print e
-    #     res_json["error_message"] = str(e)
     return HttpResponse(json.dumps(res_json), content_type="application/json")
 
 
 @login_required
-def new(request, template="%s/edit.html" % APP_NAME, app_name=APP_NAME, context={}):
+def new(request, template="%s/new.html" % APP_NAME, app_name=APP_NAME, context={}):
     if request.method == 'POST':
         return save(request, app_name=app_name)
     return render(request, template, context)
