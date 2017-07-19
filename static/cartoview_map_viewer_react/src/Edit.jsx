@@ -1,9 +1,16 @@
-import React, {Component} from 'react';
+import React, {Component} from 'react'
 import './css/app.css'
-import Navigator from './components/Navigator.jsx';
+
+import Navigator from './components/Navigator.jsx'
+
 import ResourceSelector from './components/ResourceSelector.jsx'
+import NavigationTools from './components/NavigationTools.jsx'
+import MapBasicConfig from './components/MapBasicConfig.jsx'
 import BasicConfig from './components/BasicConfig.jsx'
+
 import EditService from './services/editService.jsx'
+
+
 export default class Edit extends Component {
   constructor(props) {
     super(props)
@@ -17,9 +24,18 @@ export default class Edit extends Component {
     this.editService = new EditService({baseUrl: '/'});
   }
 
+
   goToStep(step) {
     this.setState({step});
   }
+
+
+  onPrevious(){
+    let {step} = this.state;
+    this.goToStep(step-=1)
+  }
+
+
   render() {
     var {step} = this.state
     const steps = [
@@ -43,9 +59,10 @@ export default class Edit extends Component {
           }
         }
       }, {
-        label: "General & Tools",
-        component: BasicConfig,
+        label: "General",
+        component: MapBasicConfig,
         props: {
+          onPrevious: () => {this.onPrevious()},
           instance: this.state.selectedResource,
           config: this.props.config
             ? this.props.config.config
@@ -56,10 +73,29 @@ export default class Edit extends Component {
           urls: this.props.config.urls,
           onComplete: (basicConfig) => {
             var {step} = this.state;
-
+            this.setState({config: Object.assign(this.state.config, basicConfig)})
+            this.goToStep(++step)
+          }
+        }
+      }, {
+        label: "Navigation Tools",
+        component: NavigationTools,
+        props: {
+          onPrevious: () => {this.onPrevious()},
+          instance: this.state.selectedResource,
+          config: this.props.config
+            ? this.props.config.config
+            : undefined,
+          id: this.props.config.instance
+            ? this.props.config.instance.id
+            : undefined,
+          urls: this.props.config.urls,
+          onComplete: (basicConfig) => {
+            var {step} = this.state;
             this.setState({
               config: Object.assign(this.state.config, basicConfig)
             }, () => {
+              console.log("config:", this.state.config)
               this.editService.save(this.state.config, this.props.config.instance
                 ? this.props.config.instance.id
                 : undefined).then((res) => window.location.href = "/apps/cartoview_map_viewer_react/" + res.id + "/view")

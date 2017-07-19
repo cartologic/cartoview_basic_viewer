@@ -22,6 +22,7 @@
     "react-image": "^1.0.1",
     "react-intl": "^2.3.0",
     "react-paginate": "^4.4.3",
+    "react-select": "^1.0.0-rc.5",
     "react-spinkit": "^3.0.0",
     "react-tap-event-plugin": "^2.0.1",
     "react-toggle-switch": "^2.1.4",
