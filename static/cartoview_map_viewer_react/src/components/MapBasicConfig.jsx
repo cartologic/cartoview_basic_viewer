@@ -64,21 +64,19 @@ export default class MapBasicConfig extends Component {
     return (
       <div className="row">
         <div className="row">
-          <div className="col-xs-6 col-md-8">
-            <h4>{'General '}</h4>
+          <div className="col-xs-5 col-md-4">
+            <h4>{'General'}</h4>
           </div>
+          <div className="col-xs-7 col-md-8">
+            <button
+              style={{display:"inline-block", margin:"0px 3px 0px 3px"}}
+              className="btn btn-primary btn-sm pull-right" onClick={this.save.bind(this)}>{"next >>"}</button>
 
-          <div className="col-xs-6 col-md-4">
-            <div className="btn-group" style={{float: "right"}}>
-              <button type='button' className="btn btn-primary"
-                onClick={() => this.props.onPrevious()}>Previous</button>
-
-              <button type='button' className="btn btn-primary"
-                onClick={this.save.bind(this)}>Next</button>
-            </div>
+            <button
+              style={{display:"inline-block", margin:"0px 3px 0px 3px"}}
+              className="btn btn-primary btn-sm pull-right"
+              onClick={() => this.props.onPrevious()}>{"<< Previous"}</button>
           </div>
-
-
         </div>
         <hr></hr>
 

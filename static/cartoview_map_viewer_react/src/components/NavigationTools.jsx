@@ -68,6 +68,20 @@ export default class NavigationTools extends Component {
             <h4>{'Navigation Tools '}</h4>
           </div>
           <div className="col-xs-7 col-md-8">
+            <button
+              style={{display:"inline-block", margin:"0px 3px 0px 3px"}}
+              className="btn btn-primary btn-sm pull-right disabled" onClick={this.save.bind(this)}>{"next >>"}</button>
+
+            <button
+              style={{display:"inline-block", margin:"0px 3px 0px 3px"}}
+              className="btn btn-primary btn-sm pull-right"
+              onClick={() => this.props.onPrevious()}>{"<< Previous"}</button>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-xs-5 col-md-4">
+          </div>
+          <div className="col-xs-7 col-md-8">
             {this.props.id &&
               <a
               style={{display:"inline-block", margin:"0px 3px 0px 3px"}}
@@ -78,11 +92,6 @@ export default class NavigationTools extends Component {
             <button
               style={{display:"inline-block", margin:"0px 3px 0px 3px"}}
               className="btn btn-primary btn-sm pull-right" onClick={this.save.bind(this)}>Save</button>
-
-            <button
-              style={{display:"inline-block", margin:"0px 3px 0px 3px"}}
-              className="btn btn-primary btn-sm pull-right"
-              onClick={() => this.props.onPrevious()}>Previous</button>
           </div>
         </div>
 
