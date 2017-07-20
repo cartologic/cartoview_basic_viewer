@@ -29,31 +29,31 @@ const mapConfig = t.struct({
 const options = {
   fields: {
     showGeoLocation: {
-      label: "Show Geo Location"
+      label: "Geo Location"
     },
     show3D: {
-      label: "Show 3D"
+      label: "3D"
     },
     showZoomControls: {
-      label: "Show Zoom Buttons"
+      label: "Zoom Buttons"
     },
     showNorth: {
-      label: "Show North Button"
+      label: "North Button"
     },
     showMousePostion: {
-      label: "Show Mouse Location"
+      label: "Mouse Location"
     },
     showLayerSwitcher: {
-      label: "Show Layer Switcher Button"
+      label: "Layer Switcher Button"
     },
     showHome: {
-      label: "Show Initial Extent Button"
+      label: "Initial Extent Button"
     },
     showBasemapSwitcher: {
-      label: "Show Base Switcher Button"
+      label: "Base Switcher Button"
     },
     showLegend: {
-      label: "Show Layer Legend"
+      label: "Layer Legend"
     },
   }
 };

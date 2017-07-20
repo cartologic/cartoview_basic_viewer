@@ -6,6 +6,22 @@ const mapConfig = t.struct({
   showBaseMapSwitcher: t.Boolean,
   showLegend: t.Boolean
 });
+const options = {
+  fields: {
+    showZoombar: {
+      label: "Zoom Bar"
+    },
+    showLayerSwitcher: {
+      label: "Layer Switcher"
+    },
+    showBaseMapSwitcher: {
+      showBaseMapSwitcher: "Base Map Switcher"
+    },
+    showLegend: {
+      label: "Legend"
+    },
+  }
+};
 const Form = t.form.Form;
 
 
@@ -70,7 +86,8 @@ export default class NavigationTools extends Component {
           </div>
         </div>
 
-        <Form ref="form" value={this.state.defaultconf} type={mapConfig}/>
+        <Form ref="form"
+          value={this.state.defaultconf} type={mapConfig} options={options}/>
       </div>
     )
   }
