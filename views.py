@@ -32,7 +32,12 @@ def save(request, instance_id=None, app_name=APP_NAME):
 
 
 @login_required
-def new(request, template="%s/new.html" % APP_NAME, app_name=APP_NAME, context={}):
+def new(
+        request,
+        template="%s/new.html" %
+        APP_NAME,
+        app_name=APP_NAME,
+        context={}):
     if request.method == 'POST':
         return save(request, app_name=app_name)
     return render(request, template, context)
@@ -47,7 +52,12 @@ def edit(request, instance_id, template="%s/edit.html" % APP_NAME, context={}):
     return render(request, template, context)
 
 
-def view_app(request, instance_id, template="%s/view.html" % APP_NAME, context={}):
+def view_app(
+        request,
+        instance_id,
+        template="%s/view.html" %
+        APP_NAME,
+        context={}):
     instance = _resolve_appinstance(
         request, instance_id, 'base.view_resourcebase', _PERMISSION_MSG_VIEW)
     context.update({
