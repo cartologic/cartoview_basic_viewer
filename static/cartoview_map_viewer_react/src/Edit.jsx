@@ -67,6 +67,7 @@ export default class Edit extends Component {
           config: this.props.config
             ? this.props.config.config
             : undefined,
+
           id: this.props.config.instance
             ? this.props.config.instance.id
             : undefined,
