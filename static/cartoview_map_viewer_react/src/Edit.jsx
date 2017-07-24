@@ -4,12 +4,11 @@ import './css/app.css'
 import Navigator from './components/Navigator.jsx'
 
 import ResourceSelector from './components/ResourceSelector.jsx'
+
+import General from './components/General.jsx'
 import NavigationTools from './components/NavigationTools.jsx'
-import MapBasicConfig from './components/MapBasicConfig.jsx'
-import BasicConfig from './components/BasicConfig.jsx'
 
 import EditService from './services/editService.jsx'
-
 
 export default class Edit extends Component {
   constructor(props) {
@@ -21,20 +20,17 @@ export default class Edit extends Component {
         ? this.props.config.instance.map
         : undefined
     }
-    this.editService = new EditService({baseUrl: '/'});
+    this.editService = new EditService({baseUrl: '/'})
   }
-
 
   goToStep(step) {
     this.setState({step});
   }
 
-
-  onPrevious(){
+  onPrevious() {
     let {step} = this.state;
-    this.goToStep(step-=1)
+    this.goToStep(step -= 1)
   }
-
 
   render() {
     var {step} = this.state
@@ -59,49 +55,71 @@ export default class Edit extends Component {
           }
         }
       }, {
-        label: "General",
-        component: MapBasicConfig,
+        label: "General ",
+        component: General,
         props: {
-          onPrevious: () => {this.onPrevious()},
-          instance: this.state.selectedResource,
-          config: this.props.config
-            ? this.props.config.config
-            : undefined,
-
-          id: this.props.config.instance
-            ? this.props.config.instance.id
-            : undefined,
+          state: this.state,
+          keywords: this.props.keywords,
           urls: this.props.config.urls,
+          instance: this.state.selectedResource,
+          config: this.props.config.instance
+            ? this.props.config.instance.config
+            : undefined,
           onComplete: (basicConfig) => {
-            var {step} = this.state;
-            this.setState({config: Object.assign(this.state.config, basicConfig)})
+            let {step} = this.state;
+            this.setState({
+              config: Object.assign(this.state.config, basicConfig)
+            })
             this.goToStep(++step)
+          },
+          onPrevious: () => {
+            this.onPrevious()
           }
         }
       }, {
         label: "Navigation Tools",
         component: NavigationTools,
+        urls: this.props.config.urls,
         props: {
-          onPrevious: () => {this.onPrevious()},
+          state: this.state,
+
           instance: this.state.selectedResource,
-          config: this.props.config
-            ? this.props.config.config
-            : undefined,
+
+          // config: this.state.config.config,
+          config: this.props.config.instance
+            ? this.props.config.instance.config
+            : this.state.config.config,
+
           id: this.props.config.instance
             ? this.props.config.instance.id
-            : undefined,
+            : this.state.id
+              ? this.state.id
+              : undefined,
+
           urls: this.props.config.urls,
+
+          success: this.state.success,
+
           onComplete: (basicConfig) => {
-            var {step} = this.state;
+            var {step, config} = this.state;
+            let newConfig = Object.assign(config, basicConfig)
+            config = newConfig
             this.setState({
-              config: Object.assign(this.state.config, basicConfig)
+              config: Object.assign(this.state.config, newConfig)
             }, () => {
-              console.log("config:", this.state.config)
-              this.editService.save(this.state.config, this.props.config.instance
-                ? this.props.config.instance.id
-                : undefined).then((res) => window.location.href = "/apps/cartoview_map_viewer_react/" + res.id + "/view")
+              this.editService.save(this.state.config, this.state.id
+                ? this.state.id
+                : this.props.config.instance
+                  ? this.props.config.instance.id
+                  : undefined).then((res) => {
+                if (res.success === true) {
+                  this.setState({success: true, id: res.id})
+                }
+              })
             })
-            this.goToStep(++step)
+          },
+          onPrevious: () => {
+            this.onPrevious()
           }
         }
       }

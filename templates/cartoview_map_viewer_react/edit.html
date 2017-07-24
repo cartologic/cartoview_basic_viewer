@@ -20,23 +20,26 @@
             <div id="root"></div>
         </div>
     </div>
-
 {% endblock %}
 {% block extra_script %}
     <script src="{{ STATIC_URL }}cartoview_map_viewer_react/dist/config.bundle.js"></script>
     <script>
 
-  {% if instance %}
-  var appConfig = {{ instance.config|escape|safe }};
-  var abstract = " {% spaceless %}{{ instance.abstract|title }}{% endspaceless %} ";
-  var title = "{{ instance.title }}";
-  var map_id={{instance.map_id}};
-  var instance_id={{instance.id}};
-  var geoserver_url = "{{ GEOSERVER_BASE_URL }}";
-  var abstract = " {% spaceless %}{{ instance.abstract|title }}{% endspaceless %} ";
-  {% endif %}
+    {% if instance %}
+    var appConfig = {{ instance.config|escape|safe }};
+    var abstract = " {% spaceless %}{{ instance.abstract|title }}{% endspaceless %} ";
+    var title = "{{ instance.title }}";
+    var map_id={{instance.map_id}};
+    var instance_id={{instance.id}};
+    var geoserver_url = "{{ GEOSERVER_BASE_URL }}";
+    var abstract = " {% spaceless %}{{ instance.abstract|title }}{% endspaceless %} ";
+    {% endif %}
     var username="{{instance.owner.username}}"
-    var viewer=new Viewer('root',{'instance':{map:{id:map_id,title:title,abstract:abstract},id:instance_id,config:appConfig},'urls':{'resources_url':"/api/maps","view":"/apps/cartoview_map_viewer_react/"+instance_id+"/view/"},'limit':9},username);
+
+    var viewer=new Viewer('root',
+    {'instance':{map:{id:map_id,title:title,abstract:abstract},id:instance_id,config:appConfig},'urls':{'resources_url':"/api/maps","view":"/apps/cartoview_map_viewer_react/"+instance_id+"/view/"},'limit':9},
+    username);
+
     viewer.view();
     </script>
 <div id="myModal" class="modal fade" role="dialog">
