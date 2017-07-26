@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import ReactPaginate from 'react-paginate';
 import Img from 'react-image';
 import Spinner from 'react-spinkit'
@@ -9,108 +9,105 @@ import Search from "./Search.jsx";
 
 
 export default class ResourceSelector extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			resources: [],
-			loading: true,
-			showPagination: true,
-			pageCount: 0,
-			mymaps: true
-		}
-	}
+  constructor(props) {
+    super(props);
+    this.state = {
+      resources: [],
+      loading: true,
+      showPagination: true,
+      pageCount: 0,
+      mymaps:true
+    }
+  }
 
 
-	loadResources(off) {
-		this.setState({ loading: true })
+  loadResources(off) {
+    this.setState({loading: true})
 
-		const limit = typeof(this.props.limit) === "undefined" ?
-			100 :
-			this.props.limit;
+    const limit = typeof(this.props.limit) === "undefined"
+      ? 100
+      : this.props.limit;
 
-		const offset = typeof(off) === "undefined" ?
-			0 :
-			off;
+    const offset = typeof(off) === "undefined"
+      ? 0
+      : off;
 
-		let userMapsFilter = this.state.mymaps ?
-			("&" +
-				"owner__username" +
-				"=" + this.props.username + "") :
-			"";
+    let userMapsFilter = this.state.mymaps
+      ? ("&" +
+      "owner__username" +
+      "=" + this.props.username + "")
+      : "";
 
-		fetch(this.props.resourcesUrl + "?limit=" + limit + "&" + "offset=" +
-			offset + userMapsFilter).then((response) => response.json()).then((data) => {
-			this.setState({
-				resources: data.objects,
-				pageCount: Math.ceil(data.meta.total_count / limit),
-				loading: false
-			})
-		}).catch((error) => {
-			console.error(error);
-		});
-	}
-
-
-	componentDidMount() {
-		this.loadResources(0)
-	}
+    fetch(this.props.resourcesUrl + "?limit=" + limit + "&" + "offset=" + offset + userMapsFilter).then((response) => response.json()).then((data)=>{
+      this.setState({
+        resources: data.objects,
+        pageCount: Math.ceil(data.meta.total_count / limit),
+        loading: false
+      })
+    }).catch((error) => {
+      console.error(error);
+    });
+  }
 
 
-	handlePageClick = (data) => {
-		let selected = data.selected;
-		const offset = data.selected * this.props.limit;
-		this.loadResources(offset)
-	};
+  componentDidMount() {
+    this.loadResources(0)
+  }
 
 
-	handleUserMapsChecked() {
-		const flag_maps = this.state.mymaps
-		this.setState({ mymaps: !flag_maps }, () => {
-			this.props.selectMap(undefined)
-			this.loadResources(0)
-		});
-	}
+  handlePageClick = (data) => {
+    let selected = data.selected;
+    const offset = data.selected * this.props.limit;
+    this.loadResources(offset)
+  };
 
 
-	searchResources(mapTitle) {
-		if (mapTitle) {
-			let url = `/api/maps/?&title__icontains=${mapTitle}`
-			fetch(url, { credentials: 'include', })
-				.then((res) => res.json())
-				.then((resources) => {
-					this.setState({ resources: resources.objects, showPagination: false })
-				})
-		} else {
-			// clear button
-			this.setState({ showPagination: true }, () => this.loadResources())
-		}
-	}
+  handleUserMapsChecked() {
+    const flag_maps=this.state.mymaps
+    this.setState({mymaps:!flag_maps},()=>{
+      this.props.selectMap(undefined)
+      this.loadResources(0)});
+  }
 
 
-	handleSearch() {
-		if (this.refs.search.value != '') {
-			this.setState({ loading: true });
-
-			let userMapsFilter = this.state.mymaps ?
-				("&" +
-					"owner__username" +
-					"=" + this.props.username + "") :
-				"";
-
-			fetch(this.props.resourcesUrl + "?" + "title__icontains" + "=" + this.refs
-				.search.value + userMapsFilter).then((response) => response.json()).then(
-				(data) => {
-					this.setState({ resources: data.objects, loading: false })
-				}).catch((error) => {
-				console.error(error);
-			});
-		}
-	}
+  searchResources(mapTitle){
+    if(mapTitle){
+      let url = `/api/maps/?&title__icontains=${mapTitle}`
+      fetch(url, {credentials: 'include',})
+      .then((res) => res.json())
+      .then((resources) => {
+        this.setState({resources:resources.objects, showPagination: false})
+      })
+    }
+    else{
+      // clear button
+      this.setState({showPagination: true}, ()=>this.loadResources())
+    }
+  }
 
 
-	render() {
-		return (
-			<div>
+  handleSearch() {
+    if (this.refs.search.value != '') {
+      this.setState({loading: true});
+
+      let userMapsFilter = this.state.mymaps
+        ? ("&" +
+        "owner__username" +
+        "=" + this.props.username + "")
+        : "";
+
+      fetch(this.props.resourcesUrl + "?" + "title__icontains" + "=" + this.refs.search.value + userMapsFilter).then((response) => response.json()).then((data) => {
+        this.setState({resources: data.objects, loading: false})
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
+  }
+  
+
+  render() {
+    return (
+      <div>
         <div className="row">
           <div className="col-xs-5 col-md-4">
             <h4>{'Select Map'}</h4>
@@ -214,6 +211,6 @@ export default class ResourceSelector extends Component {
           subContainerClassName={"pages pagination"}
           activeClassName={"active"} />
       </div>
-		)
-	}
+    )
+  }
 }

@@ -107,7 +107,7 @@ export default class NavigationTools extends Component {
               margin: "0px 3px 0px 3px"
             }} className={this.state.success === true
               ? "btn btn-primary btn-sm pull-right"
-              : "btn btn-primary btn-sm pull-right disabled"} href={`/apps/cartoview_map_viewer_react/${this.props.id}/view/`}>
+              : "btn btn-primary btn-sm pull-right disabled"} href={`/apps/cartoview_basic_viewer/${this.props.id}/view/`}>
               View
             </a>
 
