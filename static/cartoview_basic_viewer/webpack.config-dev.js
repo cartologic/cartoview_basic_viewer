@@ -17,6 +17,7 @@ module.exports = {
 		umdNamedDefine: true,
 		publicPath: "/static/cartoview_basic_viewer/dist/"
 	},
+	devtool: 'eval-cheap-module-source-map',
 	node: {
 		fs: "empty"
 	},
