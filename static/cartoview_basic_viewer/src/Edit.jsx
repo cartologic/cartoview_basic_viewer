@@ -15,7 +15,7 @@ export default class Edit extends Component {
     super(props)
     this.state = {
       step: 0,
-      config: {},
+      config: this.props.config.instance || {},
       selectedResource: this.props.config.instance
         ? this.props.config.instance.map
         : undefined
@@ -85,10 +85,9 @@ export default class Edit extends Component {
 
           instance: this.state.selectedResource,
 
-          // config: this.state.config.config,
-          config: this.props.config.instance
-            ? this.props.config.instance.config
-            : this.state.config.config,
+          config: this.state.config
+            ? this.state.config.config
+            : undefined,
 
           id: this.props.config.instance
             ? this.props.config.instance.id
