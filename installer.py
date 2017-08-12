@@ -1,8 +1,8 @@
 __author__ = 'Cartologic'
 
 info = {
-    "title": "Simple Map Viewer React     ",
-    "description": "Simple, responsive and mobile enabled map viewer with React and boundless sdk",
+    "title": "Basic Viewer",
+    "description": "General purpose map  viewer with only the essential compoonents for navigation and display. Optimized for mobile. Using Openlayers 3 and Boundless SDK",
     "author": 'Cartologic',
     "home_page": 'http://cartologic.com/cartoview/apps/viewer',
     "help_url": "http://cartologic.com/cartoview/apps/viewer/help/",
