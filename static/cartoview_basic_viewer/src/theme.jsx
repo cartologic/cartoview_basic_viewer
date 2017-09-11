@@ -1,28 +1,29 @@
 import {
+	blue500,
+	blue700,
 	cyan500,
 	cyan700,
-	pinkA200,
+	darkBlack,
+	fullBlack,
+	fullWhite,
 	grey100,
 	grey300,
 	grey400,
 	grey500,
-	white,
-	darkBlack,
-	fullBlack,
-	blue500,
-	blue700,
-	fullWhite
+	pinkA200,
+	white
 } from 'material-ui/styles/colors';
+
 import { fade } from 'material-ui/utils/colorManipulator';
-import zIndex from 'material-ui/styles/zIndex';
 import spacing from 'material-ui/styles/spacing';
+import zIndex from 'material-ui/styles/zIndex';
 
 export default {
 	spacing: spacing,
 	zIndex: zIndex,
 	fontFamily: 'Roboto, sans-serif',
 	palette: {
-		primary1Color: blue500,
+		primary1Color: "#5491B8",
 		primary2Color: blue700,
 		primary3Color: grey400,
 		accent1Color: pinkA200,
