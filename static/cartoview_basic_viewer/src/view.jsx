@@ -29,7 +29,7 @@ import { viewStore } from './store/stores'
 ol.SIMPLIFY_TOLERANCE = 0.5
 injectTapEventPlugin( );
 addLocaleData( enLocaleData );
-export default class ReactClient extends React.Component {
+class ReactClient extends React.Component {
     componentWillMount( ) {
         this.map = this.props.map
         this.props.updateMap( map_id )
@@ -88,6 +88,7 @@ const mapDispatchToProps = ( dispatch ) => {
     }
 }
 let App = connect( mapStateToProps, mapDispatchToProps )( ReactClient )
+export default App
 render(
     <Provider store={viewStore}>
     <IntlProvider locale='en' messages={enMessages}>
