@@ -1,6 +1,7 @@
 import {
     activeFeatures,
     attachmentFilesIsLoading,
+    featureCollection,
     featureIsLoading,
     features,
     files,
@@ -10,7 +11,6 @@ import {
 import { map, mapIsLoading } from './map'
 
 import { combineReducers } from 'redux'
-
 export default combineReducers( {
     features,
     featureIsLoading,
@@ -20,6 +20,6 @@ export default combineReducers( {
     attachmentFilesIsLoading,
     mapIsLoading,
     popupVisible,
-    activeFeatures
-
+    activeFeatures,
+    featureCollection
 } )

@@ -1,3 +1,4 @@
+import ol from 'openlayers'
 export function featureIsLoading( state = false, action ) {
     switch ( action.type ) {
     case 'FEATURES_IS_LOADING':
@@ -40,6 +41,15 @@ export function features( state = [ ], action ) {
         return action.features
     case 'ADD_FEATURES':
         return [ ...state, ...action.features ]
+    default:
+        return state
+    }
+}
+let featureCollection_obj = new ol.Collection( )
+export function featureCollection( state = featureCollection_obj, action ) {
+    switch ( action.type ) {
+    case 'ADD_FEATURES_COLLECTION':
+        return action.featureCollection
     default:
         return state
     }

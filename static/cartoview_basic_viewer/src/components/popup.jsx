@@ -1,7 +1,16 @@
 import '../css/popup.css'
 
 import React, { Component } from 'react'
-import { activeFeaturesDecrement, activeFeaturesIncrement, setOverlayPopup, setPopupVisible, singleClickListner, zoomToFeature } from '../actions/features'
+import {
+    activeFeaturesDecrement,
+    activeFeaturesIncrement,
+    addSelectionLayer,
+    addStyleToFeature,
+    setOverlayPopup,
+    setPopupVisible,
+    singleClickListner,
+    zoomToFeature
+} from '../actions/features'
 
 import Paper from 'material-ui/Paper'
 import PropTypes from 'prop-types'
@@ -12,32 +21,41 @@ import ol from 'openlayers'
 class CartoviewPopup extends Component {
     ensureEvents = ( ) => {
         let self = this;
-        var closer = self.refs.popupCloser
+        var closer = self.popupCloser
         var nextB = self.nextButton
         var prevB = self.prevButton
         var zoomToB = self.zoomToButton
         if ( closer.onclick === null ) {
             closer.onclick = ( ) => {
+                this.props.featureCollection.clear( )
                 self.props.setVisible( false )
                 return false
             }
         }
         if ( nextB.onclick === null ) {
             nextB.onclick = ( ) => {
-                self.props.next()
+                
+                self.props.next( )
+                this.props.addFeatureStyle()
             }
         }
         if ( prevB.onclick === null ) {
             prevB.onclick = ( ) => {
-                self.props.prev()
+                
+                self.props.prev( )
+                this.props.addFeatureStyle()
             }
         }
         if ( zoomToB.onclick === null ) {
             zoomToB.onclick = ( ) => {
-                self.props.zoomToFeature( self.props.features[ self.props.activeFeature ] )
+                
+                self.props.zoomToFeature( self.props.features[ self.props
+                    .activeFeature ] )
+                this.props.addFeatureStyle()
             }
         }
     }
+    
     componentDidMount( ) {
         let overlay = new ol.Overlay( {
             autoPan: true,
@@ -45,18 +63,22 @@ class CartoviewPopup extends Component {
         } )
         this.props.setOverlay( overlay )
         this.props.init( )
+        this.props.addSelectionLayer( )
         this.ensureEvents( )
     }
     componentWillReceiveProps( nextProps ) {
-        this.node.style.display = nextProps.popupVisible ?
-            'block' : 'none'
+        this.node.style.display = nextProps.popupVisible ? 'block' :
+            'none'
+        if ( nextProps.popupVisible && nextProps.popupVisible != this.props.popupVisible ) {
+            this.props.addFeatureStyle()
+        }
     }
     render( ) {
-        let {features,loading,activeFeature}=this.props
+        let { features, loading, activeFeature } = this.props
         return (
             <div ref={node => this.node = node} id="popup" className="ol-popup-cartoview hisham">
                 <div className="title-panel">
-                    <div ref="popupCloser">
+                    <div ref={(input) => { this.popupCloser = input }}>
                         <i style={{}} className="fa fa-times" aria-hidden="true"></i>
                     </div>
                     <div style={{display:(features.length>0 && activeFeature != features.length-1)? 'block': 'none'}} ref={(input) => { this.nextButton = input }}>
@@ -65,7 +87,7 @@ class CartoviewPopup extends Component {
                     <div style={{display:activeFeature != 0? 'block' : 'none'}} ref={(input) => { this.prevButton = input }}>
                         <i style={{float:'right',padding:3}} className="fa fa-arrow-circle-left" aria-hidden="true"></i>
                     </div>
-                    {features.length !=0 && <div style={{display:features.length !=0? 'block' : 'none',flex: 1,padding:3}} ref={(input) => { this.prevButton = input }}>
+                    {features.length !=0 && <div style={{display:features.length !=0? 'block' : 'none',flex: 1,padding:3,fontWeight: 'lighter'}} ref={(input) => { this.prevButton = input }}>
                         {`Layer : ${features[activeFeature].get('_layerTitle')}`}
                     </div>}
                 </div>
@@ -102,17 +124,20 @@ class CartoviewPopup extends Component {
 CartoviewPopup.propTypes = {
     init: PropTypes.func.isRequired,
     setOverlay: PropTypes.func.isRequired,
-    features:PropTypes.array.isRequired,
-    loading:PropTypes.bool.isRequired,
-    popupVisible:PropTypes.bool.isRequired,
-    activeFeature:PropTypes.number.isRequired
+    features: PropTypes.array.isRequired,
+    loading: PropTypes.bool.isRequired,
+    popupVisible: PropTypes.bool.isRequired,
+    activeFeature: PropTypes.number.isRequired,
+    addSelectionLayer: PropTypes.func.isRequired,
+    featureCollection: PropTypes.object.isRequired
 }
 const mapStateToProps = ( state ) => {
     return {
         features: state.features,
         popupVisible: state.popupVisible,
-        activeFeature:state.activeFeatures,
-        loading:state.featureIsLoading
+        activeFeature: state.activeFeatures,
+        loading: state.featureIsLoading,
+        featureCollection: state.featureCollection
     }
 }
 const mapDispatchToProps = ( dispatch ) => {
@@ -121,8 +146,10 @@ const mapDispatchToProps = ( dispatch ) => {
         setOverlay: ( overlay ) => dispatch( setOverlayPopup( overlay ) ),
         next: ( ) => dispatch( activeFeaturesIncrement( ) ),
         prev: ( ) => dispatch( activeFeaturesDecrement( ) ),
-        zoomToFeature:(feature)=>dispatch(zoomToFeature(feature)),
-        setVisible:(visible)=>dispatch(setPopupVisible(visible)),
+        zoomToFeature: ( feature ) => dispatch( zoomToFeature( feature ) ),
+        setVisible: ( visible ) => dispatch( setPopupVisible( visible ) ),
+        addSelectionLayer: ( ) => dispatch( addSelectionLayer( ) ),
+        addFeatureStyle:()=>dispatch(addStyleToFeature())
     }
 }
 export default connect( mapStateToProps, mapDispatchToProps )( CartoviewPopup )

@@ -1,4 +1,5 @@
 import ol from 'openlayers'
+import {styleFunction} from './styling'
 import { viewStore } from '../store/stores'
 export function featuresIsLoading( bool ) {
     return {
@@ -44,6 +45,12 @@ export function addFeatures( features ) {
     return {
         type: 'ADD_FEATURES',
         features
+    }
+}
+export function addFeaturesCollection( featureCollection ) {
+    return {
+        type: 'ADD_FEATURES_COLLECTION',
+        featureCollection
     }
 }
 export function getAttachmentFilesSuccess( files ) {
@@ -217,4 +224,32 @@ export const singleClickListner = ( map = viewStore.getState( ).map,
             dispatch( afterInit( map, overlayPopup, e.coordinate ) )
         } )
     }
+}
+
+export const addSelectionLayer = ( featureCollection=viewStore.getState().featureCollection,map=viewStore.getState().map ) => {
+    return ( dispatch ) => {
+        new ol.layer.Vector( {
+            source: new ol.source.Vector( { features: featureCollection } ),
+            style: styleFunction,
+            title: "Selected Features",
+            zIndex: 10000,
+            format: new ol.format.GeoJSON( {
+                defaultDataProjection: map.getView( )
+                    .getProjection( ),
+                featureProjection: map.getView( )
+                    .getProjection( )
+            } ),
+            map:map
+        } )
+    }
+}
+export const addStyleToFeature=()=>{
+    return (dispatch)=>{
+        let {features,featureCollection,activeFeatures}=viewStore.getState()
+        if(features.length>0){
+            featureCollection.clear( )
+            featureCollection.push( features[ activeFeatures ] )
+        }
+    }
+    
 }

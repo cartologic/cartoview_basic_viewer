@@ -69,8 +69,9 @@
 
 .ol-popup-cartoview .cartoview-popup-actions{
   color: orange;
+  font-weight: 500;
   font-size: small;
-  font-weight: lighter;
+  border: 1px solid #d8d8d8
 }
 .title-panel .fa{
     float:right;

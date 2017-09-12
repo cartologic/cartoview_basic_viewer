@@ -39,20 +39,21 @@ class ReactClient extends React.Component {
     }
     componentDidMount( ) {
         this.map.once( 'postrender', ( event ) => {
-            $( ".se-pre-con" ).fadeOut( "slow" );
+            $( ".se-pre-con" ).fadeOut( "slow" )
         } )
     }
     _toggleBaseMapModal( ) {
-        this.refs.basemapmodal.getWrappedInstance( ).open( );
+        this.baseMapRef.getWrappedInstance( ).open( )
     }
     render( ) {
+        console.log(this.props.map.getLayers().getArray())
         const basemap_button = appConfig.showBaseMapSwitcher ?
             <FloatingActionButton className="basemap_button" onTouchTap={this._toggleBaseMapModal.bind(this)} mini={true}>
           <i className="fa fa-map" aria-hidden="true"></i>
         </FloatingActionButton> :
             "";
         const base_map_modal = appConfig.showBaseMapSwitcher ?
-            <BaseMapModal ref='basemapmodal' map={this.map}/> : "";
+            <BaseMapModal ref={baseMapRef => this.baseMapRef = baseMapRef} map={this.map}/> : ""
         let layerlist = appConfig.showLayerSwitcher ?
             <LayerList allowFiltering={true} includeLegend={appConfig.showLegend ? true : false} showOpacity={true} showDownload={true} showGroupContent={true} showZoomTo={true} allowReordering={true} map={this.map}/> :
             '';
