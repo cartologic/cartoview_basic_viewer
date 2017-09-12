@@ -9,76 +9,38 @@ import CustomTheme from './theme'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import LayerList from '@boundlessgeo/sdk/components/LayerList'
 import LoadingPanel from '@boundlessgeo/sdk/components/LoadingPanel'
-import MapConfigService from '@boundlessgeo/sdk/services/MapConfigService'
-import MapConfigTransformService from '@boundlessgeo/sdk/services/MapConfigTransformService'
 import MapPanel from '@boundlessgeo/sdk/components/MapPanel'
+import PropTypes from 'prop-types'
+import { Provider } from 'react-redux'
 import React from 'react'
 import Zoom from '@boundlessgeo/sdk/components/Zoom'
+import { connect } from 'react-redux'
 import enLocaleData from 'react-intl/locale-data/en'
 import enMessages from '@boundlessgeo/sdk/locale/en'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import injectTapEventPlugin from 'react-tap-event-plugin'
+import {
+    loadMap
+} from './actions/map'
 import ol from 'openlayers'
 import { render } from 'react-dom'
+import { viewStore } from './store/stores'
 
 ol.SIMPLIFY_TOLERANCE = 0.5
 injectTapEventPlugin( );
 addLocaleData( enLocaleData );
 export default class ReactClient extends React.Component {
-    constructor( props ) {
-        super( props )
-        this.state = {
-            data: [ ],
-            loading: true,
-            config: {
-                mapId: map_id
-            }
-        }
-        this.map = new ol.Map( {
-			controls:[],
-            layers: [ new ol.layer.Tile( {
-                title: 'OpenStreetMap',
-                source: new ol.source.OSM( )
-            } ) ],
-            view: new ol.View( {
-                center: [
-          0, 0
-        ],
-                zoom: 3,
-                minZoom: 3,
-                maxZoom: 19
-            } )
-        } );
-        this.map.once( 'postrender', ( event ) => {
-            $( ".se-pre-con" ).fadeOut( "slow" );
-        } )
-    }
-    update( config ) {
-        if ( config && config.mapId ) {
-            var url = mapUrl;
-            fetch( url, {
-                method: "GET",
-                credentials: 'include'
-            } ).then( ( response ) => {
-                if ( response.status == 200 ) {
-                    return response.json( );
-                }
-            } ).then( ( config ) => {
-                if ( config ) {
-                    MapConfigService.load(
-                        MapConfigTransformService.transform(
-                            config ), this.map );
-                }
-            } );
-        }
-    }
     componentWillMount( ) {
-        this.update( this.state.config );
+        this.map = this.props.map
+        this.props.updateMap( map_id )
     }
     getChildContext( ) {
         return { muiTheme: getMuiTheme( CustomTheme ) };
     }
     componentDidMount( ) {
+        this.map.once( 'postrender', ( event ) => {
+            $( ".se-pre-con" ).fadeOut( "slow" );
+        } )
     }
     _toggleBaseMapModal( ) {
         this.refs.basemapmodal.getWrappedInstance( ).open( );
@@ -109,10 +71,26 @@ export default class ReactClient extends React.Component {
     }
 }
 ReactClient.childContextTypes = {
-    muiTheme: React.PropTypes.object
-};
+    muiTheme: PropTypes.object
+}
+ReactClient.propTypes = {
+    updateMap: PropTypes.func.isRequired,
+    map: PropTypes.object.isRequired
+}
+const mapStateToProps = ( state ) => {
+    return {
+        map: state.map,
+    }
+}
+const mapDispatchToProps = ( dispatch ) => {
+    return {
+        updateMap: ( mapId ) => dispatch( loadMap( getMapConfigUrl( mapId ) ) )
+    }
+}
+let App = connect( mapStateToProps, mapDispatchToProps )( ReactClient )
 render(
+    <Provider store={viewStore}>
     <IntlProvider locale='en' messages={enMessages}>
-  <ReactClient></ReactClient>
-</IntlProvider>,
+  <App></App>
+</IntlProvider></Provider>,
     document.getElementById( 'root' ) )

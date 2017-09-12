@@ -43,6 +43,9 @@
 <div style="height:100%" id="root"></div>
 
 <script>
+    function getMapConfigUrl(id){
+      return "/maps/" + id + "/data"
+    }
     var appConfig = {{ instance.config | safe }};
     var map_id={{instance.map_id}};
     var mapUrl = "{% url 'map_json' instance.map_id %}";
