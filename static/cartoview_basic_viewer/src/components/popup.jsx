@@ -6,6 +6,8 @@ import {
     activeFeaturesIncrement,
     addSelectionLayer,
     addStyleToFeature,
+    next,
+    prev,
     setOverlayPopup,
     setPopupVisible,
     singleClickListner,
@@ -17,6 +19,7 @@ import PropTypes from 'prop-types'
 import Spinner from "react-spinkit"
 import { connect } from 'react-redux'
 import ol from 'openlayers'
+
 class CartoviewPopup extends Component {
     ensureEvents = ( ) => {
         let self = this;
@@ -140,8 +143,8 @@ const mapDispatchToProps = ( dispatch ) => {
     return {
         init: ( ) => dispatch( singleClickListner( ) ),
         setOverlay: ( overlay ) => dispatch( setOverlayPopup( overlay ) ),
-        next: ( ) => dispatch( activeFeaturesIncrement( ) ),
-        prev: ( ) => dispatch( activeFeaturesDecrement( ) ),
+        next: ( ) => dispatch( next( ) ),
+        prev: ( ) => dispatch( prev( ) ),
         zoomToFeature: ( feature ) => dispatch( zoomToFeature( feature ) ),
         setVisible: ( visible ) => dispatch( setPopupVisible( visible ) ),
         addSelectionLayer: ( ) => dispatch( addSelectionLayer( ) ),

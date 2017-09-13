@@ -146,9 +146,7 @@ export function featureIdentify( map, overlayPopup, coordinate ) {
                                 crs ).then( response =>
                                 response.json( ) ).then(
                                 projres => {
-                                    proj4.defs( 'EPSG:' + crs,
-                                        projres.results[ 0 ]
-                                        .proj4 )
+                                    proj4.defs( 'EPSG:' + crs,projres.results[ 0 ].proj4)
                                     dispatch(
                                         transformAndShowPopup(
                                             layer,
@@ -218,5 +216,19 @@ export const addStyleToFeature = ( ) => {
             featureCollection.clear( )
             featureCollection.push( features[ activeFeatures ] )
         }
+    }
+}
+export const next=()=>{
+    return (dispatch)=>{
+        dispatch(activeFeaturesIncrement( ))
+        let {overlayPopup,activeFeatures,features}=viewStore.getState()
+        overlayPopup.setPosition( features[activeFeatures].getGeometry().getCoordinates() )
+    }
+}
+export const prev=()=>{
+    return (dispatch)=>{
+        dispatch(activeFeaturesDecrement( ))
+        let {overlayPopup,activeFeatures,features}=viewStore.getState()
+        overlayPopup.setPosition( features[activeFeatures].getGeometry().getLastCoordinate() )
     }
 }
