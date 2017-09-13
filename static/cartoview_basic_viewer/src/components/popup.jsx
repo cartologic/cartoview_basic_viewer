@@ -17,7 +17,6 @@ import PropTypes from 'prop-types'
 import Spinner from "react-spinkit"
 import { connect } from 'react-redux'
 import ol from 'openlayers'
-
 class CartoviewPopup extends Component {
     ensureEvents = ( ) => {
         let self = this;
@@ -34,28 +33,24 @@ class CartoviewPopup extends Component {
         }
         if ( nextB.onclick === null ) {
             nextB.onclick = ( ) => {
-                
                 self.props.next( )
-                this.props.addFeatureStyle()
+                this.props.addFeatureStyle( )
             }
         }
         if ( prevB.onclick === null ) {
             prevB.onclick = ( ) => {
-                
                 self.props.prev( )
-                this.props.addFeatureStyle()
+                this.props.addFeatureStyle( )
             }
         }
         if ( zoomToB.onclick === null ) {
             zoomToB.onclick = ( ) => {
-                
                 self.props.zoomToFeature( self.props.features[ self.props
                     .activeFeature ] )
-                this.props.addFeatureStyle()
+                this.props.addFeatureStyle( )
             }
         }
     }
-    
     componentDidMount( ) {
         let overlay = new ol.Overlay( {
             autoPan: true,
@@ -69,8 +64,9 @@ class CartoviewPopup extends Component {
     componentWillReceiveProps( nextProps ) {
         this.node.style.display = nextProps.popupVisible ? 'block' :
             'none'
-        if ( nextProps.popupVisible && nextProps.popupVisible != this.props.popupVisible ) {
-            this.props.addFeatureStyle()
+        if ( nextProps.popupVisible && nextProps.popupVisible != this.props
+            .popupVisible ) {
+            nextProps.addFeatureStyle( )
         }
     }
     render( ) {
@@ -149,7 +145,7 @@ const mapDispatchToProps = ( dispatch ) => {
         zoomToFeature: ( feature ) => dispatch( zoomToFeature( feature ) ),
         setVisible: ( visible ) => dispatch( setPopupVisible( visible ) ),
         addSelectionLayer: ( ) => dispatch( addSelectionLayer( ) ),
-        addFeatureStyle:()=>dispatch(addStyleToFeature())
+        addFeatureStyle: ( ) => dispatch( addStyleToFeature( ) )
     }
 }
 export default connect( mapStateToProps, mapDispatchToProps )( CartoviewPopup )

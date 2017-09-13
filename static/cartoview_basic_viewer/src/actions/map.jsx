@@ -15,6 +15,7 @@ export function mapIsLoading(mapLoading) {
 }
 export const loadMap = (mapUrl) => {
     return (dispatch) => {
+        let map=viewStore.getState().map
         dispatch(mapIsLoading(true))
         fetch(mapUrl, {
             method: "GET",
@@ -25,7 +26,8 @@ export const loadMap = (mapUrl) => {
             }
         }).then((config) => {
             if (config) {
-                MapConfigService.load(MapConfigTransformService.transform(config),viewStore.getState().map)
+                MapConfigService.load(MapConfigTransformService.transform(config),map)
+                dispatch(setMap(map))
                 dispatch(mapIsLoading(false))
 
             }

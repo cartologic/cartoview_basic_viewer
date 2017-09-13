@@ -76,7 +76,7 @@ const getFeatureInfoUrl = ( layer, coordinate, view, infoFormat ) => {
         resolution, projection, {
             'INFO_FORMAT': infoFormat
         } )
-    return url
+    return url + "&FEATURE_COUNT=10"
 }
 const isWMS = ( layer ) => {
     return layer.getSource( ) instanceof ol.source.TileWMS || layer.getSource( ) instanceof ol
@@ -93,15 +93,37 @@ const getLayers = ( layers ) => {
     } )
     return children
 }
+const transformAndShowPopup = ( layer, features, map, overlayPopup, coordinate,
+    crs ) => {
+    return ( dispatch ) => {
+        if ( features.length > 0 ) {
+            let transformedFeatures = [ ]
+            features.forEach( ( feature ) => {
+                feature.getGeometry( ).transform( 'EPSG:' +
+                    crs, map.getView( ).getProjection( ) )
+                feature.set( "_layerTitle", layer.get( 'title' ) )
+                transformedFeatures.push( feature )
+            } )
+            overlayPopup.setPosition( coordinate )
+            dispatch( addFeatures( transformedFeatures ) )
+            dispatch( setActiveFeatures( 0 ) )
+            dispatch( setPopupVisible( true ) )
+            dispatch( featuresIsLoading( false ) )
+            document.body.style.cursor = "default"
+        } else {
+            overlayPopup.setPosition( coordinate )
+            dispatch( setPopupVisible( true ) )
+            dispatch( featuresIsLoading( false ) )
+            document.body.style.cursor = "default"
+        }
+    }
+}
 export function featureIdentify( map, overlayPopup, coordinate ) {
     return ( dispatch ) => {
-        dispatch( setPopupVisible( true ) )
+        dispatch( setPopupVisible( false ) )
         dispatch( featuresIsLoading( true ) )
         getLayers( map.getLayers( ).getArray( ) ).forEach(
             ( layer ) => {
-                dispatch( featuresIsLoading( true ) )
-                dispatch( setActiveFeatures( 0 ) )
-                dispatch( setFeatures( [ ] ) )
                 const view = map.getView( )
                 const url = getFeatureInfoUrl( layer, coordinate, view,
                     'application/json' )
@@ -113,85 +135,28 @@ export function featureIdentify( map, overlayPopup, coordinate ) {
                         const crs = result.features.length > 0 ?
                             result.crs.properties.name.split( ":" )
                             .pop( ) : null
-                        if ( features.length == 1 ) {
-                            if ( proj4.defs( 'EPSG:' + crs ) ) {
-                                features[ 0 ].getGeometry( ).transform(
-                                    'EPSG:' + crs, map.getView( )
-                                    .getProjection( ) )
-                                features.forEach( f => f.set(
-                                    "_layerTitle", layer.get(
-                                        'title' ) ) )
-                                overlayPopup.setPosition(
-                                    coordinate )
-                                dispatch( addFeatures( features ) )
-                                dispatch( setActiveFeatures( 0 ) )
-                                dispatch( setPopupVisible( true ) )
-                                dispatch( featuresIsLoading( false ) )
-                                document.body.style.cursor =
-                                    "default"
-                            } else {
-                                fetch(
-                                    "https://epsg.io/?format=json&q=" +
-                                    crs ).then( response =>
-                                    response.json( ) ).then(
-                                    projres => {
-                                        proj4.defs( 'EPSG:' +
-                                            crs, projres.results[
-                                                0 ].proj4 )
-                                        features[ 0 ].getGeometry( )
-                                            .transform(
-                                                'EPSG:' + crs,
-                                                map.getView( )
-                                                .getProjection( )
-                                            )
-                                        features.forEach( f =>
-                                            f.set(
-                                                "_layerTitle",
-                                                layer.get(
-                                                    'title'
-                                                ) ) )
-                                        overlayPopup.setPosition(
-                                            coordinate )
-                                        dispatch( addFeatures(
-                                            features ) )
-                                        dispatch(
-                                            setActiveFeatures(
-                                                0 ) )
-                                        dispatch(
-                                            setPopupVisible(
-                                                true ) )
-                                        dispatch(
-                                            featuresIsLoading(
-                                                false ) )
-                                        document.body.style.cursor =
-                                            "default"
-                                    } )
-                            }
-                        } else if ( features.length > 1 ) {
-                            let transformedFeatures = [ ]
-                            features.forEach( ( feature ) => {
-                                feature.getGeometry( ).transform(
-                                    'EPSG:' + crs, map
-                                    .getView( ).getProjection( )
-                                )
-                                feature.set( "_layerTitle",
-                                    layer.get( 'title' )
-                                )
-                                transformedFeatures.push(
-                                    feature )
-                            } )
-                            overlayPopup.setPosition( coordinate )
-                            dispatch( addFeatures(
-                                transformedFeatures ) )
-                            dispatch( setActiveFeatures( 0 ) )
-                            dispatch( setPopupVisible( true ) )
-                            dispatch( featuresIsLoading( false ) )
-                            document.body.style.cursor = "default"
+                        if ( proj4.defs( 'EPSG:' + crs ) ) {
+                            dispatch( transformAndShowPopup( layer,
+                                features, map,
+                                overlayPopup, coordinate,
+                                crs ) )
                         } else {
-                            overlayPopup.setPosition( coordinate )
-                            dispatch( setPopupVisible( true ) )
-                            dispatch( featuresIsLoading( false ) )
-                            document.body.style.cursor = "default"
+                            fetch(
+                                "https://epsg.io/?format=json&q=" +
+                                crs ).then( response =>
+                                response.json( ) ).then(
+                                projres => {
+                                    proj4.defs( 'EPSG:' + crs,
+                                        projres.results[ 0 ]
+                                        .proj4 )
+                                    dispatch(
+                                        transformAndShowPopup(
+                                            layer,
+                                            features, map,
+                                            overlayPopup,
+                                            coordinate,
+                                            crs ) )
+                                } )
                         }
                     } )
             } )
@@ -221,6 +186,9 @@ export const singleClickListner = ( map = viewStore.getState( ).map,
     return ( dispatch ) => {
         map.addOverlay( overlayPopup )
         map.on( 'singleclick', ( e ) => {
+            dispatch( featuresIsLoading( true ) )
+            dispatch( setActiveFeatures( 0 ) )
+            dispatch( setFeatures( [ ] ) )
             document.body.style.cursor = "progress"
             dispatch( afterInit( map, overlayPopup, e.coordinate ) )
         } )

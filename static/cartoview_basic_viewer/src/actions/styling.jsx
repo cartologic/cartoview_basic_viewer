@@ -1,7 +1,7 @@
 import ol from 'openlayers'
 const image = new ol.style.Circle( {
     radius: 5,
-    fill: null,
+    fill: new ol.style.Fill( { color: 'rgba(41, 255, 248, 0.3)' } ),
     stroke: new ol.style.Stroke( { color: 'black', width: 2 } )
 } )
 const styles = {
