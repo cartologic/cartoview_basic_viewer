@@ -112,7 +112,7 @@ class CartoviewPopup extends Component {
                         {(features.length != 0 && !loading )&& <div>
                             <i style={{padding:3}} className="fa fa-search-plus" aria-hidden="true"></i> Zoom to Feature
                             </div> }
-                            {loading && <Spinner className="loading-center" name="line-scale-party" color="steelblue" />}
+                        {loading && <Spinner className="loading-center" name="line-scale-party" color="steelblue" />}
                         
                     </div> </div>
                 </Paper>

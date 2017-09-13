@@ -107,13 +107,13 @@ const transformAndShowPopup = ( layer, features, map, overlayPopup, coordinate,
             overlayPopup.setPosition( coordinate )
             dispatch( addFeatures( transformedFeatures ) )
             dispatch( setActiveFeatures( 0 ) )
-            dispatch( setPopupVisible( true ) )
             dispatch( featuresIsLoading( false ) )
+            dispatch( setPopupVisible( true ) )
             document.body.style.cursor = "default"
         } else {
             overlayPopup.setPosition( coordinate )
-            dispatch( setPopupVisible( true ) )
             dispatch( featuresIsLoading( false ) )
+            dispatch( setPopupVisible( true ) )
             document.body.style.cursor = "default"
         }
     }
@@ -163,8 +163,8 @@ export function featureIdentify( map, overlayPopup, coordinate ) {
                             }
                         } else {
                             overlayPopup.setPosition( coordinate )
-                            dispatch( setPopupVisible( true ) )
                             dispatch( featuresIsLoading( false ) )
+                            dispatch( setPopupVisible( true ) )
                             document.body.style.cursor = "default"
                         }
                         if ( viewStore.getState( ).features.length >
