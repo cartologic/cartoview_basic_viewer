@@ -32,7 +32,7 @@ addLocaleData( enLocaleData );
 class ReactClient extends React.Component {
     componentWillMount( ) {
         this.map = this.props.map
-        this.props.updateMap( map_id )
+        this.props.updateMap( this.props.mapUrl )
     }
     getChildContext( ) {
         return { muiTheme: getMuiTheme( CustomTheme ) };
@@ -46,7 +46,7 @@ class ReactClient extends React.Component {
         this.baseMapRef.getWrappedInstance( ).open( )
     }
     render( ) {
-        console.log(this.props.map.getLayers().getArray())
+        let {appConfig}=this.props
         const basemap_button = appConfig.showBaseMapSwitcher ?
             <FloatingActionButton className="basemap_button" onTouchTap={this._toggleBaseMapModal.bind(this)} mini={true}>
           <i className="fa fa-map" aria-hidden="true"></i>
@@ -76,7 +76,11 @@ ReactClient.childContextTypes = {
 }
 ReactClient.propTypes = {
     updateMap: PropTypes.func.isRequired,
-    map: PropTypes.object.isRequired
+    map: PropTypes.object.isRequired,
+    mapUrl:PropTypes.string.isRequired,
+    mapId:PropTypes.number.isRequired,
+    abstract:PropTypes.string.isRequired,
+    appConfig:PropTypes.object.isRequired
 }
 const mapStateToProps = ( state ) => {
     return {
@@ -85,14 +89,18 @@ const mapStateToProps = ( state ) => {
 }
 const mapDispatchToProps = ( dispatch ) => {
     return {
-        updateMap: ( mapId ) => dispatch( loadMap( getMapConfigUrl( mapId ) ) )
+        updateMap: ( url ) => dispatch( loadMap( url ) )
     }
 }
 let App = connect( mapStateToProps, mapDispatchToProps )( ReactClient )
 export default App
-render(
-    <Provider store={viewStore}>
-    <IntlProvider locale='en' messages={enMessages}>
-  <App></App>
-</IntlProvider></Provider>,
-    document.getElementById( 'root' ) )
+global.BasicViewer={
+    view:(element,props)=>{
+        render(
+            <Provider store={viewStore}>
+            <IntlProvider locale='en' messages={enMessages}>
+          <App {...props}></App>
+        </IntlProvider></Provider>,
+            document.getElementById( element ) )
+    }
+}

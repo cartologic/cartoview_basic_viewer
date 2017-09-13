@@ -1,5 +1,5 @@
 import ol from 'openlayers'
-import {styleFunction} from './styling'
+import { styleFunction } from './styling'
 import { viewStore } from '../store/stores'
 export function featuresIsLoading( bool ) {
     return {
@@ -95,6 +95,7 @@ const getLayers = ( layers ) => {
 }
 export function featureIdentify( map, overlayPopup, coordinate ) {
     return ( dispatch ) => {
+        dispatch( setPopupVisible( true ) )
         dispatch( featuresIsLoading( true ) )
         getLayers( map.getLayers( ).getArray( ) ).forEach(
             ( layer ) => {
@@ -120,12 +121,12 @@ export function featureIdentify( map, overlayPopup, coordinate ) {
                                 features.forEach( f => f.set(
                                     "_layerTitle", layer.get(
                                         'title' ) ) )
-                                dispatch( addFeatures( features ) )
-                                dispatch( setActiveFeatures( 0 ) )
-                                dispatch( featuresIsLoading( false ) )
-                                dispatch( setPopupVisible( true ) )
                                 overlayPopup.setPosition(
                                     coordinate )
+                                dispatch( addFeatures( features ) )
+                                dispatch( setActiveFeatures( 0 ) )
+                                dispatch( setPopupVisible( true ) )
+                                dispatch( featuresIsLoading( false ) )
                                 document.body.style.cursor =
                                     "default"
                             } else {
@@ -149,19 +150,19 @@ export function featureIdentify( map, overlayPopup, coordinate ) {
                                                 layer.get(
                                                     'title'
                                                 ) ) )
+                                        overlayPopup.setPosition(
+                                            coordinate )
                                         dispatch( addFeatures(
                                             features ) )
                                         dispatch(
                                             setActiveFeatures(
                                                 0 ) )
                                         dispatch(
-                                            featuresIsLoading(
-                                                false ) )
-                                        dispatch(
                                             setPopupVisible(
                                                 true ) )
-                                        overlayPopup.setPosition(
-                                            coordinate )
+                                        dispatch(
+                                            featuresIsLoading(
+                                                false ) )
                                         document.body.style.cursor =
                                             "default"
                                     } )
@@ -179,17 +180,17 @@ export function featureIdentify( map, overlayPopup, coordinate ) {
                                 transformedFeatures.push(
                                     feature )
                             } )
+                            overlayPopup.setPosition( coordinate )
                             dispatch( addFeatures(
                                 transformedFeatures ) )
                             dispatch( setActiveFeatures( 0 ) )
-                            dispatch( featuresIsLoading( false ) )
                             dispatch( setPopupVisible( true ) )
-                            overlayPopup.setPosition( coordinate )
+                            dispatch( featuresIsLoading( false ) )
                             document.body.style.cursor = "default"
                         } else {
-                            dispatch( featuresIsLoading( false ) )
-                            dispatch( setPopupVisible( true ) )
                             overlayPopup.setPosition( coordinate )
+                            dispatch( setPopupVisible( true ) )
+                            dispatch( featuresIsLoading( false ) )
                             document.body.style.cursor = "default"
                         }
                     } )
@@ -209,7 +210,7 @@ export const loadAttachments = ( url ) => {
     }
 }
 export const zoomToFeature = ( feature ) => {
-    return (dispatch)=>{
+    return ( dispatch ) => {
         let map = viewStore.getState( ).map
         map.getView( ).fit( feature.getGeometry( ).getExtent( ), map.getSize( ), { duration: 10000 } )
     }
@@ -225,8 +226,8 @@ export const singleClickListner = ( map = viewStore.getState( ).map,
         } )
     }
 }
-
-export const addSelectionLayer = ( featureCollection=viewStore.getState().featureCollection,map=viewStore.getState().map ) => {
+export const addSelectionLayer = ( featureCollection = viewStore.getState( ).featureCollection,
+    map = viewStore.getState( ).map ) => {
     return ( dispatch ) => {
         new ol.layer.Vector( {
             source: new ol.source.Vector( { features: featureCollection } ),
@@ -234,22 +235,20 @@ export const addSelectionLayer = ( featureCollection=viewStore.getState().featur
             title: "Selected Features",
             zIndex: 10000,
             format: new ol.format.GeoJSON( {
-                defaultDataProjection: map.getView( )
-                    .getProjection( ),
-                featureProjection: map.getView( )
-                    .getProjection( )
+                defaultDataProjection: map.getView( ).getProjection( ),
+                featureProjection: map.getView( ).getProjection( )
             } ),
-            map:map
+            map: map
         } )
     }
 }
-export const addStyleToFeature=()=>{
-    return (dispatch)=>{
-        let {features,featureCollection,activeFeatures}=viewStore.getState()
-        if(features.length>0){
+export const addStyleToFeature = ( ) => {
+    return ( dispatch ) => {
+        let { features, featureCollection, activeFeatures } =
+        viewStore.getState( )
+        if ( features.length > 0 ) {
             featureCollection.clear( )
             featureCollection.push( features[ activeFeatures ] )
         }
     }
-    
 }

@@ -47,11 +47,14 @@
       return "/maps/" + id + "/data"
     }
     var appConfig = {{ instance.config | safe }};
-    var map_id={{instance.map_id}};
+    var mapId={{instance.map_id}};
     var mapUrl = "{% url 'map_json' instance.map_id %}";
-    var geoserver_url = "{{ GEOSERVER_BASE_URL }}";
-    var abstract = " {% spaceless %}{{ instance.abstract|title }}{% endspaceless %} ";
+    var abstract = " {% spaceless %}{{ instance.abstract|title }}{% endspaceless %} "
+    var appProps={appConfig,mapId,mapUrl,abstract}
 </script>
 <script src="{% static 'cartoview_basic_viewer/dist/ReactClient.bundle.js' %}"></script>
+<script>
+    BasicViewer.view('root',appProps)
+</script>
 </body>
 </html>

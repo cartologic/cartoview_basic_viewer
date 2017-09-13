@@ -13,8 +13,8 @@
 .ol-popup-cartoview .title-panel {
     background-color: #5491B8;
     border-color: #777777;
-        color: #FFFFFF;
-
+    color: #FFFFFF;
+    font-family: monospace;
     font-weight: 700;
     display: flex;
     flex-direction: row-reverse;
