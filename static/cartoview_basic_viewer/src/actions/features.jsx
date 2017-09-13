@@ -129,32 +129,47 @@ export function featureIdentify( map, overlayPopup, coordinate ) {
                     'application/json' )
                 fetch( url ).then( ( response ) => response.json( ) ).then(
                     ( result ) => {
-                        const features = wmsGetFeatureInfoFormats[
-                            'application/json' ].readFeatures(
-                            result )
-                        const crs = result.features.length > 0 ?
-                            result.crs.properties.name.split( ":" )
-                            .pop( ) : null
-                        if ( proj4.defs( 'EPSG:' + crs ) ) {
-                            dispatch( transformAndShowPopup( layer,
-                                features, map,
-                                overlayPopup, coordinate,
-                                crs ) )
+                        if ( result.features.length > 0 ) {
+                            const features =
+                                wmsGetFeatureInfoFormats[
+                                    'application/json' ].readFeatures(
+                                    result )
+                            const crs = result.features.length > 0 ?
+                                result.crs.properties.name.split(
+                                    ":" ).pop( ) : null
+                            if ( proj4.defs( 'EPSG:' + crs ) ) {
+                                dispatch( transformAndShowPopup(
+                                    layer, features, map,
+                                    overlayPopup,
+                                    coordinate, crs ) )
+                            } else {
+                                fetch(
+                                    "https://epsg.io/?format=json&q=" +
+                                    crs ).then( response =>
+                                    response.json( ) ).then(
+                                    projres => {
+                                        proj4.defs( 'EPSG:' +
+                                            crs, projres.results[
+                                                0 ].proj4 )
+                                        dispatch(
+                                            transformAndShowPopup(
+                                                layer,
+                                                features,
+                                                map,
+                                                overlayPopup,
+                                                coordinate,
+                                                crs ) )
+                                    } )
+                            }
                         } else {
-                            fetch(
-                                "https://epsg.io/?format=json&q=" +
-                                crs ).then( response =>
-                                response.json( ) ).then(
-                                projres => {
-                                    proj4.defs( 'EPSG:' + crs,projres.results[ 0 ].proj4)
-                                    dispatch(
-                                        transformAndShowPopup(
-                                            layer,
-                                            features, map,
-                                            overlayPopup,
-                                            coordinate,
-                                            crs ) )
-                                } )
+                            overlayPopup.setPosition( coordinate )
+                            dispatch( setPopupVisible( true ) )
+                            dispatch( featuresIsLoading( false ) )
+                            document.body.style.cursor = "default"
+                        }
+                        if ( viewStore.getState( ).features.length >
+                            0 ) {
+                            dispatch( addStyleToFeature( ) )
                         }
                     } )
             } )
@@ -218,17 +233,19 @@ export const addStyleToFeature = ( ) => {
         }
     }
 }
-export const next=()=>{
-    return (dispatch)=>{
-        dispatch(activeFeaturesIncrement( ))
-        let {overlayPopup,activeFeatures,features}=viewStore.getState()
-        overlayPopup.setPosition( features[activeFeatures].getGeometry().getCoordinates() )
+export const next = ( ) => {
+    return ( dispatch ) => {
+        dispatch( activeFeaturesIncrement( ) )
+        let { overlayPopup, activeFeatures, features } = viewStore.getState( )
+        overlayPopup.setPosition( features[ activeFeatures ].getGeometry( )
+            .getCoordinates( ) )
     }
 }
-export const prev=()=>{
-    return (dispatch)=>{
-        dispatch(activeFeaturesDecrement( ))
-        let {overlayPopup,activeFeatures,features}=viewStore.getState()
-        overlayPopup.setPosition( features[activeFeatures].getGeometry().getLastCoordinate() )
+export const prev = ( ) => {
+    return ( dispatch ) => {
+        dispatch( activeFeaturesDecrement( ) )
+        let { overlayPopup, activeFeatures, features } = viewStore.getState( )
+        overlayPopup.setPosition( features[ activeFeatures ].getGeometry( )
+            .getLastCoordinate( ) )
     }
 }
