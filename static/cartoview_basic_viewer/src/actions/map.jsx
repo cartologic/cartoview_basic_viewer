@@ -26,7 +26,7 @@ export const loadMap = (mapUrl) => {
             }
         }).then((config) => {
             if (config) {
-                MapConfigService.load(MapConfigTransformService.transform(config),map)
+                MapConfigService.load(MapConfigTransformService.transform(config),map,urls.proxy)
                 dispatch(setMap(map))
                 dispatch(mapIsLoading(false))
 
