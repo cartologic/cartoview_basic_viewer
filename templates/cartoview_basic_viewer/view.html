@@ -4,45 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ instance.title }}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1, user-scalable=no" />    
+    <link rel="shortcut icon" type="image/png" href="{{ STATIC_URL }}cartoview/img/icon.png" />
     <style>
-        html {
+        html,body {
             height: 100%;
             margin: 0px;
         }
-        body {
-            overflow: hidden;
-            height: 100%;
-            margin: 0px;
-        }
-        .no-js #loader {
-            display: none;
-        }
-        .js #loader {
-            display: block;
-            position: absolute;
-            left: 100px;
-            top: 0;
-        }
-        .se-pre-con {
-            position: fixed;
-            left: 0px;
-            top: 0px;
-            width: 100%;
-            height: 100%;
-            z-index: 9999;
-            background: url({% static 'cartoview_basic_viewer/img/loading.gif' %}) center no-repeat #fff;
+        #root{
+            height: 100%
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.4/proj4.js"></script>
 </head>
 <body>
-<div class="se-pre-con"></div>
-
-<div style="height:100%" id="root"></div>
-
-<script>
+<div style="height: 100%;" id="root"></div>
+<script src="{{ STATIC_URL }}cartoview_basic_viewer/dist/commons.js"></script>
+<script src="{% static 'cartoview_basic_viewer/dist/BasicViewer.bundle.js?version=2' %}"></script>
+<script type="text/javascript">
     {% if instance %}
             const instanceId= {{ instance.id }}
             {% if PROXY_URL %}
@@ -56,25 +35,37 @@
                 proxy: PROXY_URL,
                 appInstance: "{% url 'api_dispatch_detail' api_name='api' resource_name='appinstances' pk=instance.id %}",
                 geoserverUrl : "{{ GEOSERVER_BASE_URL }}",
+                {% if 'access_token' in request.session %}
+                    wfsURL : "{{ GEOSERVER_BASE_URL }}wfs?access_token={{request.session.access_token}}",
+                    {% else %}
+                    wfsURL : "{{ GEOSERVER_BASE_URL }}wfs",
+                {% endif %}
                 static: "{{ STATIC_URL }}",
                 media: "{{ MEDIA_URL }}",
                 layerAttributes:"{% url 'app_manager_base_url' %}rest/app_manager/geonodelayerattribute/",
                 rest: "{% url 'app_manager_base_url' %}rest/app_manager/",
-                geonodeRest: "{% url 'api_api_top_level' 'api' %}"
+                geonodeRest: "{% url 'api_api_top_level' 'api' %}",
+                attachmentUploadUrl:function(layerName){
+                    return '{{SITEURL}}apps/cartoview_attachment_manager/'+layerName+'/file'
+                },
+                commentsUploadUrl:function(layerName){
+                    return '{{SITEURL}}apps/cartoview_attachment_manager/'+layerName+'/comment'
+                },
+                appInstancesPage:"{% url 'appinstance_browse' %}?app__name={{instance.app.name}}&app__title={{instance.app.title}}",
+                layers: "{% url 'layer_browse' %}",
+                maps: "{% url 'maps_browse' %}",
+                apps: "{% url 'app_manager_base_url' %}",
+                viewURL: "{% url "cartoview_basic_viewer.view" instance_id=instance.id %}",
+                appLogo:'{% static 'cartoview_basic_viewer/logo.png' %}'
             }
     {% endif %}
-    function getMapConfigUrl(id){
-      return "/maps/" + id + "/data"
-    }
-    var appConfig = {{ instance.config | safe }};
-    var mapId={{instance.map_id}};
-    var mapUrl = "{% url 'map_json' instance.map_id %}";
-    var abstract = " {% spaceless %}{{ instance.abstract|title }}{% endspaceless %} "
-    var appProps={appConfig,mapId,mapUrl,abstract}
-</script>
-<script src="{% static 'cartoview_basic_viewer/dist/ReactClient.bundle.js?version=1.3.5' %}"></script>
-<script>
-    BasicViewer.view('root',appProps)
-</script>
+
+    const props = {{ instance.config | safe }}
+    
+    props.formTitle="{{instance.title}}"
+    props.formAbstract="{{instance.abstract}}"
+    props.username="{{request.user.username}}"
+    BasicViewerContainer.show('root', props,urls);
+  </script>
 </body>
 </html>
