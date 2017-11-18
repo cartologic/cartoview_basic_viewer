@@ -1,4 +1,5 @@
 import Collapse from 'material-ui/transitions/Collapse'
+import Divider from 'material-ui/Divider'
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
 import IconButton from 'material-ui/IconButton'
 import {Message} from '../../containers/CommonComponents'
@@ -20,8 +21,9 @@ const styles = theme => ({
 class Collapsible extends React.Component {
     constructor(props) {
         super(props)
+        const {open}=this.props
         this.state = {
-            expanded: false
+            expanded: open ? open : true
         }
     }
     handleDetailsExpand = () => {
@@ -47,9 +49,11 @@ class Collapsible extends React.Component {
                         <ExpandMoreIcon />
                     </IconButton>
                 </div>
+                
                 <Collapse in={this.state.expanded} transitionDuration="auto" unmountOnExit>
                     {children}
                 </Collapse>
+                <Divider/>
             </div>
 
         )
@@ -58,6 +62,7 @@ class Collapsible extends React.Component {
 Collapsible.propTypes = {
     classes: PropTypes.object.isRequired,
     title: PropTypes.string.isRequired,
-    children: PropTypes.object.isRequired
+    children: PropTypes.object.isRequired,
+    open:PropTypes.bool
 }
 export default withStyles(styles)(Collapsible)

@@ -6,8 +6,11 @@ import React from 'react'
 import classnames from 'classnames'
 import { withStyles } from 'material-ui/styles'
 const styles = theme => ({
-    root:{
-        height: "100%"
+    root: {
+        height: "100%",
+    },
+    collapsibleItem:{
+        padding:theme.spacing.unit,
     }
 })
 class CartoviewDrawer extends React.Component {
@@ -17,26 +20,27 @@ class CartoviewDrawer extends React.Component {
             className,
             legends
         } = this.props
-        console.log(legends)
         return (
-            <Paper elevation={6} className={classnames(classes.root,className)}>
+            <Paper elevation={6} className={classnames(classes.root, className)}>
                 <NavBar />
-                <Paper elevation={0}>
-                <CollapsibleItem title="Legends">
-                    <div>
-                    {legends.map((legend,index)=>{
-                        return <img style={{height:'100%',width:'100%'}} key={index} src={legend}/>
-                    })}
-                    </div>
-                </CollapsibleItem>
+                <Paper className={classes.collapsibleItem} elevation={0}>
+                    <CollapsibleItem title="Legends">
+                        <div>
+                            {legends.map((legend, index) => {
+                                return (<div className={classes.collapsibleItem} key={index}><h5>{`${legend.layer}`}</h5>
+                                    <img  src={legend.url} />
+                                </div>)
+                            })}
+                        </div>
+                    </CollapsibleItem>
                 </Paper>
             </Paper>
         )
     }
 }
-CartoviewDrawer.propTypes ={
-    classes:PropTypes.object.isRequired,
-    className:PropTypes.string.isRequired,
-    legends:PropTypes.array.isRequired,
+CartoviewDrawer.propTypes = {
+    classes: PropTypes.object.isRequired,
+    className: PropTypes.string.isRequired,
+    legends: PropTypes.array.isRequired,
 }
 export default withStyles(styles)(CartoviewDrawer)

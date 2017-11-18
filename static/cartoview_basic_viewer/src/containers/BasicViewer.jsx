@@ -139,7 +139,7 @@ class BasicViewerContainer extends Component {
         let legends = []
         layers.map(layer => {
             const layerName = layer.getProperties().name
-            legends.push(this.getLegendURL(layerName))
+            legends.push({layer:layerName,url:this.getLegendURL(layerName)})
         })
         this.setState({ legends })
     }

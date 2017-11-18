@@ -80,12 +80,12 @@
     padding: 3px
 }
 
-ul {
+.ol-popup-cartoview ul {
     width: 100%;
     position: relative;
 }
 
-ul:before,
+.ol-popup-cartoview ul:before,
 ul:after {
     text-align: center;
     display: block;
@@ -93,7 +93,7 @@ ul:after {
     width: 40%;
 }
 
-ul:before {
+.ol-popup-cartoview ul:before {
     border-right: 0;
 }
 
@@ -115,14 +115,14 @@ ul:before {
     padding: 3px;
 }
 
-ul:after {
+.ol-popup-cartoview ul:after {
     position: absolute;
     top: 0;
     left: 48%;
     margin-left: 1px;
 }
 
-li {
+.ol-popup-cartoview li {
     text-align: left;
     font-size: small;
     padding: 3px;
