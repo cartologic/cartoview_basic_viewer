@@ -1,119 +1,135 @@
-import '../css/popup.css'
+import '../../css/popup.css'
 
-import React, { Component } from 'react'
-import {
-    activeFeaturesDecrement,
-    activeFeaturesIncrement,
-    addSelectionLayer,
-    addStyleToFeature,
-    next,
-    prev,
-    setOverlayPopup,
-    setPopupVisible,
-    singleClickListner,
-    zoomToFeature
-} from '../actions/features'
-
+import ArrowLeft from 'material-ui-icons/KeyboardArrowLeft'
+import ArrowRight from 'material-ui-icons/KeyboardArrowRight'
+import CloseIcon from 'material-ui-icons/Close'
+import IconButton from 'material-ui/IconButton'
 import Paper from 'material-ui/Paper'
 import PropTypes from 'prop-types'
-import Spinner from "react-spinkit"
-import { connect } from 'react-redux'
-import ol from 'openlayers'
+import React from 'react'
+import Typography from 'material-ui/Typography'
+import classnames from 'classnames'
+import { withStyles } from 'material-ui/styles'
 
-class CartoviewPopup extends Component {
-    ensureEvents = ( ) => {
-        let self = this;
+const styles = theme => ({
+    button: {
+        height: 'auto'
+    },
+})
+const FeatureAttributesTable = (props) => {
+    const { currentFeature } = props
+    return (
+        <ul>
+            {Object.keys(currentFeature.getProperties()).map((key, index) => {
+                if (key != "geometry" && key !== "_layerTitle") {
+                    return (
+                        <div key={index}>
+                            <li>
+                                {`${key}`}
+                            </li>
+                            <li>
+                                {`${currentFeature.getProperties()[key]}`}
+                            </li>
+                        </div>
+                    )
+                }
+            })}
+        </ul>
+    )
+}
+FeatureAttributesTable.propTypes = {
+    currentFeature: PropTypes.object.isRequired
+}
+class CartoviewPopup extends React.Component {
+    ensureEvents = () => {
+        const {
+            resetFeatureCollection,
+            featureIdentifyResult,
+            activeFeature,
+            changeShowPopup,
+            nextFeature,
+            previousFeature,
+            zoomToFeature
+        } = this.props
+        let currentFeature = featureIdentifyResult.length > 0 ?
+            featureIdentifyResult[activeFeature] : null
+        let self = this
         var closer = self.popupCloser
         var nextB = self.nextButton
         var prevB = self.prevButton
         var zoomToB = self.zoomToButton
-        if ( closer.onclick === null ) {
-            closer.onclick = ( ) => {
-                this.props.featureCollection.clear( )
-                self.props.setVisible( false )
+        if (closer.onclick === null) {
+            closer.onclick = () => {
+                resetFeatureCollection()
+                changeShowPopup()
                 return false
             }
         }
-        if ( nextB.onclick === null ) {
-            nextB.onclick = ( ) => {
-                self.props.next( )
-                this.props.addFeatureStyle( )
+        if (nextB.onclick === null) {
+            nextB.onclick = () => {
+                nextFeature()
             }
         }
-        if ( prevB.onclick === null ) {
-            prevB.onclick = ( ) => {
-                self.props.prev( )
-                this.props.addFeatureStyle( )
+        if (prevB.onclick === null) {
+            prevB.onclick = () => {
+                previousFeature()
             }
         }
-        if ( zoomToB.onclick === null ) {
-            zoomToB.onclick = ( ) => {
-                self.props.zoomToFeature( self.props.features[ self.props
-                    .activeFeature ] )
-                this.props.addFeatureStyle( )
+        if (zoomToB.onclick === null) {
+            zoomToB.onclick = () => {
+                zoomToFeature(currentFeature)
             }
         }
     }
-    componentDidMount( ) {
-        let overlay = new ol.Overlay( {
-            autoPan: true,
-            element: this.node
-        } )
-        this.props.setOverlay( overlay )
-        this.props.init( )
-        this.props.addSelectionLayer( )
-        this.ensureEvents( )
-    }
-    componentWillReceiveProps( nextProps ) {
-        this.node.style.display = nextProps.popupVisible ? 'block' :
-            'none'
-        if ( nextProps.popupVisible && nextProps.popupVisible != this.props
-            .popupVisible ) {
-            nextProps.addFeatureStyle( )
+    componentWillReceiveProps(nextProps) {
+        const { addOverlay } = this.props
+        if (nextProps.showPopup ) {
+            this.node.style.display = 'block'
+            addOverlay(this.node)
+        } else {
+            this.node.style.display = 'none'
         }
     }
-    render( ) {
-        let { features, loading, activeFeature } = this.props
+    componentDidUpdate(prevProps, prevState) {
+        const { showPopup } = this.props
+        if (showPopup) {
+            this.ensureEvents()
+        }
+    }
+    render() {
+        let {
+            featureIdentifyResult,
+            featureIdentifyLoading,
+            activeFeature,
+            classes
+        } = this.props
+        const nextButtonVisible = (featureIdentifyResult.length > 0 &&
+            activeFeature != featureIdentifyResult.length - 1)
+        const currentFeature = featureIdentifyResult[activeFeature]
         return (
-            <div ref={node => this.node = node} id="popup" className="ol-popup-cartoview hisham">
-                <div className="title-panel">
-                    <div ref={(input) => { this.popupCloser = input }}>
-                        <i style={{}} className="fa fa-times" aria-hidden="true"></i>
+            <div ref={node => this.node = node} id="popup" className="ol-popup-cartoview">
+                <Paper elevation={2}>
+                    <div className="title-panel">
+                        {featureIdentifyResult.length != 0 && <Typography type="body1" align="left" noWrap={true} color="inherit" className="element-flex title-text">{`Layer : ${currentFeature.get('_layerTitle')}`}</Typography>}
+                        <IconButton color="inherit" className={classnames({ 'hidden': activeFeature===0, 'visible': activeFeature != 0, 'popup-buttons': true, [classes.button]: true })} buttonRef={(node) => this.prevButton = node} aria-label="Delete">
+                            <ArrowLeft />
+                        </IconButton>
+                        <IconButton color="inherit" className={classnames({ 'hidden': !nextButtonVisible, 'visible': nextButtonVisible, 'popup-buttons': true, [classes.button]: true })} buttonRef={(node) => this.nextButton = node} aria-label="Delete">
+                            <ArrowRight />
+                        </IconButton>
+                        <IconButton color="inherit" buttonRef={(node) => this.popupCloser = node} className={classes.button} aria-label="Delete">
+                            <CloseIcon />
+                        </IconButton>
                     </div>
-                    <div style={{display:(features.length>0 && activeFeature != features.length-1)? 'block': 'none'}} ref={(input) => { this.nextButton = input }}>
-                        <i style={{float:'right',padding:3}} className="fa fa-arrow-circle-right" aria-hidden="true"></i>
-                    </div>
-                    <div style={{display:activeFeature != 0? 'block' : 'none'}} ref={(input) => { this.prevButton = input }}>
-                        <i style={{float:'right',padding:3}} className="fa fa-arrow-circle-left" aria-hidden="true"></i>
-                    </div>
-                    {features.length !=0 && <div style={{display:features.length !=0? 'block' : 'none',flex: 1,padding:3,fontWeight: 'lighter'}} ref={(input) => { this.prevButton = input }}>
-                        {`Layer : ${features[activeFeature].get('_layerTitle')}`}
+                    <div className="cartoview-popup-content">{featureIdentifyResult.length > 0 && <div>
+                        <FeatureAttributesTable currentFeature={currentFeature} />
                     </div>}
-                </div>
-                <Paper zDepth={0}>
-                    <div className="cartoview-popup-content">{features.length>0 && <div>
-                        <ul style={{listStyleType: 'none',padding: 0}}>
-                        {Object.keys(features[activeFeature].getProperties()).map((key,index)=>{
-                                if (key != "geometry" && key!=="_layerTitle") {
-                                    return <div key={index}><li  >
-                                    {`${key}`}
-                                </li>
-                                <li>
-                                    {`${features[activeFeature].getProperties()[key]}`}
-                                </li></div>
-                                }   
-                            })}
-                        </ul>
-                        </div>}
-                        {features.length==0  && !loading &&<h5>No Features at this Point</h5>}
-                        
+                        {featureIdentifyResult.length == 0 && !featureIdentifyLoading && <h5>{"No Features at this Point"}</h5>}
                     </div>
-                    <div style={{display: 'block',textAlign:'center'}} className="cartoview-popup-actions"><div ref={(input) => { this.zoomToButton = input }} >
-                        {(features.length != 0 && !loading )&& <div>
-                            <i style={{padding:3}} className="fa fa-search-plus" aria-hidden="true"></i> Zoom to Feature
-                            </div> }
-                        {loading && <Spinner className="loading-center" name="line-scale-party" color="steelblue" />}
-                        
+                    <div className="cartoview-popup-actions center"><div ref={(input) => { this.zoomToButton = input }} >
+                        {(featureIdentifyResult.length != 0 && !featureIdentifyLoading) && <div>
+                            <i className="fa fa-search-plus" aria-hidden="true"></i> {"Zoom to Feature"}
+                        </div>}
                     </div> </div>
                 </Paper>
             </div>
@@ -121,34 +137,18 @@ class CartoviewPopup extends Component {
     }
 }
 CartoviewPopup.propTypes = {
-    init: PropTypes.func.isRequired,
-    setOverlay: PropTypes.func.isRequired,
-    features: PropTypes.array.isRequired,
-    loading: PropTypes.bool.isRequired,
-    popupVisible: PropTypes.bool.isRequired,
+    resetFeatureCollection: PropTypes.func.isRequired,
+    zoomToFeature: PropTypes.func.isRequired,
+    addOverlay: PropTypes.func.isRequired,
+    changeShowPopup: PropTypes.func.isRequired,
+    addStyleToFeature: PropTypes.func.isRequired,
+    nextFeature: PropTypes.func.isRequired,
+    previousFeature: PropTypes.func.isRequired,
+    featureIdentifyResult: PropTypes.array.isRequired,
+    featureIdentifyLoading: PropTypes.bool.isRequired,
+    showPopup: PropTypes.bool.isRequired,
     activeFeature: PropTypes.number.isRequired,
-    addSelectionLayer: PropTypes.func.isRequired,
-    featureCollection: PropTypes.object.isRequired
+    map: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired
 }
-const mapStateToProps = ( state ) => {
-    return {
-        features: state.features,
-        popupVisible: state.popupVisible,
-        activeFeature: state.activeFeatures,
-        loading: state.featureIsLoading,
-        featureCollection: state.featureCollection
-    }
-}
-const mapDispatchToProps = ( dispatch ) => {
-    return {
-        init: ( ) => dispatch( singleClickListner( ) ),
-        setOverlay: ( overlay ) => dispatch( setOverlayPopup( overlay ) ),
-        next: ( ) => dispatch( next( ) ),
-        prev: ( ) => dispatch( prev( ) ),
-        zoomToFeature: ( feature ) => dispatch( zoomToFeature( feature ) ),
-        setVisible: ( visible ) => dispatch( setPopupVisible( visible ) ),
-        addSelectionLayer: ( ) => dispatch( addSelectionLayer( ) ),
-        addFeatureStyle: ( ) => dispatch( addStyleToFeature( ) )
-    }
-}
-export default connect( mapStateToProps, mapDispatchToProps )( CartoviewPopup )
+export default withStyles(styles)(CartoviewPopup)

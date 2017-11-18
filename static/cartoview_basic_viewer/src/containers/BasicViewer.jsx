@@ -31,18 +31,38 @@ class BasicViewerContainer extends Component {
             mapIsLoading: false,
             drawerOpen: true,
             featureIdentifyLoading: false,
-            activeFeatures: 0,
+            activeFeature: 0,
+            mouseCoordinates: [0, 0],
             featureIdentifyResult: [],
             showPopup: false
         }
         this.urls = new URLS(this.props.urls)
         this.map = getMap()
         this.featureCollection = new ol.Collection()
+        this.overlay = new ol.Overlay({
+            autoPan: true,
+        })
         addSelectionLayer(this.map, this.featureCollection, styleFunction)
+        this.map.addOverlay(this.overlay)
     }
     toggleDrawer = () => {
         const { drawerOpen } = this.state
         this.setState({ drawerOpen: !drawerOpen })
+    }
+    addOverlay = (node) => {
+        const { activeFeature, featureIdentifyResult, mouseCoordinates } = this.state
+        let position = mouseCoordinates
+        if (featureIdentifyResult.length > 0) {
+            const currentFeature = featureIdentifyResult[activeFeature]
+            const featureExtent = currentFeature.getGeometry().getExtent()
+            position = getCenterOfExtent(featureExtent)
+        }
+        this.overlay.setElement(node)
+        this.overlay.setPosition(position)
+    }
+    changeShowPopup = () => {
+        const { showPopup } = this.state
+        this.setState({ showPopup: !showPopup })
     }
     componentWillMount() {
         const { urls } = this.props
@@ -91,13 +111,16 @@ class BasicViewerContainer extends Component {
     }
     singleClickListner = () => {
         this.map.on('singleclick', (e) => {
+            if (this.overlay) {
+                this.overlay.setElement(undefined)
+            }
             this.setState({
+                mouseCoordinates: e.coordinate,
                 featureIdentifyLoading: true,
-                activeFeatures: 0,
+                activeFeature: 0,
                 featureIdentifyResult: [],
                 showPopup: false
             })
-            document.body.style.cursor = "progress"
             this.featureIdentify(this.map, e.coordinate)
         })
     }
@@ -111,8 +134,11 @@ class BasicViewerContainer extends Component {
         })
         return transformedFeatures
     }
-    addStyleToFeature = (features) => {
+    resetFeatureCollection = () => {
         this.featureCollection.clear()
+    }
+    addStyleToFeature = (features) => {
+        this.resetFeatureCollection()
         if (features && features.length > 0) {
             this.featureCollection.extend(features)
         }
@@ -121,45 +147,67 @@ class BasicViewerContainer extends Component {
         return fetch(this.urls.getProxiedURL(url)).then((response) =>
             response.json())
     }
+    readFeaturesThenTransform = (layer, coordinate, view, map) => {
+        const url = getFeatureInfoUrl(layer, coordinate, view,
+            'application/json')
+        return this.getFeatureByURL(url).then(
+            (result) => {
+                var promise = new Promise((resolve, reject) => {
+                    const features = wmsGetFeatureInfoFormats[
+                        'application/json'].readFeatures(
+                        result)
+                    if (features.length > 0) {
+                        const crs = result.features.length > 0 ?
+                            result.crs.properties.name.split(
+                                ":").pop() : null
+                        this.getCRS(crs).then((newCRS) => {
+                            const transformedFeatures =
+                                this.transformFeatures(
+                                    layer, features,
+                                    map, newCRS)
+                            resolve(
+                                transformedFeatures
+                            )
+                        }, (error) => {
+                            reject(error)
+                        })
+                    } else {
+                        resolve([])
+                    }
+                })
+                return promise
+            })
+    }
     featureIdentify = (map, coordinate) => {
         const view = map.getView()
         let identifyPromises = getLayers(map.getLayers().getArray()).map(
-            (layer) => {
-                const url = getFeatureInfoUrl(layer, coordinate, view,
-                    'application/json')
-                return this.getFeatureByURL(url).then(
-                    (result) => {
-                        var promise = new Promise((resolve, reject) => {
-                            const features = wmsGetFeatureInfoFormats[
-                                'application/json'].readFeatures(result)
-                            if (features.length > 0) {
-                                const crs = result.features.length > 0 ? result.crs
-                                    .properties.name.split(":").pop() : null
-                                this.getCRS(crs).then((newCRS) => {
-                                    const transformedFeatures = this.transformFeatures(layer,
-                                        features, map, newCRS)
-                                    resolve(transformedFeatures)
-                                }, (error) => {
-                                    reject(error)
-                                })
-                            }else{
-                                resolve([])
-                            }
-                        })
-                        return promise
-                    })
-            })
+            (layer) => this.readFeaturesThenTransform(layer,
+                coordinate, view, map))
         Promise.all(identifyPromises).then(result => {
-            const featureIdentifyResult = result.reduce((array1, array2) => array1.concat(array2), [])
+            const featureIdentifyResult = result.reduce((array1,
+                array2) => array1.concat(array2), [])
             this.setState({
                 featureIdentifyLoading: false,
                 featureIdentifyResult,
-                activeFeatures: 0,
+                activeFeature: 0,
                 showPopup: true
-            }, () => this.addStyleToFeature(featureIdentifyResult))
-            console.log(featureIdentifyResult)
-            document.body.style.cursor = "default"
+            }, () => this.addStyleToFeature(
+                featureIdentifyResult))
         })
+    }
+    addStyleToCurrentFeature = () => {
+        const { activeFeature, featureIdentifyResult } = this.state
+        this.addStyleToFeature([featureIdentifyResult[activeFeature]])
+    }
+    nextFeature = () => {
+        const { activeFeature } = this.state
+        const nextIndex = activeFeature + 1
+        this.setState({ activeFeature: nextIndex }, this.addStyleToCurrentFeature)
+    }
+    previousFeature = () => {
+        const { activeFeature } = this.state
+        const previuosIndex = activeFeature - 1
+        this.setState({ activeFeature: previuosIndex }, this.addStyleToCurrentFeature)
     }
     render() {
         const { config, urls } = this.props
@@ -168,10 +216,15 @@ class BasicViewerContainer extends Component {
             ...this.state,
             zoomToFeature: this.zoomToFeature,
             addStyleToFeature: this.addStyleToFeature,
+            resetFeatureCollection: this.resetFeatureCollection,
             layerName,
             layerNameSpace,
             urls,
-            map: this.map
+            map: this.map,
+            addOverlay: this.addOverlay,
+            changeShowPopup: this.changeShowPopup,
+            nextFeature: this.nextFeature,
+            previousFeature: this.previousFeature
         }
         return <BasicViewer childrenProps={childrenProps} />
     }
