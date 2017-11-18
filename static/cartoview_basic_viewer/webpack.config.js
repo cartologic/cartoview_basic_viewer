@@ -1,60 +1,76 @@
-var webpack = require('webpack');
-var path = require('path');
-var BUILD_DIR = path.resolve(__dirname, 'dist');
-var APP_DIR = path.resolve(__dirname, 'src');
-var plugins = [];
-var filename = '[name].bundle.js';
-module.exports = {
-	entry: {
-		config: path.join(APP_DIR, 'AppRender.jsx'),
-		ReactClient: path.join(APP_DIR, 'view.jsx'),
-	},
-	output: {
-		path: BUILD_DIR,
-		filename: filename,
-		library: '[name]',
-		libraryTarget: 'umd',
-		umdNamedDefine: true,
-		publicPath: "/static/cartoview_basic_viewer/dist/"
-	},
-	node: {
-		fs: "empty"
-	},
-	plugins: [
-		new webpack.DefinePlugin({
-			'process.env': {
-				'NODE_ENV': JSON.stringify('production')
-			}
-		}),
-		new webpack.optimize.AggressiveMergingPlugin(),
-		new webpack.optimize.DedupePlugin(),
-		new webpack.NoEmitOnErrorsPlugin(),
-		new webpack.optimize.UglifyJsPlugin({
-			compress: {
-				warnings: true
-			}
-		})
-	],
-	resolve: {
-		extensions: ['*', '.js', '.jsx']
-	},
-	module: {
-		loaders: [{
-				test: /\.(js|jsx)$/,
-				loader: 'babel-loader',
-				exclude: /node_modules/
-			}, {
-				test: /\.xml$/,
-				loader: 'raw-loader'
-			}, {
-				test: /\.json$/,
-				loader: "json-loader"
-			},
-			{
-				test: /\.css$/,
-				loader: "style-loader!css-loader"
-			}
-		],
-		noParse: [/dist\/ol\.js/, /dist\/jspdf.debug\.js/, /dist\/js\/tether\.js/]
-	}
-};
+var webpack = require( 'webpack' )
+var path = require( 'path' )
+var BUILD_DIR = path.resolve( __dirname, 'dist' )
+var APP_DIR = path.resolve( __dirname, 'src' )
+var filename = '[name].bundle.js'
+const production = process.argv.indexOf( '-p' ) !== -1
+const plugins = [ new webpack.DefinePlugin( {
+        'process.env': {
+            'NODE_ENV': JSON.stringify( production ? 'production' : '' )
+        },
+    } ),
+    new webpack.optimize.CommonsChunkPlugin( {
+        name: "commons",
+        filename: "commons.js",
+    } ) ]
+const config = {
+    entry: {
+        config: path.join( APP_DIR, 'EditPageEntry.jsx' ),
+        BasicViewer: path.join( APP_DIR,'containers', 'BasicViewer.jsx' ),
+    },
+    output: {
+        path: BUILD_DIR,
+        filename: filename,
+        library: '[name]',
+        libraryTarget: 'umd',
+        umdNamedDefine: true,
+        publicPath: "/static/cartoview_basic_viewer/dist/"
+    },
+    node: {
+        fs: "empty"
+    },
+    plugins: plugins,
+    resolve: {
+        extensions: [ '*', '.js', '.jsx' ]
+    },
+    module: {
+        loaders: [ {
+            test: /\.(js|jsx)$/,
+            loader: 'babel-loader',
+            exclude: /node_modules/
+    }, {
+            test: /\.xml$/,
+            loader: 'raw-loader'
+    }, {
+            test: /\.json$/,
+            loader: "json-loader"
+    }, {
+            test: /\.css$/,
+            loader: "style-loader!css-loader"
+    }, {
+            test: /\.(png|jpg|gif)$/,
+            loader: 'file-loader'
+    }, {
+            test: /\.(woff|woff2)$/,
+            loader: 'url-loader?limit=100000'
+    } ],
+        noParse: [ /dist\/ol\.js/, /dist\/jspdf.debug\.js/,
+            /dist\/js\/tether\.js/ ]
+    }
+}
+if ( production ) {
+    const prodPlugins = [
+        new webpack.optimize.AggressiveMergingPlugin( ),
+        new webpack.optimize.DedupePlugin( ),
+        new webpack.NoEmitOnErrorsPlugin( ),
+        new webpack.optimize.UglifyJsPlugin( {
+            compress: {
+                warnings: false
+            }
+        } )
+    ]
+    Array.prototype.push.apply( plugins, prodPlugins )
+} else {
+    config.devtool = 'eval-cheap-module-source-map'
+}
+module.exports = config

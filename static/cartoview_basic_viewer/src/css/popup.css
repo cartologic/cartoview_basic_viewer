@@ -1,5 +1,6 @@
 .ol-popup-cartoview {
     position: absolute;
+    display: none;
     background-color: #F7F7F7;
     color: #333333;
     -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
@@ -9,15 +10,14 @@
     left: -50px;
     width: 300px;
 }
-
+.title-text{
+    padding: 3px
+}
 .ol-popup-cartoview .title-panel {
-    background-color: #5491B8;
-    border-color: #777777;
-    color: #FFFFFF;
-    font-family: monospace;
-    font-weight: 700;
+    /* background-color: #5491B8;
+    border-color: #777777; */
+    color: #FFFFFF !important;
     display: flex;
-    flex-direction: row-reverse;
     border-bottom: 1px solid #121310;
 }
 
@@ -50,15 +50,18 @@
     text-decoration: none;
     position: absolute;
     top: 2px;
-    float: right;
     right: 8px;
 }
 
 .ol-popup-cartoview-closer:after {
     content: "✖";
 }
-
-.ol-popup-cartoview .cartoview-popup-content ,.cartoview-popup-actions {
+.center{
+    display: block;
+    text-align: center
+}
+.ol-popup-cartoview .cartoview-popup-content,
+.cartoview-popup-actions {
     background-color: #F7F7F7;
     color: #333333;
     max-height: 250px;
@@ -66,38 +69,63 @@
     padding: 5px;
     border-color: 0 solid #121310;
 }
-
-.ol-popup-cartoview .cartoview-popup-actions{
-  color: orange;
-  font-weight: 500;
-  font-size: small;
-  border: 1px solid #d8d8d8
+.cartoview-popup-content ul{
+    list-style-type: none; 
+    padding: 0px;
 }
-.title-panel .fa{
-    float:right;
-    padding:3px
-
+.ol-popup-cartoview .cartoview-popup-actions {
+    color: orange;
+    font-weight: 500;
+    font-size: small;
+    border: 1px solid #d8d8d8
 }
+
+.title-panel .fa {
+    padding: 3px
+}
+
 ul {
     width: 100%;
     position: relative;
 }
-ul:before, ul:after {
+
+ul:before,
+ul:after {
     text-align: center;
     display: block;
     border-bottom: 0;
     width: 40%;
 }
+
 ul:before {
-    border-right: 0;    
+    border-right: 0;
 }
+
+.visible {
+    display: block !important;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.popup-layer-title {
+    flex: .5;
+    padding: 3px;
+    font-weight: lighter;
+}
+
+.popup-buttons .icon-button {
+    padding: 3px;
+}
+
 ul:after {
     position: absolute;
     top: 0;
     left: 48%;
-    margin-left: 1px;    
+    margin-left: 1px;
 }
-    
+
 li {
     text-align: left;
     font-size: small;
@@ -108,6 +136,7 @@ li {
     margin-bottom: -1px;
     white-space: pre-line
 }
+
 li:nth-child(even) {
     margin-left: -1px;
 }
