@@ -15,6 +15,13 @@ const styles = theme => ({
     button: {
         height: 'auto'
     },
+    titlePanel:{
+        backgroundColor: theme.palette.primary[500],
+        borderColor: '#777777',
+    },
+    content:{
+        backgroundColor: theme.palette.background.paper
+    }
 })
 const FeatureAttributesTable = (props) => {
     const { currentFeature } = props
@@ -109,7 +116,7 @@ class CartoviewPopup extends React.Component {
         return (
             <div ref={node => this.node = node} id="popup" className="ol-popup-cartoview">
                 <Paper elevation={2}>
-                    <div className="title-panel">
+                    <div className={classnames("title-panel",{[classes.titlePanel]:true})}>
                         {featureIdentifyResult.length != 0 && <Typography type="body1" align="left" noWrap={true} color="inherit" className="element-flex title-text">{`Layer : ${currentFeature.get('_layerTitle')}`}</Typography>}
                         <IconButton color="inherit" className={classnames({ 'hidden': activeFeature===0, 'visible': activeFeature != 0, 'popup-buttons': true, [classes.button]: true })} buttonRef={(node) => this.prevButton = node} aria-label="Delete">
                             <ArrowLeft />
@@ -121,7 +128,7 @@ class CartoviewPopup extends React.Component {
                             <CloseIcon />
                         </IconButton>
                     </div>
-                    <div className="cartoview-popup-content">{featureIdentifyResult.length > 0 && <div>
+                    <div className={classnames("cartoview-popup-content",{[classes.content]:true})}>{featureIdentifyResult.length > 0 && <div>
                         <FeatureAttributesTable currentFeature={currentFeature} />
                     </div>}
                         {featureIdentifyResult.length == 0 && !featureIdentifyLoading && <h5>{"No Features at this Point"}</h5>}

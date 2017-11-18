@@ -38,8 +38,10 @@
                 geoserverUrl : "{{ GEOSERVER_BASE_URL }}",
                 {% if 'access_token' in request.session %}
                     wfsURL : "{{ GEOSERVER_BASE_URL }}wfs?access_token={{request.session.access_token}}",
+                    wmsURL : "{{ GEOSERVER_BASE_URL }}wms?access_token={{request.session.access_token}}",
                     {% else %}
                     wfsURL : "{{ GEOSERVER_BASE_URL }}wfs",
+                    wmsURL : "{{ GEOSERVER_BASE_URL }}wms",
                 {% endif %}
                 static: "{{ STATIC_URL }}",
                 media: "{{ MEDIA_URL }}",

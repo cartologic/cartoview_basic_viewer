@@ -14,9 +14,6 @@
     padding: 3px
 }
 .ol-popup-cartoview .title-panel {
-    /* background-color: #5491B8;
-    border-color: #777777; */
-    color: #FFFFFF !important;
     display: flex;
     border-bottom: 1px solid #121310;
 }
@@ -62,7 +59,6 @@
 }
 .ol-popup-cartoview .cartoview-popup-content,
 .cartoview-popup-actions {
-    background-color: #F7F7F7;
     color: #333333;
     max-height: 250px;
     overflow-y: auto;

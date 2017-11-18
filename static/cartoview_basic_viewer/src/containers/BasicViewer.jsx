@@ -34,7 +34,8 @@ class BasicViewerContainer extends Component {
             activeFeature: 0,
             mouseCoordinates: [0, 0],
             featureIdentifyResult: [],
-            showPopup: false
+            showPopup: false,
+            legends: []
         }
         this.urls = new URLS(this.props.urls)
         this.map = getMap()
@@ -44,6 +45,15 @@ class BasicViewerContainer extends Component {
         })
         addSelectionLayer(this.map, this.featureCollection, styleFunction)
         this.map.addOverlay(this.overlay)
+    }
+    getLegendURL = (layerName) => {
+        const { urls } = this.props
+        const url = this.urls.getParamterizedURL(urls.wmsURL, {
+            'REQUEST': 'GetLegendGraphic', 'VERSION': '1.0.0',
+            'FORMAT': 'image/png',
+            "LAYER": layerName
+        })
+        return url
     }
     toggleDrawer = () => {
         const { drawerOpen } = this.state
@@ -83,6 +93,7 @@ class BasicViewerContainer extends Component {
                 MapConfigService.load(MapConfigTransformService.transform(
                     config), this.map, proxyURL)
                 this.setState({ mapIsLoading: false })
+                this.createLegends(getLayers(this.map.getLayers().getArray()))
             }
         }).catch((error) => {
             throw Error(error)
@@ -123,6 +134,14 @@ class BasicViewerContainer extends Component {
             })
             this.featureIdentify(this.map, e.coordinate)
         })
+    }
+    createLegends = (layers) => {
+        let legends = []
+        layers.map(layer => {
+            const layerName = layer.getProperties().name
+            legends.push(this.getLegendURL(layerName))
+        })
+        this.setState({ legends })
     }
     transformFeatures = (layer, features, map, crs) => {
         let transformedFeatures = []
@@ -219,6 +238,7 @@ class BasicViewerContainer extends Component {
             resetFeatureCollection: this.resetFeatureCollection,
             layerName,
             layerNameSpace,
+            toggleDrawer: this.toggleDrawer,
             urls,
             map: this.map,
             addOverlay: this.addOverlay,
