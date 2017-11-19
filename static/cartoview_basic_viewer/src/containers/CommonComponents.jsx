@@ -2,18 +2,18 @@ import { CircularProgress } from 'material-ui/Progress'
 import PropTypes from 'prop-types'
 import React from 'react'
 import Typography from 'material-ui/Typography'
-
 export const Loader = (props) => {
-    const { size, thickness } = props
+    const { size, thickness,align } = props
     return (
-        <div className="text-center" >
+        <div className={`text-${align||"center"}`} >
             <CircularProgress size={size ? size : 50} thickness={thickness ? thickness : 5} className="text-center"></CircularProgress>
         </div>
     )
 }
 Loader.propTypes = {
     size: PropTypes.number,
-    thickness: PropTypes.number
+    thickness: PropTypes.number,
+    align:PropTypes.string
 }
 export const Message = (props) => {
     const { align, type, message, color } = props

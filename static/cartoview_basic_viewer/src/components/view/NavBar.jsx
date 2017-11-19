@@ -23,12 +23,12 @@ const styles = theme => ({
 })
 class NavBar extends React.Component {
     render() {
-        const { classes } = this.props
+        const { classes,config } = this.props
         return (
             <div className={classes.root}>
                 <AppBar className={classes.drawerHeader} position="static">
                     <Toolbar>
-                        <Message type="title" align={"left"} message={"Cartoview BasicViewer"} />
+                        <Message type="title" align={"left"} message={config.formTitle} />
                     </Toolbar>
                 </AppBar>
             </div>
@@ -36,6 +36,7 @@ class NavBar extends React.Component {
     }
 }
 NavBar.propTypes = {
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    config: PropTypes.object.isRequired
 }
 export default withStyles(styles, { withTheme: true })(NavBar)

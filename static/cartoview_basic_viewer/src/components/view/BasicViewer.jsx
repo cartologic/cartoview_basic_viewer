@@ -1,5 +1,3 @@
-import '../../vendor/ol3-layerswitcher/src/ol3-layerswitcher.css'
-
 import { IntlProvider, addLocaleData } from 'react-intl'
 import React, { Component } from 'react'
 
@@ -34,7 +32,7 @@ class BasicViewer extends Component {
     }
 }
 BasicViewer.propTypes = {
-    classes:PropTypes.object.isRequired,
-    childrenProps:PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired,
+    childrenProps: PropTypes.object.isRequired,
 }
 export default withStyles(styles)(BasicViewer)
