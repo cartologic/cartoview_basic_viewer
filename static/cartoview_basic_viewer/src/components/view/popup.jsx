@@ -2,12 +2,14 @@ import '../../css/popup.css'
 
 import ArrowLeft from 'material-ui-icons/KeyboardArrowLeft'
 import ArrowRight from 'material-ui-icons/KeyboardArrowRight'
+import Button from 'material-ui/Button';
 import CloseIcon from 'material-ui-icons/Close'
 import IconButton from 'material-ui/IconButton'
 import Paper from 'material-ui/Paper'
 import PropTypes from 'prop-types'
 import React from 'react'
 import Typography from 'material-ui/Typography'
+import ZoomIcon from 'material-ui-icons/ZoomIn'
 import classnames from 'classnames'
 import { withStyles } from 'material-ui/styles'
 
@@ -15,6 +17,13 @@ const styles = theme => ({
     button: {
         height: 'auto'
     },
+    titlePanel: {
+        backgroundColor: theme.palette.primary[500],
+        borderColor: '#777777',
+    },
+    content: {
+        backgroundColor: theme.palette.background.paper
+    }
 })
 const FeatureAttributesTable = (props) => {
     const { currentFeature } = props
@@ -41,18 +50,17 @@ FeatureAttributesTable.propTypes = {
     currentFeature: PropTypes.object.isRequired
 }
 class CartoviewPopup extends React.Component {
+    state = {
+        currentFeature: null
+    }
     ensureEvents = () => {
         const {
             resetFeatureCollection,
-            featureIdentifyResult,
-            activeFeature,
             changeShowPopup,
             nextFeature,
             previousFeature,
             zoomToFeature
         } = this.props
-        let currentFeature = featureIdentifyResult.length > 0 ?
-            featureIdentifyResult[activeFeature] : null
         let self = this
         var closer = self.popupCloser
         var nextB = self.nextButton
@@ -77,23 +85,23 @@ class CartoviewPopup extends React.Component {
         }
         if (zoomToB.onclick === null) {
             zoomToB.onclick = () => {
+                let { currentFeature } = this.state
                 zoomToFeature(currentFeature)
             }
         }
     }
     componentWillReceiveProps(nextProps) {
         const { addOverlay } = this.props
-        if (nextProps.showPopup ) {
+        const { featureIdentifyResult, activeFeature } = nextProps
+        if (nextProps.showPopup) {
             this.node.style.display = 'block'
             addOverlay(this.node)
+            let currentFeature = featureIdentifyResult.length > 0 ?
+                featureIdentifyResult[activeFeature] : null
+            this.setState({ currentFeature })
+            this.ensureEvents()
         } else {
             this.node.style.display = 'none'
-        }
-    }
-    componentDidUpdate(prevProps, prevState) {
-        const { showPopup } = this.props
-        if (showPopup) {
-            this.ensureEvents()
         }
     }
     render() {
@@ -109,28 +117,31 @@ class CartoviewPopup extends React.Component {
         return (
             <div ref={node => this.node = node} id="popup" className="ol-popup-cartoview">
                 <Paper elevation={2}>
-                    <div className="title-panel">
-                        {featureIdentifyResult.length != 0 && <Typography type="body1" align="left" noWrap={true} color="inherit" className="element-flex title-text">{`Layer : ${currentFeature.get('_layerTitle')}`}</Typography>}
-                        <IconButton color="inherit" className={classnames({ 'hidden': activeFeature===0, 'visible': activeFeature != 0, 'popup-buttons': true, [classes.button]: true })} buttonRef={(node) => this.prevButton = node} aria-label="Delete">
+                    <div className={classnames("title-panel", { [classes.titlePanel]: true })}>
+                        {featureIdentifyResult.length != 0 && <Typography type="body1" align="left" noWrap={true} color="default" className="element-flex title-text">{`Layer : ${currentFeature.get('_layerTitle')}`}</Typography>}
+                        <IconButton color="default" className={classnames({ 'hidden': activeFeature === 0, 'visible': activeFeature != 0, 'popup-buttons': true, [classes.button]: true })} buttonRef={(node) => this.prevButton = node} aria-label="Delete">
                             <ArrowLeft />
                         </IconButton>
-                        <IconButton color="inherit" className={classnames({ 'hidden': !nextButtonVisible, 'visible': nextButtonVisible, 'popup-buttons': true, [classes.button]: true })} buttonRef={(node) => this.nextButton = node} aria-label="Delete">
+                        <IconButton color="default" className={classnames({ 'hidden': !nextButtonVisible, 'visible': nextButtonVisible, 'popup-buttons': true, [classes.button]: true })} buttonRef={(node) => this.nextButton = node} aria-label="Delete">
                             <ArrowRight />
                         </IconButton>
-                        <IconButton color="inherit" buttonRef={(node) => this.popupCloser = node} className={classes.button} aria-label="Delete">
+                        <IconButton color="default" buttonRef={(node) => this.popupCloser = node} className={classes.button} aria-label="Delete">
                             <CloseIcon />
                         </IconButton>
                     </div>
-                    <div className="cartoview-popup-content">{featureIdentifyResult.length > 0 && <div>
+                    <div className={classnames("cartoview-popup-content", { [classes.content]: true })}>{featureIdentifyResult.length > 0 && <div>
                         <FeatureAttributesTable currentFeature={currentFeature} />
                     </div>}
                         {featureIdentifyResult.length == 0 && !featureIdentifyLoading && <h5>{"No Features at this Point"}</h5>}
                     </div>
-                    <div className="cartoview-popup-actions center"><div ref={(input) => { this.zoomToButton = input }} >
-                        {(featureIdentifyResult.length != 0 && !featureIdentifyLoading) && <div>
-                            <i className="fa fa-search-plus" aria-hidden="true"></i> {"Zoom to Feature"}
-                        </div>}
-                    </div> </div>
+                    <div className="cartoview-popup-actions center">
+                        <div ref={(input) => { this.zoomToButton = input }} >
+                            {(featureIdentifyResult.length != 0 && !featureIdentifyLoading) && <Button color="default" className={classes.button} dense>
+                                <ZoomIcon />
+                                <Typography type="caption" align="left" noWrap={false} color="inherit">{`Zoom To Feature`}</Typography>
+                            </Button>}
+                        </div>
+                    </div>
                 </Paper>
             </div>
         )

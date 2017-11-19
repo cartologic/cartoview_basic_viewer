@@ -1,39 +1,39 @@
-import LayerSwitcher from '../vendor/ol3-layerswitcher/src/ol3-layerswitcher'
+import React from 'react'
 import isURL from 'validator/lib/isURL'
 import ol from 'openlayers'
 export const isWMSLayer = ( layer ) => {
-    return layer.getSource( ) instanceof ol.source.TileWMS || layer.getSource( ) instanceof ol
+    return layer.getSource() instanceof ol.source.TileWMS || layer.getSource() instanceof ol
         .source.ImageWMS
 }
 export const wmsGetFeatureInfoFormats = {
-    'application/json': new ol.format.GeoJSON( ),
-    'application/vnd.ogc.gml': new ol.format.WMSGetFeatureInfo( )
+    'application/json': new ol.format.GeoJSON(),
+    'application/vnd.ogc.gml': new ol.format.WMSGetFeatureInfo()
 }
 export const getFeatureInfoUrl = ( layer, coordinate, view, infoFormat ) => {
-    const resolution = view.getResolution( ),
-        projection = view.getProjection( )
-    const url = layer.getSource( ).getGetFeatureInfoUrl( coordinate,
+    const resolution = view.getResolution(),
+        projection = view.getProjection()
+    const url = layer.getSource().getGetFeatureInfoUrl( coordinate,
         resolution, projection, {
             'INFO_FORMAT': infoFormat
         } )
     return `${url}&FEATURE_COUNT=10`
 }
-export const getPropertyFromConfig = (config, property, defaultValue) => {
-    const propertyValue = config && typeof (config[property]) !==
-        "undefined" ? config[property] : defaultValue
-    const nestedPropertyValue = config && config.config && typeof (config
-        .config[property]) !== "undefined" ? config.config[
-        property] : propertyValue
+export const getPropertyFromConfig = ( config, property, defaultValue ) => {
+    const propertyValue = config && typeof ( config[ property ] ) !==
+        "undefined" ? config[ property ] : defaultValue
+    const nestedPropertyValue = config && config.config && typeof ( config
+        .config[ property ] ) !== "undefined" ? config.config[
+        property ] : propertyValue
     return nestedPropertyValue
 }
-export const getMap = ( ) => {
+export const getMap = () => {
     const map = new ol.Map( {
-        interactions: ol.interaction.defaults( ).extend( [
-            new ol.interaction.DragRotateAndZoom( )
+        interactions: ol.interaction.defaults().extend( [
+            new ol.interaction.DragRotateAndZoom()
         ] ),
         layers: [ new ol.layer.Tile( {
             title: 'OpenStreetMap',
-            source: new ol.source.OSM( )
+            source: new ol.source.OSM()
         } ) ],
         view: new ol.View( {
             center: [
@@ -43,16 +43,16 @@ export const getMap = ( ) => {
             maxZoom: 16
         } )
     } )
-    let layerSwitcher = new LayerSwitcher( )
-    map.addControl( layerSwitcher )
+    map.addControl( new ol.control.OverviewMap() )
+    map.addControl( new ol.control.FullScreen({source:"root"}) )
     return map
 }
 export const getWMSLayer = ( name, layers ) => {
     let wmsLayer = null
     layers.forEach( ( layer ) => {
         if ( layer instanceof ol.layer.Group ) {
-            wmsLayer = getWMSLayer( name, layer.getLayers( ) )
-        } else if ( isWMSLayer( layer ) && layer.getSource( ).getParams( )
+            wmsLayer = getWMSLayer( name, layer.getLayers() )
+        } else if ( isWMSLayer( layer ) && layer.getSource().getParams()
             .LAYERS == name ) {
             wmsLayer = layer
         }
@@ -101,33 +101,33 @@ export const flyTo = ( location, view, zoom, done ) => {
     }, callback )
 }
 export const checkImageSrc = ( src, good, bad ) => {
-    var img = new Image( )
+    var img = new Image()
     img.onload = good
     img.onerror = bad
     img.src = src
 }
-export const getSelectOptions = (arr, label = null, value = null) => {
+export const getSelectOptions = ( arr, label = null, value = null ) => {
     let options = []
-    if (arr && arr.length > 0) {
-        options = arr.map(item => {
-            if (!label) {
+    if ( arr && arr.length > 0 ) {
+        options = arr.map( item => {
+            if ( !label ) {
                 return { value: item, label: item }
             }
-            return { value: item[label], label: item[value ? value : label] }
-        })
+            return { value: item[ label ], label: item[ value ?
+                    value : label ] }
+        } )
     }
     return options
-
 }
 const flash = ( feature, map ) => {
-    let start = new Date( ).getTime( )
+    let start = new Date().getTime()
     var listenerKey
     const duration = 5000
 
     function animate( event ) {
         var vectorContext = event.vectorContext
         var frameState = event.frameState
-        var flashGeom = feature.getGeometry( ).clone( )
+        var flashGeom = feature.getGeometry().clone()
         var elapsed = frameState.time - start
         var elapsedRatio = elapsed / duration
         // radius will be 5 at start and 30 at end.
@@ -151,7 +151,7 @@ const flash = ( feature, map ) => {
             return
         }
         // tell OpenLayers to continue postcompose animation
-        map.render( )
+        map.render()
     }
     listenerKey = map.on( 'postcompose', animate )
 }
@@ -163,8 +163,8 @@ export const addSelectionLayer = ( map, featureCollection, styleFunction ) => {
         title: "Selected Features",
         zIndex: 10000,
         format: new ol.format.GeoJSON( {
-            defaultDataProjection: map.getView( ).getProjection( ),
-            featureProjection: map.getView( ).getProjection( )
+            defaultDataProjection: map.getView().getProjection(),
+            featureProjection: map.getView().getProjection()
         } ),
         map: map
     } )
@@ -173,18 +173,18 @@ export const addSelectionLayer = ( map, featureCollection, styleFunction ) => {
     } )
 }
 export const getLayers = ( layers ) => {
-    var children = [ ]
+    var children = []
     layers.forEach( ( layer ) => {
         if ( layer instanceof ol.layer.Group ) {
-            children = children.concat( getLayers( layer.getLayers( ) ) )
-        } else if ( layer.getVisible( ) && isWMSLayer( layer ) ) {
+            children = children.concat( getLayers( layer.getLayers() ) )
+        } else if ( layer.getVisible() && isWMSLayer( layer ) ) {
             children.push( layer )
         }
     } )
     return children
 }
 export const layerName = ( typeName ) => {
-    return typeName.split( ":" ).pop( )
+    return typeName.split( ":" ).pop()
 }
 export const layerNameSpace = ( typeName ) => {
     return typeName.split( ":" )[ 0 ]

@@ -20,6 +20,7 @@ import MapConfigService from '@boundlessgeo/sdk/services/MapConfigService'
 import MapConfigTransformService from '@boundlessgeo/sdk/services/MapConfigTransformService'
 import PropTypes from 'prop-types'
 import URLS from './URLS'
+import { arrayMove } from 'react-sortable-hoc'
 import ol from 'openlayers'
 import { render } from 'react-dom'
 import { styleFunction } from './styling.jsx'
@@ -29,12 +30,14 @@ class BasicViewerContainer extends Component {
         super(props)
         this.state = {
             mapIsLoading: false,
-            drawerOpen: true,
+            drawerOpen: false,
             featureIdentifyLoading: false,
             activeFeature: 0,
             mouseCoordinates: [0, 0],
             featureIdentifyResult: [],
-            showPopup: false
+            showPopup: false,
+            legends: [],
+            mapLayers: []
         }
         this.urls = new URLS(this.props.urls)
         this.map = getMap()
@@ -44,6 +47,16 @@ class BasicViewerContainer extends Component {
         })
         addSelectionLayer(this.map, this.featureCollection, styleFunction)
         this.map.addOverlay(this.overlay)
+    }
+    getLegendURL = (layerName) => {
+        const { urls } = this.props
+        const url = this.urls.getParamterizedURL(urls.wmsURL, {
+            'REQUEST': 'GetLegendGraphic', 'VERSION': '1.0.0',
+            'FORMAT': 'image/png',
+            "LAYER": layerName
+        })
+        
+        return this.urls.getProxiedURL(url)
     }
     toggleDrawer = () => {
         const { drawerOpen } = this.state
@@ -70,6 +83,16 @@ class BasicViewerContainer extends Component {
     }
     componentDidMount() {
         this.singleClickListner()
+        
+    }
+    setLayerSwitcherLayers(mapLayers) {
+        let layers = []
+        mapLayers.map(layer => {
+            if (!(layer instanceof ol.layer.Group)) {
+                layers.push(layer)
+            }
+        })
+        this.setState({ mapLayers: layers.slice(0).reverse() })
     }
     loadMap = (mapUrl, proxyURL) => {
         this.setState({ mapIsLoading: true })
@@ -82,7 +105,9 @@ class BasicViewerContainer extends Component {
             if (config) {
                 MapConfigService.load(MapConfigTransformService.transform(
                     config), this.map, proxyURL)
-                this.setState({ mapIsLoading: false })
+                const mapLayers = this.map.getLayers().getArray()
+                this.setLayerSwitcherLayers(mapLayers)
+                this.createLegends(getLayers(mapLayers))
             }
         }).catch((error) => {
             throw Error(error)
@@ -105,9 +130,25 @@ class BasicViewerContainer extends Component {
         return promise
     }
     zoomToFeature = (feature) => {
+        this.addStyleToFeature([feature])
         const featureCenter = feature.getGeometry().getExtent()
         const center = getCenterOfExtent(featureCenter)
         flyTo(center, this.map.getView(), 14, () => { })
+    }
+    handleLayerVisibilty = name => (event, checked) => {
+        let { mapLayers } = this.state
+        let layer=mapLayers[name]
+        layer.setVisible(checked)
+        this.setState({ mapLayers })
+
+    }
+    changeLayerOrder = ({ oldIndex, newIndex }) => {
+        const { mapLayers } = this.state
+        const newMapLayers = arrayMove(mapLayers, oldIndex, newIndex)
+        newMapLayers.map((layer, index) => {
+            layer.setZIndex(mapLayers.length-index)
+        })
+        this.setState({ mapLayers: newMapLayers })
     }
     singleClickListner = () => {
         this.map.on('singleclick', (e) => {
@@ -123,6 +164,14 @@ class BasicViewerContainer extends Component {
             })
             this.featureIdentify(this.map, e.coordinate)
         })
+    }
+    createLegends = (layers) => {
+        let legends = []
+        layers.map(layer => {
+            const layerName = layer.getProperties().name
+            legends.push({ layer: layerName, url: this.getLegendURL(layerName) })
+        })
+        this.setState({ legends })
     }
     transformFeatures = (layer, features, map, crs) => {
         let transformedFeatures = []
@@ -219,12 +268,15 @@ class BasicViewerContainer extends Component {
             resetFeatureCollection: this.resetFeatureCollection,
             layerName,
             layerNameSpace,
+            toggleDrawer: this.toggleDrawer,
             urls,
             map: this.map,
             addOverlay: this.addOverlay,
             changeShowPopup: this.changeShowPopup,
             nextFeature: this.nextFeature,
-            previousFeature: this.previousFeature
+            previousFeature: this.previousFeature,
+            changeLayerOrder: this.changeLayerOrder,
+            handleLayerVisibilty: this.handleLayerVisibilty
         }
         return <BasicViewer childrenProps={childrenProps} />
     }
