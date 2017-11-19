@@ -93,7 +93,7 @@ class ContentGrid extends Component {
                         </IconButton>
                     </Paper>
                     <Transition in={childrenProps.drawerOpen} direction={"right"}>
-                        <CartoviewDrawer legends={childrenProps.legends} className={classnames({[classes.drawerContentClose]:!childrenProps.drawerOpen})}/>
+                        <CartoviewDrawer urls={childrenProps.urls} legends={childrenProps.legends} className={classnames({[classes.drawerContentClose]:!childrenProps.drawerOpen})}/>
                     </Transition>
                 </div>
                 <Grid className={classes.root} container alignItems={"stretch"} spacing={0}>

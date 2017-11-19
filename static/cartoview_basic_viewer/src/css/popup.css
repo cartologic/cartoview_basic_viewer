@@ -71,8 +71,6 @@
 }
 .ol-popup-cartoview .cartoview-popup-actions {
     color: orange;
-    font-weight: 500;
-    font-size: small;
     border: 1px solid #d8d8d8
 }
 
@@ -108,7 +106,6 @@ ul:after {
 .popup-layer-title {
     flex: .5;
     padding: 3px;
-    font-weight: lighter;
 }
 
 .popup-buttons .icon-button {
@@ -124,7 +121,6 @@ ul:after {
 
 .ol-popup-cartoview li {
     text-align: left;
-    font-size: small;
     padding: 3px;
     width: 40%;
     float: left;

@@ -116,6 +116,7 @@ class BasicViewerContainer extends Component {
         return promise
     }
     zoomToFeature = (feature) => {
+        this.addStyleToFeature([feature])
         const featureCenter = feature.getGeometry().getExtent()
         const center = getCenterOfExtent(featureCenter)
         flyTo(center, this.map.getView(), 14, () => { })
