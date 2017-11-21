@@ -35,7 +35,8 @@ class CartoviewLegends extends React.Component {
         } = this.props
         return (
             <Paper className={classes.legendsPaper} elevation={0}>
-                {legends.map((legend, index) => <LegendItem key={index} legend={legend} />)}
+                {legends.length > 0 && legends.map((legend, index) => <LegendItem key={index} legend={legend} />)}
+                {legends.length === 0 && <Message message="No Legends" align="center" type="body1" />}
             </Paper>
         )
     }
