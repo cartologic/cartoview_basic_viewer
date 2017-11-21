@@ -1,4 +1,4 @@
-import { Loader, Message } from '../../containers/CommonComponents'
+import { Loader, Message } from 'Source/containers/CommonComponents'
 
 import Img from 'react-image'
 import Paper from 'material-ui/Paper'

@@ -1,13 +1,34 @@
-import React from 'react'
+import Circle from 'ol/style/circle'
+import DragRotateAndZoom from 'ol/interaction/dragrotateandzoom'
+import FullScreen from 'ol/control/fullscreen'
+import GeoJSON from 'ol/format/geojson'
+import Group from 'ol/layer/group'
+import ImageWMS from 'ol/source/imagewms'
+import Map from 'ol/map'
+import OSM from 'ol/source/osm'
+import Observable from 'ol/observable'
+import OverviewMap from 'ol/control/overviewmap'
+import Stroke from 'ol/style/stroke'
+import Style from 'ol/style/style'
+import Tile from 'ol/layer/tile'
+import TileWMS from 'ol/source/tilewms'
+import Vector from 'ol/layer/vector'
+import {default as VectorSource} from 'ol/source/vector'
+import View from 'ol/view'
+import WMSGetFeatureInfo from 'ol/format/wmsgetfeatureinfo'
+import easing from 'ol/easing'
+import extent from 'ol/extent'
+import interaction from 'ol/interaction'
 import isURL from 'validator/lib/isURL'
-import ol from 'openlayers'
+import proj from 'ol/proj'
+import style from 'ol/style'
+
 export const isWMSLayer = ( layer ) => {
-    return layer.getSource() instanceof ol.source.TileWMS || layer.getSource() instanceof ol
-        .source.ImageWMS
+    return layer.getSource() instanceof TileWMS || layer.getSource() instanceof ImageWMS
 }
 export const wmsGetFeatureInfoFormats = {
-    'application/json': new ol.format.GeoJSON(),
-    'application/vnd.ogc.gml': new ol.format.WMSGetFeatureInfo()
+    'application/json': new GeoJSON(),
+    'application/vnd.ogc.gml': new WMSGetFeatureInfo()
 }
 export const getFeatureInfoUrl = ( layer, coordinate, view, infoFormat ) => {
     const resolution = view.getResolution(),
@@ -26,31 +47,31 @@ export const getPropertyFromConfig = ( config, property, defaultValue ) => {
         property ] : propertyValue
     return nestedPropertyValue
 }
-export const getMap = () => {
-    const map = new ol.Map( {
-        interactions: ol.interaction.defaults().extend( [
-            new ol.interaction.DragRotateAndZoom()
+export function getMap() {
+    let osmLayer=new Tile( {
+        title: 'OpenStreetMap',
+        source: new OSM()
+    } )
+    let map = new Map( {
+        interactions: interaction.defaults().extend( [
+            new DragRotateAndZoom()
         ] ),
-        layers: [ new ol.layer.Tile( {
-            title: 'OpenStreetMap',
-            source: new ol.source.OSM()
-        } ) ],
-        view: new ol.View( {
-            center: [
-                0, 0
-            ],
+        layers: [ osmLayer ],
+        view: new View( {
+            center: proj.fromLonLat([0,0]),
             minZoom: 4,
-            maxZoom: 16
+            maxZoom: 16,
+            zoom:6
         } )
     } )
-    map.addControl( new ol.control.OverviewMap() )
-    map.addControl( new ol.control.FullScreen({source:"root"}) )
+    map.addControl( new OverviewMap() )
+    map.addControl( new FullScreen({source:"root"}) )
     return map
 }
 export const getWMSLayer = ( name, layers ) => {
     let wmsLayer = null
     layers.forEach( ( layer ) => {
-        if ( layer instanceof ol.layer.Group ) {
+        if ( layer instanceof Group ) {
             wmsLayer = getWMSLayer( name, layer.getLayers() )
         } else if ( isWMSLayer( layer ) && layer.getSource().getParams()
             .LAYERS == name ) {
@@ -69,14 +90,14 @@ export const checkURL = ( value ) => {
     }
     return false
 }
-export const getCenterOfExtent = ( extent ) => {
-    const center = ol.extent.getCenter( extent )
+export const getCenterOfExtent = ( ext ) => {
+    const center = extent.getCenter( ext )
     return center
 }
 export const flyTo = ( location, view, zoom, done ) => {
-    var duration = 3000
-    var parts = 2
-    var called = false
+    let duration = 3000
+    let parts = 2
+    let called = false
 
     function callback( complete ) {
         --parts
@@ -101,7 +122,7 @@ export const flyTo = ( location, view, zoom, done ) => {
     }, callback )
 }
 export const checkImageSrc = ( src, good, bad ) => {
-    var img = new Image()
+    let img = new Image()
     img.onload = good
     img.onerror = bad
     img.src = src
@@ -121,33 +142,33 @@ export const getSelectOptions = ( arr, label = null, value = null ) => {
 }
 const flash = ( feature, map ) => {
     let start = new Date().getTime()
-    var listenerKey
+    let listenerKey
     const duration = 5000
 
     function animate( event ) {
-        var vectorContext = event.vectorContext
-        var frameState = event.frameState
-        var flashGeom = feature.getGeometry().clone()
-        var elapsed = frameState.time - start
-        var elapsedRatio = elapsed / duration
+        let vectorContext = event.vectorContext
+        let frameState = event.frameState
+        let flashGeom = feature.getGeometry().clone()
+        let elapsed = frameState.time - start
+        let elapsedRatio = elapsed / duration
         // radius will be 5 at start and 30 at end.
-        var radius = ol.easing.easeOut( elapsedRatio ) * 25 + 5
-        var opacity = ol.easing.easeOut( 1 - elapsedRatio )
-        var style = new ol.style.Style( {
-            image: new ol.style.Circle( {
+        let radius = easing.easeOut( elapsedRatio ) * 25 + 5
+        let opacity = easing.easeOut( 1 - elapsedRatio )
+        let featureStyle = new Style( {
+            image: new Circle( {
                 radius: radius,
                 snapToPixel: false,
-                stroke: new ol.style.Stroke( {
+                stroke: new Stroke( {
                     color: 'rgba(21, 84, 75,' +
                         opacity + ')',
                     width: 0.25 + opacity
                 } )
             } )
         } )
-        vectorContext.setStyle( style );
+        vectorContext.setStyle( featureStyle )
         vectorContext.drawGeometry( flashGeom )
         if ( elapsed > duration ) {
-            ol.Observable.unByKey( listenerKey )
+            Observable.unByKey( listenerKey )
             return
         }
         // tell OpenLayers to continue postcompose animation
@@ -156,13 +177,13 @@ const flash = ( feature, map ) => {
     listenerKey = map.on( 'postcompose', animate )
 }
 export const addSelectionLayer = ( map, featureCollection, styleFunction ) => {
-    let source = new ol.source.Vector( { features: featureCollection } )
-    new ol.layer.Vector( {
+    let source = new VectorSource( { features: featureCollection } )
+    new Vector( {
         source: source,
         style: styleFunction,
         title: "Selected Features",
         zIndex: 10000,
-        format: new ol.format.GeoJSON( {
+        format: new GeoJSON( {
             defaultDataProjection: map.getView().getProjection(),
             featureProjection: map.getView().getProjection()
         } ),
@@ -173,9 +194,9 @@ export const addSelectionLayer = ( map, featureCollection, styleFunction ) => {
     } )
 }
 export const getLayers = ( layers ) => {
-    var children = []
+    let children = []
     layers.forEach( ( layer ) => {
-        if ( layer instanceof ol.layer.Group ) {
+        if ( layer instanceof Group ) {
             children = children.concat( getLayers( layer.getLayers() ) )
         } else if ( layer.getVisible() && isWMSLayer( layer ) ) {
             children.push( layer )

@@ -1,14 +1,15 @@
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
 
-import CartoviewAbout from './About'
-import CartoviewLayerSwitcher from './LayerSwitcher'
-import CartoviewLegends from './Legends'
-import CollapsibleListItem from './CollapsibleItem'
+import CameraIcon from 'material-ui-icons/PhotoCamera'
+import CartoviewAbout from 'Source/components/view/About'
+import CartoviewLayerSwitcher from 'Source/components/view/LayerSwitcher'
+import CartoviewLegends from 'Source/components/view/Legends'
+import CollapsibleListItem from 'Source/components/view/CollapsibleItem'
 import HomeIcon from 'material-ui-icons/Home'
 import ImageIcon from 'material-ui-icons/Image'
 import InfoIcons from 'material-ui-icons/Info'
 import LayersIcons from 'material-ui-icons/Layers'
-import NavBar from './NavBar.jsx'
+import NavBar from 'Source/components/view/NavBar.jsx'
 import Paper from 'material-ui/Paper'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -41,7 +42,8 @@ class CartoviewDrawer extends React.Component {
             mapLayers,
             changeLayerOrder,
             handleLayerVisibilty,
-            config
+            config,
+            exportMap
         } = this.props
         const { about } = this.state
         return (
@@ -60,6 +62,12 @@ class CartoviewDrawer extends React.Component {
                                 <InfoIcons />
                             </ListItemIcon>
                             <ListItemText primary="About" />
+                        </ListItem>
+                        <ListItem onTouchTap={exportMap} button>
+                            <ListItemIcon>
+                                <CameraIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Export Map" />
                         </ListItem>
                         <CollapsibleListItem open={false} title="Layers" icon={<LayersIcons />} >
                             <CartoviewLayerSwitcher handleLayerVisibilty={handleLayerVisibilty} changeLayerOrder={changeLayerOrder} mapLayers={mapLayers} />
@@ -82,6 +90,7 @@ CartoviewDrawer.propTypes = {
     urls: PropTypes.object.isRequired,
     mapLayers: PropTypes.array.isRequired,
     handleLayerVisibilty: PropTypes.func.isRequired,
+    exportMap: PropTypes.func.isRequired,
     config: PropTypes.object.isRequired
 }
 export default withStyles( styles )( CartoviewDrawer )
