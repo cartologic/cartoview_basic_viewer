@@ -15,8 +15,7 @@ const plugins = [
     new webpack.optimize.CommonsChunkPlugin({
         name: 'commons',
         filename: 'commons.js'
-    }),
-    new BundleAnalyzerPlugin()
+    })
 
 ]
 const config = {
@@ -96,6 +95,7 @@ if (production) {
             minRatio: 0
         } ),
         new webpack.HashedModuleIdsPlugin(),
+        new BundleAnalyzerPlugin()
     ]
     Array.prototype.push.apply(plugins, prodPlugins)
 } else {
