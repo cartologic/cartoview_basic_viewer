@@ -23,7 +23,7 @@ const LayerItem = SortableElement(({ layer, layerIndex, handleLayerVisibilty }) 
                 onChange={handleLayerVisibilty(layerIndex)}
                 disableRipple
             />
-            <ListItemText primary={layer.getProperties().name} />
+            <Message message={layer.getProperties().name} wrap={false} align="left" type="body1"/> 
         </ListItem>
     )
 })

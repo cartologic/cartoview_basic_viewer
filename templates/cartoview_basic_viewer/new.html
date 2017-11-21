@@ -18,9 +18,8 @@
 
 {% endblock %}
 {% block extra_script %}
-
-    <script src="{{ STATIC_URL }}cartoview_basic_viewer/dist/commons.js"></script>
-    <script src="{{ STATIC_URL }}cartoview_basic_viewer/dist/config.bundle.js"></script>
+  <script src="{{ STATIC_URL }}cartoview_basic_viewer/dist/commons.js"></script>
+  <script src="{{ STATIC_URL }}cartoview_basic_viewer/dist/config.bundle.js"></script>
     <script>
       const urls={
         MapsAPI: "{% url 'api_dispatch_list' api_name='api' resource_name='maps' %}",
