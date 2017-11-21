@@ -16,7 +16,7 @@ const plugins = [ new webpack.DefinePlugin( {
 const config = {
     entry: {
         config: path.join( APP_DIR, 'EditPageEntry.jsx' ),
-        BasicViewer: path.join( APP_DIR,'containers', 'BasicViewer.jsx' ),
+        BasicViewer: path.join( APP_DIR, 'containers', 'BasicViewer.jsx' ),
     },
     output: {
         path: BUILD_DIR,
@@ -24,14 +24,17 @@ const config = {
         library: '[name]',
         libraryTarget: 'umd',
         umdNamedDefine: true,
-        publicPath: "/static/cartoview_basic_viewer/dist/"
+        chunkFilename: 'layers.bundle.js',
     },
     node: {
         fs: "empty"
     },
     plugins: plugins,
     resolve: {
-        extensions: [ '*', '.js', '.jsx' ]
+        extensions: [ '*', '.js', '.jsx' ],
+        alias: {
+            Source: APP_DIR
+        },
     },
     module: {
         loaders: [ {
@@ -60,9 +63,9 @@ const config = {
 }
 if ( production ) {
     const prodPlugins = [
-        new webpack.optimize.AggressiveMergingPlugin( ),
-        new webpack.optimize.DedupePlugin( ),
-        new webpack.NoEmitOnErrorsPlugin( ),
+        new webpack.optimize.AggressiveMergingPlugin(),
+        new webpack.optimize.DedupePlugin(),
+        new webpack.NoEmitOnErrorsPlugin(),
         new webpack.optimize.UglifyJsPlugin( {
             compress: {
                 warnings: false

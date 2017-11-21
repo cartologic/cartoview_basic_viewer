@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 
 import ArrowLeft from 'material-ui-icons/KeyboardArrowLeft'
 import ArrowRight from 'material-ui-icons/KeyboardArrowRight'
-import CartoviewDrawer from './Drawer'
-import CartoviewPopup from './PopUp'
+import CartoviewDrawer from 'Source/components/view/Drawer'
+import CartoviewPopup from 'Source/components/view/PopUp'
 import Fade from 'material-ui/transitions/Fade'
 import Grid from 'material-ui/Grid'
 import IconButton from 'material-ui/IconButton'
-import { Loader } from '../../containers/CommonComponents'
+import { Loader } from 'Source/containers/CommonComponents'
 import Paper from 'material-ui/Paper'
 import PropTypes from 'prop-types'
 import Slide from 'material-ui/transitions/Slide'
@@ -93,7 +93,7 @@ class ContentGrid extends Component {
                         </IconButton>
                     </Paper>
                     <Transition in={childrenProps.drawerOpen} direction={"right"}>
-                        <CartoviewDrawer config={childrenProps.config} handleLayerVisibilty={childrenProps.handleLayerVisibilty} changeLayerOrder={childrenProps.changeLayerOrder} mapLayers={childrenProps.mapLayers} urls={childrenProps.urls} legends={childrenProps.legends} className={classnames({[classes.drawerContentClose]:!childrenProps.drawerOpen})}/>
+                        <CartoviewDrawer exportMap={childrenProps.exportMap} config={childrenProps.config} handleLayerVisibilty={childrenProps.handleLayerVisibilty} changeLayerOrder={childrenProps.changeLayerOrder} mapLayers={childrenProps.mapLayers} urls={childrenProps.urls} legends={childrenProps.legends} className={classnames({[classes.drawerContentClose]:!childrenProps.drawerOpen})}/>
                     </Transition>
                 </div>
                 <Grid className={classes.root} container alignItems={"stretch"} spacing={0}>

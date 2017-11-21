@@ -1,4 +1,4 @@
-import { Loader, Message } from '../../containers/CommonComponents'
+import { Loader, Message } from 'Source/containers/CommonComponents'
 
 import Img from 'react-image'
 import Paper from 'material-ui/Paper'
@@ -35,7 +35,8 @@ class CartoviewLegends extends React.Component {
         } = this.props
         return (
             <Paper className={classes.legendsPaper} elevation={0}>
-                {legends.map((legend, index) => <LegendItem key={index} legend={legend} />)}
+                {legends.length > 0 && legends.map((legend, index) => <LegendItem key={index} legend={legend} />)}
+                {legends.length === 0 && <Message message="No Legends" align="center" type="body1" />}
             </Paper>
         )
     }

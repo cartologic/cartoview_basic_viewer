@@ -1,4 +1,4 @@
-import { getCRSFToken } from '../helpers/helpers.jsx'
+import { getCRSFToken } from 'Source/helpers/helpers.jsx'
 
 export const doGet = (url, extraHeaders = {}) => {
     return fetch(url, {

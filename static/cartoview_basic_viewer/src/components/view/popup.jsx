@@ -1,8 +1,8 @@
-import '../../css/popup.css'
+import 'Source/css/popup.css'
 
 import ArrowLeft from 'material-ui-icons/KeyboardArrowLeft'
 import ArrowRight from 'material-ui-icons/KeyboardArrowRight'
-import Button from 'material-ui/Button';
+import Button from 'material-ui/Button'
 import CloseIcon from 'material-ui-icons/Close'
 import IconButton from 'material-ui/IconButton'
 import Paper from 'material-ui/Paper'
