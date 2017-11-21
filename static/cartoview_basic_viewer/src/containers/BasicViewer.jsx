@@ -9,6 +9,7 @@ import BasicViewer from 'Source/components/view/BasicViewer'
 import BasicViewerHelper from 'Source/helpers/BasicViewerHelper'
 import Collection from 'ol/collection'
 import FeaturesHelper from 'Source/helpers/FeaturesHelper'
+import GeoCoding from 'Source/services/GeoCodingService'
 import GeoJSON from 'ol/format/geojson'
 import Group from 'ol/layer/group'
 import LayersHelper from 'Source/helpers/LayersHelper'
@@ -40,6 +41,7 @@ class BasicViewerContainer extends Component {
             map: BasicViewerHelper.getMap(),
             mapLayers: []
         }
+        GeoCoding.search("Cairo")
         this.urls = new URLS(this.props.urls)
     }
     getLegendURL = (layerName) => {
