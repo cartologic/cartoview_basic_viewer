@@ -1,4 +1,5 @@
 var webpack = require( 'webpack' )
+var CompressionPlugin = require( "compression-webpack-plugin" );
 var path = require( 'path' )
 var BUILD_DIR = path.resolve( __dirname, 'dist' )
 var APP_DIR = path.resolve( __dirname, 'src' )
@@ -68,9 +69,23 @@ if ( production ) {
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.optimize.UglifyJsPlugin( {
             compress: {
-                warnings: false
-            }
-        } )
+                warnings: false,
+                pure_getters: true,
+                unsafe: true,
+                unsafe_comps: true,
+                screw_ie8: true
+            },
+            output: {
+                comments: false,
+            },
+            exclude: [ /\.min\.js$/gi ] // skip pre-minified libs
+        }, new CompressionPlugin( {
+            asset: "[path].gz[query]",
+            algorithm: "gzip",
+            test: /\.js$|\.css$|\.html$/,
+            threshold: 10240,
+            minRatio: 0
+        } ) )
     ]
     Array.prototype.push.apply( plugins, prodPlugins )
 } else {
