@@ -72,7 +72,7 @@ class CartoviewDrawer extends React.Component {
                         <CollapsibleListItem open={false} title="Layers" icon={<LayersIcons />} >
                             <CartoviewLayerSwitcher handleLayerVisibilty={handleLayerVisibilty} changeLayerOrder={changeLayerOrder} mapLayers={mapLayers} />
                         </CollapsibleListItem>
-                        <CollapsibleListItem open={false} title="Legends" icon={<ImageIcon />} >
+                        <CollapsibleListItem open={false} title="Legend" icon={<ImageIcon />} >
                             <CartoviewLegends legends={legends} />
                         </CollapsibleListItem>
                         <CartoviewAbout open={about} title={config.formTitle} abstract={config.formAbstract} close={this.handleAboutChange} />
