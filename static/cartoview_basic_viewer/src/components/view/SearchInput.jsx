@@ -1,4 +1,4 @@
-import { Loader, Message } from 'Source/CommonComponents'
+import { Loader, Message } from 'Source/containers/CommonComponents'
 
 import Autosuggest from 'react-autosuggest'
 import { MenuItem } from 'material-ui/Menu'
@@ -67,8 +67,8 @@ class IntegrationAutosuggest extends React.Component {
         const { action } = this.props
         const matches = match(suggestion.label, query)
         const parts = parse(suggestion.label, matches)
-        const lon = suggestion.lon
-        const lat = suggestion.lat
+        const lon = suggestion.value.lon
+        const lat = suggestion.value.lat
         return (
             <MenuItem onTouchTap={() => action([lon, lat])} selected={isHighlighted} component="div">
                 <div>

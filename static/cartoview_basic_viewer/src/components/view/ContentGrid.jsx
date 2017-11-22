@@ -37,8 +37,8 @@ const styles = theme => ({
         zIndex: "1150",
         position: "fixed"
     },
-    drawerContentClose:{
-        display:'none'
+    drawerContentClose: {
+        display: 'none'
     },
     drawerContainer: {
         left: "0px !important"
@@ -94,11 +94,12 @@ class ContentGrid extends Component {
                         </IconButton>
                     </Paper>
                     <Transition in={childrenProps.drawerOpen} direction={"right"}>
-                        <CartoviewDrawer exportMap={childrenProps.exportMap} config={childrenProps.config} handleLayerVisibilty={childrenProps.handleLayerVisibilty} changeLayerOrder={childrenProps.changeLayerOrder} mapLayers={childrenProps.mapLayers} urls={childrenProps.urls} legends={childrenProps.legends} className={classnames({[classes.drawerContentClose]:!childrenProps.drawerOpen})}/>
+                        <CartoviewDrawer exportMap={childrenProps.exportMap} config={childrenProps.config} handleLayerVisibilty={childrenProps.handleLayerVisibilty} changeLayerOrder={childrenProps.changeLayerOrder} mapLayers={childrenProps.mapLayers} urls={childrenProps.urls} legends={childrenProps.legends} className={classnames({ [classes.drawerContentClose]: !childrenProps.drawerOpen })} />
                     </Transition>
                 </div>
                 <Grid className={classes.root} container alignItems={"stretch"} spacing={0}>
                     <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
+                        <div className="geocode-search"><GeoCodeSearchInput search={childrenProps.geocodeSearch} action={childrenProps.zoomToLocation} /></div>
                         <div ref={(mapDiv) => this.mapDiv = mapDiv} className="map-panel"></div>
                         <CartoviewPopup {...childrenProps} />
                     </Grid>

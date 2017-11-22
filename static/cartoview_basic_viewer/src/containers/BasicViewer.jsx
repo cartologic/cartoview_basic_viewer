@@ -23,6 +23,7 @@ import { default as VectorSource } from 'ol/source/vector'
 import { arrayMove } from 'react-sortable-hoc'
 import { render } from 'react-dom'
 import { styleFunction } from 'Source/helpers/StyleHelper'
+
 class BasicViewerContainer extends Component {
     constructor( props ) {
         super( props )
@@ -40,7 +41,6 @@ class BasicViewerContainer extends Component {
             map: BasicViewerHelper.getMap(),
             mapLayers: []
         }
-        GeoCoding.search( "Cairo", ( result ) => console.log( result ) )
         this.urls = new URLS( this.props.urls )
     }
     getLegendURL = ( layerName ) => {
@@ -138,8 +138,9 @@ class BasicViewerContainer extends Component {
     }
     zoomToLocation = ( pointArray ) => {
         let { map } = this.state
-        const lonLat = BasicViewer.reprojectLocation( pointArray )
-        map.setCenter( lonLat )
+        console.log(pointArray)
+        const lonLat = BasicViewerHelper.reprojectLocation( pointArray,map )
+        map.getView().setCenter( lonLat )
     }
     handleLayerVisibilty = name => ( event, checked ) => {
         let { mapLayers } = this.state
@@ -249,7 +250,8 @@ class BasicViewerContainer extends Component {
             changeLayerOrder: this.changeLayerOrder,
             handleLayerVisibilty: this.handleLayerVisibilty,
             zoomToLocation: this.zoomToLocation,
-            exportMap: this.exportMap
+            exportMap: this.exportMap,
+            geocodeSearch:GeoCoding.search
         }
         return <BasicViewer childrenProps={childrenProps} />
     }
