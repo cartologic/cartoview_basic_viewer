@@ -1,12 +1,14 @@
-import List, { ListItem, ListItemText } from 'material-ui/List'
+import List, { ListItem, ListItemSecondaryAction } from 'material-ui/List'
 import { SortableContainer, SortableElement } from 'react-sortable-hoc'
 
 import Checkbox from 'material-ui/Checkbox'
+import IconButton from 'material-ui/IconButton'
 import ListSubheader from 'material-ui/List/ListSubheader'
 import { Message } from 'Source/containers/CommonComponents'
 import Paper from 'material-ui/Paper'
 import PropTypes from 'prop-types'
 import React from 'react'
+import ZoomIcon from 'material-ui-icons/ZoomIn'
 import { withStyles } from 'material-ui/styles'
 
 const styles = theme => ({
@@ -23,7 +25,7 @@ const LayerItem = SortableElement(({ layer, layerIndex, handleLayerVisibilty }) 
                 onChange={handleLayerVisibilty(layerIndex)}
                 disableRipple
             />
-            <Message message={layer.getProperties().title} wrap={false} align="left" type="body1"/> 
+            <Message message={layer.getProperties().title} wrap={false} align="left" type="body1" />
         </ListItem>
     )
 })
@@ -46,7 +48,7 @@ class CartoviewLayerSwitcher extends React.Component {
         } = this.props
         return (
             <Paper className={classes.legendsPaper} elevation={0}>
-                {mapLayers.length > 0 && <LayerList layers={mapLayers} handleLayerVisibilty={handleLayerVisibilty} onSortEnd={changeLayerOrder} />}
+                {mapLayers.length > 0 && <LayerList layers={mapLayers} handleLayerVisibilty={handleLayerVisibilty} helperClass="sortable-container" onSortEnd={changeLayerOrder} />}
                 {mapLayers.length == 0 && <Message message="No Layers" align="center" type="body1" />}
             </Paper>
         )

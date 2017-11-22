@@ -23,7 +23,6 @@ import { default as VectorSource } from 'ol/source/vector'
 import { arrayMove } from 'react-sortable-hoc'
 import { render } from 'react-dom'
 import { styleFunction } from 'Source/helpers/StyleHelper'
-
 class BasicViewerContainer extends Component {
     constructor( props ) {
         super( props )
@@ -37,6 +36,7 @@ class BasicViewerContainer extends Component {
             showPopup: false,
             identifyEnabled: true,
             legends: [],
+            geocodeSearchLoading: false,
             featureCollection: new Collection(),
             map: BasicViewerHelper.getMap(),
             mapLayers: []
@@ -56,6 +56,13 @@ class BasicViewerContainer extends Component {
     toggleDrawer = () => {
         const { drawerOpen } = this.state
         this.setState( { drawerOpen: !drawerOpen } )
+    }
+    geocodeSearch = ( text, callback ) => {
+        this.setState( { geocodeSearchLoading: true } )
+        GeoCoding.search( text, ( result ) => {
+            this.setState( { geocodeSearchLoading: false } )
+            callback( result )
+        } )
     }
     addOverlay = ( node ) => {
         const { activeFeature, featureIdentifyResult, mouseCoordinates } =
@@ -79,9 +86,7 @@ class BasicViewerContainer extends Component {
         fetch( urls.mapJsonUrl, {
             method: "GET",
             credentials: 'include'
-        } ).then( ( response ) => {
-            return response.json()
-        } ).then( ( config ) => {
+        } ).then( ( response ) => response.json() ).then( ( config ) => {
             MapConfigService.load( MapConfigTransformService.transform(
                 config ), map, urls.proxy )
             const mapLayers = map.getLayers().getArray()
@@ -127,7 +132,7 @@ class BasicViewerContainer extends Component {
                 layers.push( layer )
             }
         } )
-        this.setState( { mapLayers: layers.slice( 0 ).reverse() } )
+        this.setState( { mapLayers: layers.slice( 0 ).reverse() }, this.print )
     }
     zoomToFeature = ( feature ) => {
         let { map } = this.state
@@ -138,8 +143,7 @@ class BasicViewerContainer extends Component {
     }
     zoomToLocation = ( pointArray ) => {
         let { map } = this.state
-        const lonLat = BasicViewerHelper.reprojectLocation( pointArray,map )
-        map.getView().setCenter( lonLat )
+        BasicViewerHelper.zoomToLocation( pointArray, map )
     }
     handleLayerVisibilty = name => ( event, checked ) => {
         let { mapLayers } = this.state
@@ -250,7 +254,7 @@ class BasicViewerContainer extends Component {
             handleLayerVisibilty: this.handleLayerVisibilty,
             zoomToLocation: this.zoomToLocation,
             exportMap: this.exportMap,
-            geocodeSearch:GeoCoding.search
+            geocodeSearch: this.geocodeSearch
         }
         return <BasicViewer childrenProps={childrenProps} />
     }

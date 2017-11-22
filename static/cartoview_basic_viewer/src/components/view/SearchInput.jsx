@@ -1,8 +1,9 @@
-import { Loader, Message } from 'Source/containers/CommonComponents'
-
 import Autosuggest from 'react-autosuggest'
+import Img from 'react-image'
+import { Loader } from 'Source/containers/CommonComponents'
 import { MenuItem } from 'material-ui/Menu'
 import Paper from 'material-ui/Paper'
+import PlaceIcon from 'material-ui-icons/Place'
 import PropTypes from 'prop-types'
 import React from 'react'
 import TextField from 'material-ui/TextField'
@@ -11,7 +12,7 @@ import parse from 'autosuggest-highlight/parse'
 import { withStyles } from 'material-ui/styles'
 
 function renderInput(inputProps) {
-    const { classes, autoFocus, value, ref, ...
+    const { classes, autoFocus, value, ref, geocodeSearchLoading, ...
         other } = inputProps
     return (
         <Paper className="search-paper" elevation={1}>
@@ -27,7 +28,7 @@ function renderInput(inputProps) {
                     ...other,
                 }}
             />
-            {/* {searchResultIsLoading && <Loader size={30} thickness={3} />} */}
+            {geocodeSearchLoading && <Loader size={30} thickness={3} />}
         </Paper>
     )
 }
@@ -69,8 +70,15 @@ class IntegrationAutosuggest extends React.Component {
         const parts = parse(suggestion.label, matches)
         const lon = parseFloat(suggestion.value.lon)
         const lat = parseFloat(suggestion.value.lat)
+        const icon = suggestion.value.icon
         return (
             <MenuItem onTouchTap={() => action([lon, lat])} selected={isHighlighted} component="div">
+                {icon && <Img src={[
+                    icon
+                ]}
+                    className="geocode-img"
+                    loader={<Loader align="center" size={30} />} />}
+                {!icon && <PlaceIcon className="geocode-img" />}
                 <div>
                     {parts.map((part, index) => {
                         return part.highlight ? (
@@ -97,7 +105,7 @@ class IntegrationAutosuggest extends React.Component {
             <Paper style={{
                 zIndex: 1149,
                 maxHeight: 200,
-                overflowY: 'overlay'
+                overflow: 'overlay'
             }} className={classes.paperContainer} {...containerProps} square>
                 {children}
             </Paper>
@@ -128,7 +136,7 @@ class IntegrationAutosuggest extends React.Component {
         })
     }
     render() {
-        const { classes } = this.props
+        const { classes, geocodeSearchLoading } = this.props
         return (
             <Autosuggest
                 theme={{
@@ -147,9 +155,10 @@ class IntegrationAutosuggest extends React.Component {
                 inputProps={{
                     autoFocus: true,
                     classes,
-                    placeholder: `Search by ....`,
+                    placeholder: `Search ....`,
                     value: this.state.value,
-                    onChange: this.handleChange
+                    onChange: this.handleChange,
+                    geocodeSearchLoading
                 }}
             />
         )
@@ -158,6 +167,7 @@ class IntegrationAutosuggest extends React.Component {
 IntegrationAutosuggest.propTypes = {
     classes: PropTypes.object.isRequired,
     search: PropTypes.func.isRequired,
-    action: PropTypes.func.isRequired
+    action: PropTypes.func.isRequired,
+    geocodeSearchLoading: PropTypes.bool.isRequired
 }
 export default withStyles(styles)(IntegrationAutosuggest)

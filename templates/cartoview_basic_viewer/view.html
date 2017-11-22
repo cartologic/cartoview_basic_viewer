@@ -41,6 +41,7 @@
                     wfsURL : "{{ GEOSERVER_BASE_URL }}wfs",
                     wmsURL : "{{ GEOSERVER_BASE_URL }}wms",
                 {% endif %}
+                geoserverPdfInfo:"{{ GEOSERVER_BASE_URL }}pdf/info.json",
                 static: "{{ STATIC_URL }}",
                 media: "{{ MEDIA_URL }}",
                 layerAttributes:"{% url 'app_manager_base_url' %}rest/app_manager/geonodelayerattribute/",

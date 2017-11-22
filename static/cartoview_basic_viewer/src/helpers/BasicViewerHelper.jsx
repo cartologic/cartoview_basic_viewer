@@ -35,13 +35,27 @@ class BasicViewerHelper {
         map.addControl( new FullScreen( { source: "root" } ) )
         return map
     }
-    reprojectLocation = ( pointArray,map ) => {
+    zoomToLocation = ( pointArray, map ) => {
+        const zoom = map.getView().getMaxZoom()
+        const lonLat = this.reprojectLocation( pointArray, map )
+        map.getView().setCenter( lonLat )
+        map.getView().setZoom( zoom - 4 )
+    }
+    reprojectLocation = ( pointArray, map ) => {
         /**
          * Reproject x,y .
          * @constructor
          * @param {array} point - [longitude,latitude].
          */
-        return proj.transform(pointArray,'EPSG:4326',map.getView().getProjection())
+        return proj.transform( pointArray, 'EPSG:4326', map.getView().getProjection() )
+    }
+    reprojectExtent = ( extent, map ) => {
+        /**
+         * Reproject extent .
+         * @constructor
+         * @param {array} extent - [minX,minY,maxX,maxY].
+         */
+        return proj.transformExtent( extent, 'EPSG:4326', map.getView().getProjection() )
     }
     exportMap = ( map ) => {
         map.once( 'postcompose', ( event ) => {

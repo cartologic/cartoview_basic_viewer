@@ -5,7 +5,7 @@ import ArrowRight from 'material-ui-icons/KeyboardArrowRight'
 import CartoviewDrawer from 'Source/components/view/Drawer'
 import CartoviewPopup from 'Source/components/view/PopUp'
 import Fade from 'material-ui/transitions/Fade'
-import GeoCodeSearchInput from 'Source/components/view/SearchInput'
+import GeoCode from 'Source/components/view/GeoCode'
 import Grid from 'material-ui/Grid'
 import IconButton from 'material-ui/IconButton'
 import { Loader } from 'Source/containers/CommonComponents'
@@ -99,7 +99,7 @@ class ContentGrid extends Component {
                 </div>
                 <Grid className={classes.root} container alignItems={"stretch"} spacing={0}>
                     <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-                        <div className="geocode-search"><GeoCodeSearchInput search={childrenProps.geocodeSearch} action={childrenProps.zoomToLocation} /></div>
+                        <GeoCode geocodeSearchLoading={childrenProps.geocodeSearchLoading} geocodeSearch={childrenProps.geocodeSearch} action={childrenProps.zoomToLocation} />
                         <div ref={(mapDiv) => this.mapDiv = mapDiv} className="map-panel"></div>
                         <CartoviewPopup {...childrenProps} />
                     </Grid>
