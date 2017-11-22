@@ -27,12 +27,9 @@ class OSMGeoCoding {
             return response.json()
         } )
     }
-    search = ( query ) => {
+    search = ( query, callBack ) => {
         this.url = this.getURL( query )
-        // this.doGet().then( result => {
-        //     console.log( result )
-        // } )
-        return this.doGet()
+        this.doGet().then( result => callBack( result ) )
     }
 }
 export default new OSMGeoCoding()

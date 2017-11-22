@@ -23,16 +23,15 @@ import { default as VectorSource } from 'ol/source/vector'
 import { arrayMove } from 'react-sortable-hoc'
 import { render } from 'react-dom'
 import { styleFunction } from 'Source/helpers/StyleHelper'
-
 class BasicViewerContainer extends Component {
-    constructor(props) {
-        super(props)
+    constructor( props ) {
+        super( props )
         this.state = {
             mapIsLoading: false,
             drawerOpen: false,
             featureIdentifyLoading: false,
             activeFeature: 0,
-            mouseCoordinates: [0, 0],
+            mouseCoordinates: [ 0, 0 ],
             featureIdentifyResult: [],
             showPopup: false,
             identifyEnabled: true,
@@ -41,191 +40,195 @@ class BasicViewerContainer extends Component {
             map: BasicViewerHelper.getMap(),
             mapLayers: []
         }
-        GeoCoding.search("Cairo")
-        this.urls = new URLS(this.props.urls)
+        GeoCoding.search( "Cairo", ( result ) => console.log( result ) )
+        this.urls = new URLS( this.props.urls )
     }
-    getLegendURL = (layerName) => {
+    getLegendURL = ( layerName ) => {
         const { urls } = this.props
-        const url = this.urls.getParamterizedURL(urls.wmsURL, {
+        const url = this.urls.getParamterizedURL( urls.wmsURL, {
             'REQUEST': 'GetLegendGraphic',
             'VERSION': '1.0.0',
             'FORMAT': 'image/png',
             "LAYER": layerName
-        })
-        return this.urls.getProxiedURL(url)
+        } )
+        return this.urls.getProxiedURL( url )
     }
     toggleDrawer = () => {
         const { drawerOpen } = this.state
-        this.setState({ drawerOpen: !drawerOpen })
+        this.setState( { drawerOpen: !drawerOpen } )
     }
-    addOverlay = (node) => {
+    addOverlay = ( node ) => {
         const { activeFeature, featureIdentifyResult, mouseCoordinates } =
-            this.state
+        this.state
         let position = mouseCoordinates
-        if (featureIdentifyResult.length > 0) {
-            const currentFeature = featureIdentifyResult[activeFeature]
+        if ( featureIdentifyResult.length > 0 ) {
+            const currentFeature = featureIdentifyResult[ activeFeature ]
             const featureExtent = currentFeature.getGeometry().getExtent()
-            position = BasicViewerHelper.getCenterOfExtent(featureExtent)
+            position = BasicViewerHelper.getCenterOfExtent( featureExtent )
         }
-        this.overlay.setElement(node)
-        this.overlay.setPosition(position)
+        this.overlay.setElement( node )
+        this.overlay.setPosition( position )
     }
     changeShowPopup = () => {
         const { showPopup } = this.state
-        this.setState({ showPopup: !showPopup })
+        this.setState( { showPopup: !showPopup } )
     }
     mapInit = () => {
         const { urls } = this.props
         let { map } = this.state
-        fetch(urls.mapJsonUrl, {
+        fetch( urls.mapJsonUrl, {
             method: "GET",
             credentials: 'include'
-        }).then((response) => {
+        } ).then( ( response ) => {
             return response.json()
-        }).then((config) => {
-            MapConfigService.load(MapConfigTransformService.transform(
-                config), map, urls.proxy)
+        } ).then( ( config ) => {
+            MapConfigService.load( MapConfigTransformService.transform(
+                config ), map, urls.proxy )
             const mapLayers = map.getLayers().getArray()
-            this.setLayerSwitcherLayers(mapLayers)
-            this.createLegends(LayersHelper.getLayers(mapLayers))
-        })
+            this.setLayerSwitcherLayers( mapLayers )
+            this.createLegends( LayersHelper.getLayers( mapLayers ) )
+        } )
     }
     addSelectionLayer = () => {
         let { featureCollection, map } = this.state
-        let source = new VectorSource({ features: featureCollection })
-        new Vector({
+        let source = new VectorSource( { features: featureCollection } )
+        new Vector( {
             source: source,
             style: styleFunction,
             title: "Selected Features",
             zIndex: 10000,
-            format: new GeoJSON({
+            format: new GeoJSON( {
                 defaultDataProjection: map.getView().getProjection(),
                 featureProjection: map.getView().getProjection()
-            }),
+            } ),
             map: map
-        })
-        source.on('addfeature', (e) => {
-            Animation.flash(e.feature, map)
-        })
+        } )
+        source.on( 'addfeature', ( e ) => {
+            Animation.flash( e.feature, map )
+        } )
     }
     componentWillMount() {
         let { map } = this.state
-        this.setState({ mapIsLoading: true })
-        this.overlay = new Overlay({
+        this.setState( { mapIsLoading: true } )
+        this.overlay = new Overlay( {
             autoPan: true,
-        })
-        map.addOverlay(this.overlay)
+        } )
+        map.addOverlay( this.overlay )
         this.addSelectionLayer()
         this.mapInit()
     }
     componentDidMount() {
         this.singleClickListner()
     }
-    setLayerSwitcherLayers(mapLayers) {
+    setLayerSwitcherLayers( mapLayers ) {
         let layers = []
-        mapLayers.map(layer => {
-            if (!(layer instanceof Group)) {
-                layers.push(layer)
+        mapLayers.map( layer => {
+            if ( !( layer instanceof Group ) ) {
+                layers.push( layer )
             }
-        })
-        this.setState({ mapLayers: layers.slice(0).reverse() })
+        } )
+        this.setState( { mapLayers: layers.slice( 0 ).reverse() } )
     }
-    zoomToFeature = (feature) => {
+    zoomToFeature = ( feature ) => {
         let { map } = this.state
-        this.addStyleToFeature([feature])
+        this.addStyleToFeature( [ feature ] )
         const featureCenter = feature.getGeometry().getExtent()
-        const center = BasicViewerHelper.getCenterOfExtent(featureCenter)
-        Animation.flyTo(center, map.getView(), 14, () => { })
+        const center = BasicViewerHelper.getCenterOfExtent( featureCenter )
+        Animation.flyTo( center, map.getView(), 14, () => {} )
     }
-    handleLayerVisibilty = name => (event, checked) => {
+    zoomToLocation = ( pointArray ) => {
+        let { map } = this.state
+        const lonLat = BasicViewer.reprojectLocation( pointArray )
+        map.setCenter( lonLat )
+    }
+    handleLayerVisibilty = name => ( event, checked ) => {
         let { mapLayers } = this.state
-        let layer = mapLayers[name]
-        layer.setVisible(checked)
-        this.setState({ mapLayers })
+        let layer = mapLayers[ name ]
+        layer.setVisible( checked )
+        this.setState( { mapLayers } )
     }
-    changeLayerOrder = ({ oldIndex, newIndex }) => {
+    changeLayerOrder = ( { oldIndex, newIndex } ) => {
         const { mapLayers } = this.state
-        const newMapLayers = arrayMove(mapLayers, oldIndex, newIndex)
-        newMapLayers.map((layer, index) => {
-            layer.setZIndex(mapLayers.length - index)
-        })
-        this.setState({ mapLayers: newMapLayers })
+        const newMapLayers = arrayMove( mapLayers, oldIndex, newIndex )
+        newMapLayers.map( ( layer, index ) => {
+            layer.setZIndex( mapLayers.length - index )
+        } )
+        this.setState( { mapLayers: newMapLayers } )
     }
     singleClickListner = () => {
         let { map } = this.state
-        map.on('singleclick', (e) => {
-            if (this.overlay) {
-                this.overlay.setElement(undefined)
+        map.on( 'singleclick', ( e ) => {
+            if ( this.overlay ) {
+                this.overlay.setElement( undefined )
             }
-            this.setState({
+            this.setState( {
                 mouseCoordinates: e.coordinate,
                 featureIdentifyLoading: true,
                 activeFeature: 0,
                 featureIdentifyResult: [],
                 showPopup: false
-            })
-            this.featureIdentify(map, e.coordinate)
-        })
+            } )
+            this.featureIdentify( map, e.coordinate )
+        } )
     }
-    createLegends = (layers) => {
+    createLegends = ( layers ) => {
         let legends = []
-        layers.map(layer => {
+        layers.map( layer => {
             const layerName = layer.getProperties().name
             const layerTitle = layer.getProperties().title
-            legends.push({
-                layer: layerTitle, url: this.getLegendURL(
-                    layerName)
-            })
-        })
-        this.setState({ legends })
+            legends.push( {
+                layer: layerTitle,
+                url: this.getLegendURL( layerName )
+            } )
+        } )
+        this.setState( { legends } )
     }
     resetFeatureCollection = () => {
         let { featureCollection } = this.state
         featureCollection.clear()
     }
-    addStyleToFeature = (features) => {
+    addStyleToFeature = ( features ) => {
         let { featureCollection } = this.state
         this.resetFeatureCollection()
-        if (features && features.length > 0) {
-            featureCollection.extend(features)
+        if ( features && features.length > 0 ) {
+            featureCollection.extend( features )
         }
     }
-    featureIdentify = (map, coordinate) => {
+    featureIdentify = ( map, coordinate ) => {
         const view = map.getView()
-
-        let identifyPromises = LayersHelper.getLayers(map.getLayers().getArray()).map(
-            (layer) => FeaturesHelper.readFeaturesThenTransform(this.urls, layer,
-                coordinate, view, map))
-        Promise.all(identifyPromises).then(result => {
-            const featureIdentifyResult = result.reduce((array1,
-                array2) => array1.concat(array2), [])
-            this.setState({
+        let identifyPromises = LayersHelper.getLayers( map.getLayers().getArray() )
+            .map(
+                ( layer ) => FeaturesHelper.readFeaturesThenTransform(
+                    this.urls, layer, coordinate, view, map ) )
+        Promise.all( identifyPromises ).then( result => {
+            const featureIdentifyResult = result.reduce( ( array1,
+                array2 ) => array1.concat( array2 ), [] )
+            this.setState( {
                 featureIdentifyLoading: false,
                 featureIdentifyResult,
                 activeFeature: 0,
                 showPopup: true
             }, () => this.addStyleToFeature(
-                featureIdentifyResult))
-        })
+                featureIdentifyResult ) )
+        } )
     }
     addStyleToCurrentFeature = () => {
         const { activeFeature, featureIdentifyResult } = this.state
-        this.addStyleToFeature([featureIdentifyResult[activeFeature]])
+        this.addStyleToFeature( [ featureIdentifyResult[ activeFeature ] ] )
     }
     nextFeature = () => {
         const { activeFeature } = this.state
         const nextIndex = activeFeature + 1
-        this.setState({ activeFeature: nextIndex }, this.addStyleToCurrentFeature)
+        this.setState( { activeFeature: nextIndex }, this.addStyleToCurrentFeature )
     }
     previousFeature = () => {
         const { activeFeature } = this.state
         const previuosIndex = activeFeature - 1
-        this.setState({ activeFeature: previuosIndex }, this.addStyleToCurrentFeature)
+        this.setState( { activeFeature: previuosIndex }, this.addStyleToCurrentFeature )
     }
-    exportMap=()=>{
-        let {map}=this.state
-        BasicViewerHelper.exportMap(map)
-
+    exportMap = () => {
+        let { map } = this.state
+        BasicViewerHelper.exportMap( map )
     }
     render() {
         const { config, urls } = this.props
@@ -245,7 +248,8 @@ class BasicViewerContainer extends Component {
             previousFeature: this.previousFeature,
             changeLayerOrder: this.changeLayerOrder,
             handleLayerVisibilty: this.handleLayerVisibilty,
-            exportMap:this.exportMap
+            zoomToLocation: this.zoomToLocation,
+            exportMap: this.exportMap
         }
         return <BasicViewer childrenProps={childrenProps} />
     }
@@ -255,8 +259,8 @@ BasicViewerContainer.propTypes = {
     config: PropTypes.object.isRequired
 }
 global.BasicViewerContainer = {
-    show: (el, props, urls) => {
-        render(<BasicViewerContainer urls={urls} config={props} />,
-            document.getElementById(el))
+    show: ( el, props, urls ) => {
+        render( <BasicViewerContainer urls={urls} config={props} />,
+            document.getElementById( el ) )
     }
 }
