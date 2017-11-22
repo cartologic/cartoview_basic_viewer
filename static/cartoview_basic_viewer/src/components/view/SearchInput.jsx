@@ -67,8 +67,8 @@ class IntegrationAutosuggest extends React.Component {
         const { action } = this.props
         const matches = match(suggestion.label, query)
         const parts = parse(suggestion.label, matches)
-        const lon = suggestion.value.lon
-        const lat = suggestion.value.lat
+        const lon = parseFloat(suggestion.value.lon)
+        const lat = parseFloat(suggestion.value.lat)
         return (
             <MenuItem onTouchTap={() => action([lon, lat])} selected={isHighlighted} component="div">
                 <div>

@@ -138,7 +138,6 @@ class BasicViewerContainer extends Component {
     }
     zoomToLocation = ( pointArray ) => {
         let { map } = this.state
-        console.log(pointArray)
         const lonLat = BasicViewerHelper.reprojectLocation( pointArray,map )
         map.getView().setCenter( lonLat )
     }

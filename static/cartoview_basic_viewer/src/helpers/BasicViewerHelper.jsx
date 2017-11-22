@@ -39,9 +39,9 @@ class BasicViewerHelper {
         /**
          * Reproject x,y .
          * @constructor
-         * @param {array} point - [latitude,longitude].
+         * @param {array} point - [longitude,latitude].
          */
-        return proj.transform(pointArray,'EPSG:3857',map.getView().getProjection())
+        return proj.transform(pointArray,'EPSG:4326',map.getView().getProjection())
     }
     exportMap = ( map ) => {
         map.once( 'postcompose', ( event ) => {
