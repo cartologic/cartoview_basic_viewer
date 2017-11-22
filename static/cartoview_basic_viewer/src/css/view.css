@@ -6,17 +6,21 @@
 .full-width {
     width: 100%
 }
-.element-block{
+
+.element-block {
     display: block
 }
+
 .list-item {
     display: flex;
     max-height: 115px;
     padding: 10px
 }
-.layer-switcher-item{
+
+.layer-switcher-item {
     z-index: 1152;
 }
+
 .list-item-text {
     position: relative;
     display: block;
@@ -26,12 +30,15 @@
 .text-center {
     text-align: center
 }
+
 .text-left {
     text-align: left
 }
+
 .text-right {
     text-align: right
 }
+
 .big-avatar {
     width: 115px;
     height: auto;
@@ -95,6 +102,10 @@
     display: flex
 }
 
+.sortable-container {
+    z-index: 1500
+}
+
 .nav-toolbar {
     padding-left: 16px !important;
     padding-right: 16px !important;
@@ -121,10 +132,12 @@
     z-index: 1150
 }
 
-.dense{
+.dense {
     padding-top: 0px !important;
     padding-bottom: 0px !important;
 }
+
+
 /* .layer-switcher {
     position: absolute;
     top: .5em !important;
@@ -158,8 +171,19 @@
     color: #3a3a3a !important;
 }
 
+.geocode-img {
+    margin-right: 10px
+}
+
 .nav-drawer-close {
     padding: 10px
+}
+
+.geocode-search {
+    position: absolute;
+    top: 0px;
+    z-index: 1149;
+    width: 100%
 }
 
 .ol-control {
@@ -172,17 +196,20 @@
 .ol-attribution button {
     display: unset;
 }
+
 .ol-rotate {
     top: auto !important;
     bottom: 10.5em !important;
     right: .5em;
-    transition: opacity .25s linear,visibility 0s linear;
+    transition: opacity .25s linear, visibility 0s linear;
 }
+
 .ol-full-screen {
     right: .5em !important;
     top: auto !important;
     bottom: 8em;
 }
+
 @media screen and (max-width: 1024px) {
     .big-avatar {
         width: 85px
