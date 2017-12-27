@@ -49,7 +49,6 @@ class EditPage extends React.Component {
         }
         this.getKeywords()
         this.getProfiles()
-        this.getTags()
     }
     UserMapsChanged = () => {
         const { userMaps } = this.state
