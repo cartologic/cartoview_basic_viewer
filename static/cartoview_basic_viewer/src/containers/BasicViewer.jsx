@@ -21,8 +21,11 @@ import URLS from 'Source/containers/URLS'
 import Vector from 'ol/layer/vector'
 import { default as VectorSource } from 'ol/source/vector'
 import { arrayMove } from 'react-sortable-hoc'
+import proj from 'ol/proj'
+import proj4 from 'proj4'
 import { render } from 'react-dom'
 import { styleFunction } from 'Source/helpers/StyleHelper'
+proj.setProj4( proj4 )
 class BasicViewerContainer extends Component {
     constructor( props ) {
         super( props )
