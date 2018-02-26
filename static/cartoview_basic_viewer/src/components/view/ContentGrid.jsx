@@ -5,6 +5,8 @@ import ArrowRight from 'material-ui-icons/KeyboardArrowRight'
 import CartoviewDrawer from 'Source/components/view/Drawer'
 import CartoviewPopup from 'Source/components/view/popup'
 import Fade from 'material-ui/transitions/Fade'
+import FeatureTableDrawer from 'Source/components/view/FeatureTableDrawer'
+import FeaturesTable from 'Source/components/view/FeaturesTable'
 import GeoCode from 'Source/components/view/GeoCode'
 import Grid from 'material-ui/Grid'
 import IconButton from 'material-ui/IconButton'
@@ -94,13 +96,16 @@ class ContentGrid extends Component {
                         </IconButton>
                     </Paper>
                     <Transition in={childrenProps.drawerOpen} direction={"right"}>
-                        <CartoviewDrawer exportMap={childrenProps.exportMap} config={childrenProps.config} handleLayerVisibilty={childrenProps.handleLayerVisibilty} changeLayerOrder={childrenProps.changeLayerOrder} mapLayers={childrenProps.mapLayers} urls={childrenProps.urls} legends={childrenProps.legends} className={classnames({ [classes.drawerContentClose]: !childrenProps.drawerOpen })} />
+                        <CartoviewDrawer handleFeaturesTableDrawer={childrenProps.handleFeaturesTableDrawer} exportMap={childrenProps.exportMap} config={childrenProps.config} handleLayerVisibilty={childrenProps.handleLayerVisibilty} changeLayerOrder={childrenProps.changeLayerOrder} mapLayers={childrenProps.mapLayers} urls={childrenProps.urls} legends={childrenProps.legends} className={classnames({ [classes.drawerContentClose]: !childrenProps.drawerOpen })} />
                     </Transition>
                 </div>
                 <Grid className={classes.root} container alignItems={"stretch"} spacing={0}>
                     <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
                         <GeoCode geocodeSearchLoading={childrenProps.geocodeSearchLoading} geocodeSearch={childrenProps.geocodeSearch} action={childrenProps.zoomToLocation} />
                         <div ref={(mapDiv) => this.mapDiv = mapDiv} className="map-panel"></div>
+                        {childrenProps.mapLayers.length > 0 && <FeatureTableDrawer tableLayer={childrenProps.tableLayer} handleTableLayerChange={childrenProps.handleTableLayerChange} loading={childrenProps.featuresIsLoading} mapLayers={childrenProps.mapLayers} hanldeDrawerOpen={childrenProps.handleFeaturesTableDrawer} pages={childrenProps.tablePages} drawerOpen={childrenProps.featuresTableOpen}>
+                            <FeaturesTable loading={childrenProps.featuresIsLoading} columns={childrenProps.tableColumns} getTableData={childrenProps.getTableData} pages={childrenProps.tablePages} tableLayer={childrenProps.tableLayer} data={childrenProps.features} />
+                        </FeatureTableDrawer>}
                         <CartoviewPopup {...childrenProps} />
                     </Grid>
                 </Grid>

@@ -1,27 +1,34 @@
 import { getCRSFToken } from 'Source/helpers/helpers.jsx'
 
-export const doGet = (url, extraHeaders = {}) => {
-    return fetch(url, {
+export const doGet = ( url, extraHeaders = {} ) => {
+    return fetch( url, {
         method: 'GET',
         credentials: 'include',
         headers: {
             "X-CSRFToken": getCRSFToken(),
             ...extraHeaders
         }
-    }).then((response) => {
+    } ).then( ( response ) => {
         return response.json()
-    })
+    } )
 }
-export const doPost = (url, data, extraHeaders = {}) => {
-    return fetch(url, {
+export const capitalizeFirstLetter = ( string ) => {
+    return string.charAt( 0 ).toUpperCase() + string.slice( 1 );
+}
+export const doPost = ( url, data, extraHeaders = {}, type = 'json' ) => {
+    return fetch( url, {
         method: 'POST',
         credentials: 'include',
-        headers: new Headers({
+        headers: new Headers( {
             "X-CSRFToken": getCRSFToken(),
             ...extraHeaders
-        }),
+        } ),
         body: data
-    }).then((response) => {
-        return response.json()
-    })
+    } ).then( ( response ) => {
+        if ( type === 'json' ) {
+            return response.json()
+        } else if ( type === 'xml' ) {
+            return response.text()
+        }
+    } )
 }

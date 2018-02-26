@@ -53,7 +53,7 @@ class Collapsible extends React.Component {
                         </IconButton>
                     </ListItemSecondaryAction>
                 </ListItem>
-                <Collapse in={this.state.expanded} transitionDuration="auto" unmountOnExit>
+                <Collapse in={this.state.expanded} transitionduration="auto" unmountOnExit>
                     {children}
                     <Divider />
                 </Collapse>

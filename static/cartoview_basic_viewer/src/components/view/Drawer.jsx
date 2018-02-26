@@ -13,10 +13,11 @@ import NavBar from 'Source/components/view/NavBar.jsx'
 import Paper from 'material-ui/Paper'
 import PropTypes from 'prop-types'
 import React from 'react'
+import TableIcon from 'material-ui-icons/GridOn'
 import classnames from 'classnames'
 import { withStyles } from 'material-ui/styles'
 
-const styles = theme => ( {
+const styles = theme => ({
     root: {
         height: "100%",
         overflowY: 'overlay'
@@ -24,26 +25,22 @@ const styles = theme => ( {
     drawerPaper: {
         padding: theme.spacing.unit,
     }
-} )
+})
 class CartoviewDrawer extends React.Component {
     state = {
         about: false
     }
     handleAboutChange = () => {
         const { about } = this.state
-        this.setState( { about: !about } )
+        this.setState({ about: !about })
     }
     render() {
         const {
-            classes,
-            className,
-            legends,
-            urls,
-            mapLayers,
-            changeLayerOrder,
+            classes, className, legends, urls, mapLayers, changeLayerOrder,
             handleLayerVisibilty,
             config,
-            exportMap
+            exportMap,
+            handleFeaturesTableDrawer
         } = this.props
         const { about } = this.state
         return (
@@ -69,6 +66,12 @@ class CartoviewDrawer extends React.Component {
                             </ListItemIcon>
                             <ListItemText primary="Export Map" />
                         </ListItem>
+                        <ListItem onTouchTap={handleFeaturesTableDrawer} button>
+                            <ListItemIcon>
+                                <TableIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Feature Table" />
+                        </ListItem>
                         <CollapsibleListItem open={false} title="Layers" icon={<LayersIcons />} >
                             <CartoviewLayerSwitcher handleLayerVisibilty={handleLayerVisibilty} changeLayerOrder={changeLayerOrder} mapLayers={mapLayers} />
                         </CollapsibleListItem>
@@ -91,6 +94,7 @@ CartoviewDrawer.propTypes = {
     mapLayers: PropTypes.array.isRequired,
     handleLayerVisibilty: PropTypes.func.isRequired,
     exportMap: PropTypes.func.isRequired,
+    handleFeaturesTableDrawer: PropTypes.func.isRequired,
     config: PropTypes.object.isRequired
 }
-export default withStyles( styles )( CartoviewDrawer )
+export default withStyles(styles)(CartoviewDrawer)

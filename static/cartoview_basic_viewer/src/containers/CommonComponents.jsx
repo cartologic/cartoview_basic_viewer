@@ -20,7 +20,7 @@ Loader.propTypes = {
 }
 export const Message = (props) => {
     const { align, type, message, color, noWrap } = props
-    return <Typography type={type} align={align ? align : "center"} noWrap={typeof (noWrap) !== "undefined" ? noWrap : message.length > 70 ? true : false} color={color ? color : "inherit"} className="element-flex">{message}</Typography>
+    return <Typography variant={type} align={align ? align : "center"} noWrap={typeof (noWrap) !== "undefined" ? noWrap : message.length > 70 ? true : false} color={color ? color : "inherit"} className="element-flex">{message}</Typography>
 }
 Message.propTypes = {
     type: PropTypes.string.isRequired,
