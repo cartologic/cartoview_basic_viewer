@@ -136,7 +136,7 @@ class CartoviewPopup extends React.Component {
                     </div>
                     <div className="cartoview-popup-actions center">
                         <div ref={(input) => { this.zoomToButton = input }} >
-                            {(featureIdentifyResult.length != 0 && !featureIdentifyLoading) && <Button color="default" className={classes.button} dense>
+                            {(featureIdentifyResult.length != 0 && !featureIdentifyLoading) && <Button color="default" className={classes.button} dense={"true"}>
                                 <ZoomIcon />
                                 <Typography type="caption" align="left" noWrap={false} color="inherit">{`Zoom To Feature`}</Typography>
                             </Button>}

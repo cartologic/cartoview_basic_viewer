@@ -1,173 +1,95 @@
-import Autosuggest from 'react-autosuggest'
+import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
+
+import CloseIcon from 'material-ui-icons/Close'
 import Img from 'react-image'
+import Input from 'material-ui/Input'
 import { Loader } from 'Source/containers/CommonComponents'
-import { MenuItem } from 'material-ui/Menu'
 import Paper from 'material-ui/Paper'
-import PlaceIcon from 'material-ui-icons/Place'
 import PropTypes from 'prop-types'
 import React from 'react'
-import TextField from 'material-ui/TextField'
-import match from 'autosuggest-highlight/match'
-import parse from 'autosuggest-highlight/parse'
+import SearchIcon from 'material-ui-icons/Search'
+import classNames from 'classnames'
 import { withStyles } from 'material-ui/styles'
 
-function renderInput(inputProps) {
-    const { classes, autoFocus, value, ref, geocodeSearchLoading, ...
-        other } = inputProps
-    return (
-        <Paper className="search-paper" elevation={1}>
-            <TextField
-                autoFocus={autoFocus}
-                className={classes.textField}
-                value={value}
-                inputRef={ref}
-                InputProps={{
-                    classes: {
-                        input: classes.input,
-                    },
-                    ...other,
-                }}
-            />
-            {geocodeSearchLoading && <Loader size={30} thickness={3} />}
-        </Paper>
-    )
-}
 const styles = theme => ({
-    container: {
-        flexGrow: 1,
-        position: 'relative',
-        height: 'auto',
-        margin: "15px",
-        width: "100%"
-    },
-    suggestionsContainerOpen: {
-        position: 'absolute',
-        marginTop: theme.spacing.unit,
-        marginBottom: theme.spacing.unit * 3,
-        left: 0,
-        right: 0,
-    },
-    suggestion: {
-        display: 'block',
-    },
-    suggestionsList: {
-        margin: 0,
-        padding: 0,
-        listStyleType: 'none',
-    },
     textField: {
         width: '100%',
     },
+    paper: {
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    icon: {
+        color: theme.palette.primary.main
+    },
+    searchItem: {
+        width: '100%',
+        height: '200px',
+        display: 'flex',
+        overflowY: 'overlay'
+    },
+    hide: {
+        display: 'none'
+    }
 })
-class IntegrationAutosuggest extends React.Component {
+class GeoCodeSearchInput extends React.Component {
     state = {
-        value: '',
-        suggestions: [],
+        searchText: '',
+        geocodingResult: []
     }
-    renderSuggestion = (suggestion, { query, isHighlighted }) => {
+    handleChange = event => {
+        let data = {
+            searchText: event.target.value
+        }
+        if (event.target.value == '') {
+            data.geocodingResult = []
+        }
+        this.setState(data)
+    }
+    zoomTo = (lon, lat) => {
         const { action } = this.props
-        const matches = match(suggestion.label, query)
-        const parts = parse(suggestion.label, matches)
-        const lon = parseFloat(suggestion.value.lon)
-        const lat = parseFloat(suggestion.value.lat)
-        const icon = suggestion.value.icon
-        return (
-            <MenuItem onTouchTap={() => action([lon, lat])} selected={isHighlighted} component="div">
-                {icon && <Img src={[
-                    icon
-                ]}
-                    className="geocode-img"
-                    loader={<Loader align="center" size={30} />} />}
-                {!icon && <PlaceIcon className="geocode-img" />}
-                <div>
-                    {parts.map((part, index) => {
-                        return part.highlight ? (
-                            <span key={index} style={{ fontWeight: 300 }}>
-                                {part.text}
-                            </span>
-                        ) : (
-                                <strong key={index} style={{ fontWeight: 500 }}>
-                                    {part.text}
-                                </strong>
-                            )
-                    })}
-                </div>
-            </MenuItem>
-        )
+        this.reset()
+        action([parseFloat(lon), parseFloat(lat)])
     }
-    getSuggestionValue = (suggestion) => {
-        return suggestion.label
-    }
-    renderSuggestionsContainer = (options) => {
-        const { classes } = this.props
-        const { containerProps, children } = options
-        return (
-            <Paper style={{
-                zIndex: 1149,
-                maxHeight: 200,
-                overflow: 'overlay'
-            }} className={classes.paperContainer} {...containerProps} square>
-                {children}
-            </Paper>
-        )
-    }
-    handleSuggestionsFetchRequested = ({ value }) => {
-        const { search } = this.props
-        search(value, (result) => {
-            let suggestions = result.map(obj => {
-                return {
-                    label: obj.display_name,
-                    value: obj
-                }
-            })
-            this.setState({
-                suggestions
-            })
-        })
-    }
-    handleSuggestionsClearRequested = () => {
-        this.setState({
-            suggestions: [],
-        })
-    }
-    handleChange = (event, { newValue }) => {
-        this.setState({
-            value: newValue,
-        })
+    reset = () => {
+        this.setState({ geocodingResult: [], searchText: '' })
     }
     render() {
-        const { classes, geocodeSearchLoading } = this.props
+        const { classes, geocodeSearch, geocodeSearchLoading } = this.props
+        let { searchText, geocodingResult } = this.state
         return (
-            <Autosuggest
-                theme={{
-                    container: classes.container,
-                    suggestionsContainerOpen: classes.suggestionsContainerOpen,
-                    suggestionsList: classes.suggestionsList,
-                    suggestion: classes.suggestion,
-                }}
-                renderInputComponent={renderInput}
-                suggestions={this.state.suggestions}
-                onSuggestionsFetchRequested={this.handleSuggestionsFetchRequested}
-                onSuggestionsClearRequested={this.handleSuggestionsClearRequested}
-                renderSuggestionsContainer={this.renderSuggestionsContainer}
-                getSuggestionValue={this.getSuggestionValue}
-                renderSuggestion={this.renderSuggestion}
-                inputProps={{
-                    autoFocus: true,
-                    classes,
-                    placeholder: `Search ....`,
-                    value: this.state.value,
-                    onChange: this.handleChange,
-                    geocodeSearchLoading
-                }}
-            />
+            <div>
+                <Paper className={classNames("search-paper", [classes.paper])} elevation={1}>
+                    <Input
+                        placeholder="search(Geocoding)...."
+                        onChange={this.handleChange}
+                        className={classes.textField}
+                        value={searchText}
+                    />
+                    <SearchIcon onTouchTap={() => geocodeSearch(searchText, (res) => this.setState({ geocodingResult: res }))} className={classes.icon} />
+                    {geocodingResult.length > 0 && <CloseIcon onTouchTap={() => this.reset()} className={classes.icon} />}
+                    {geocodeSearchLoading && <Loader size={30} thickness={3} />}
+                </Paper>
+                {!geocodeSearchLoading && geocodingResult.length > 0 && <Paper className={classNames(classes.searchItem, { [classes.hide]: geocodeSearchLoading })}>
+                    <List className="full-width" component="nav">
+                        {geocodingResult.map(((item, index) => {
+                            return (
+                                <ListItem onTouchTap={() => this.zoomTo(item.lon, item.lat)} key={index} button>
+                                    {item.icon && <Img src={item.icon} />}
+                                    <ListItemText inset primary={item.display_name} />
+                                </ListItem>
+                            )
+                        }))}
+                    </List>
+                </Paper>}
+            </div>
         )
     }
 }
-IntegrationAutosuggest.propTypes = {
+GeoCodeSearchInput.propTypes = {
     classes: PropTypes.object.isRequired,
-    search: PropTypes.func.isRequired,
+    geocodeSearch: PropTypes.func.isRequired,
     action: PropTypes.func.isRequired,
     geocodeSearchLoading: PropTypes.bool.isRequired
 }
-export default withStyles(styles)(IntegrationAutosuggest)
+export default withStyles(styles)(GeoCodeSearchInput)
