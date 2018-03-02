@@ -1,4 +1,4 @@
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
+import List, { ListItem, ListItemText } from 'material-ui/List'
 
 import CloseIcon from 'material-ui-icons/Close'
 import Img from 'react-image'

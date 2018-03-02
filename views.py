@@ -2,8 +2,9 @@ import json
 
 from cartoview.app_manager.models import App, AppInstance
 from cartoview.app_manager.views import StandardAppViews
-from django.shortcuts import HttpResponse
-
+from django.shortcuts import HttpResponse, render
+from geonode.layers.views import layer_detail
+from django.conf.urls import patterns, url
 from . import APP_NAME
 _js_permissions_mapping = {
     'whoCanView': 'view_resourcebase',
@@ -89,6 +90,21 @@ class BasicViewer(StandardAppViews):
         res_json.update(dict(success=True, id=instance_obj.id))
         return HttpResponse(json.dumps(res_json),
                             content_type="application/json")
+
+    def layer_view(self, request, layername):
+        layer = layer_detail(
+            request, layername).context_data['resource']
+        return render(request, '%s/layer_view.html' % (self.app_name),
+                      context={'layer': layer})
+
+    def get_url_patterns(self):
+        urls = super(BasicViewer, self).get_url_patterns()
+        urls += patterns('',
+                         url(r'^(?P<layername>[^/]*)/view/$',
+                             self.layer_view,
+                             name='%s.layer.view' % self.app_name)
+                         )
+        return urls
 
 
 basic_viewer = BasicViewer(APP_NAME)
