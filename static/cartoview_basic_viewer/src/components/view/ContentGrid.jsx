@@ -1,3 +1,4 @@
+import { HashRouter, Route } from 'react-router-dom'
 import React, { Component } from 'react'
 
 import ArrowLeft from 'material-ui-icons/KeyboardArrowLeft'
@@ -11,6 +12,7 @@ import GeoCode from 'Source/components/view/GeoCode'
 import Grid from 'material-ui/Grid'
 import IconButton from 'material-ui/IconButton'
 import { Loader } from 'Source/containers/CommonComponents'
+import MapViewer from 'Source/components/view/MapViewer'
 import Paper from 'material-ui/Paper'
 import PropTypes from 'prop-types'
 import Slide from 'material-ui/transitions/Slide'
@@ -75,16 +77,6 @@ function Transition(props) {
     return <Slide direction="left" {...props} />
 }
 class ContentGrid extends Component {
-    componentDidMount() {
-        const { childrenProps } = this.props
-        childrenProps.map.setTarget(this.mapDiv)
-    }
-    componentDidUpdate(prevProps, prevState) {
-        const { width } = this.props
-        if (prevProps.width !== width) {
-            prevProps.childrenProps.map.updateSize()
-        }
-    }
     render() {
         const { classes, childrenProps } = this.props
         return (
@@ -102,7 +94,9 @@ class ContentGrid extends Component {
                 <Grid className={classes.root} container alignItems={"stretch"} spacing={0}>
                     <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
                         <GeoCode geocodeSearchLoading={childrenProps.geocodeSearchLoading} geocodeSearch={childrenProps.geocodeSearch} action={childrenProps.zoomToLocation} />
-                        <div ref={(mapDiv) => this.mapDiv = mapDiv} className="map-panel"></div>
+                        <HashRouter>
+                            <Route exact path="/:x0?/:y0?/:x1?/:y1?" render={(props) => <MapViewer loading={childrenProps.mapIsLoading} {...props} map={childrenProps.map} />} />
+                        </HashRouter>
                         {childrenProps.mapLayers.length > 0 && <FeatureTableDrawer tableLayer={childrenProps.tableLayer} handleTableLayerChange={childrenProps.handleTableLayerChange} loading={childrenProps.featuresIsLoading} mapLayers={childrenProps.mapLayers} hanldeDrawerOpen={childrenProps.handleFeaturesTableDrawer} pages={childrenProps.tablePages} drawerOpen={childrenProps.featuresTableOpen}>
                             <FeaturesTable loading={childrenProps.featuresIsLoading} columns={childrenProps.tableColumns} getTableData={childrenProps.getTableData} pages={childrenProps.tablePages} tableLayer={childrenProps.tableLayer} data={childrenProps.features} />
                         </FeatureTableDrawer>}

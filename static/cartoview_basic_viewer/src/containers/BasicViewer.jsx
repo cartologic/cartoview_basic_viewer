@@ -33,7 +33,7 @@ class BasicViewerContainer extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            mapIsLoading: false,
+            mapIsLoading: true,
             drawerOpen: false,
             featureIdentifyLoading: false,
             activeFeature: 0,
@@ -228,6 +228,7 @@ class BasicViewerContainer extends Component {
             const mapLayers = map.getLayers().getArray()
             this.setLayerSwitcherLayers(mapLayers)
             this.createLegends(LayersHelper.getLayers(mapLayers))
+            this.setState({ mapIsLoading: false })
         })
     }
     addSelectionLayer = () => {
@@ -250,7 +251,6 @@ class BasicViewerContainer extends Component {
     }
     componentWillMount() {
         let { map } = this.state
-        this.setState({ mapIsLoading: true })
         this.overlay = new Overlay({
             autoPan: true,
         })

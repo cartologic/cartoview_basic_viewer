@@ -137,7 +137,6 @@
     padding-bottom: 0px !important;
 }
 
-
 /* .layer-switcher {
     position: absolute;
     top: .5em !important;
@@ -181,7 +180,7 @@
 
 .geocode-search {
     position: absolute;
-    top: 0px;
+    top: 2%;
     z-index: 1149;
     width: 100%
 }

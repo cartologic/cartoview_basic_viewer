@@ -66,7 +66,7 @@ class GeoCodeSearchInput extends React.Component {
                         className={classes.textField}
                         value={searchText}
                     />
-                    <SearchIcon onTouchTap={() => geocodeSearch(searchText, (res) => this.setState({ geocodingResult: res }))} className={classes.icon} />
+                    {searchText && searchText !== '' && <SearchIcon onTouchTap={() => geocodeSearch(searchText, (res) => this.setState({ geocodingResult: res }))} className={classes.icon} />}
                     {geocodingResult.length > 0 && <CloseIcon onTouchTap={() => this.reset()} className={classes.icon} />}
                     {geocodeSearchLoading && <Loader size={30} thickness={3} />}
                 </Paper>

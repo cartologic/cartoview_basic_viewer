@@ -28,6 +28,7 @@
     "react-image": "^1.0.1",
     "react-paginate": "^5.0.0",
     "react-responsive-carousel": "^3.1.27",
+    "react-router-dom": "^4.2.2",
     "react-select": "^1.0.0-rc.5",
     "react-sortable-hoc": "^0.6.8",
     "react-spinkit": "^3.0.0",
