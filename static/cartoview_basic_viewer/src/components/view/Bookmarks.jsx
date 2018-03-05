@@ -25,7 +25,7 @@ class Bookmarks extends React.Component {
     handleChange = (bookmark) => {
         const { map } = this.props
         const extent = bookmark.extent.split('/').map(number => parseFloat(number))
-        BasicViewerHelper.fitExtent(extent, map)
+        BasicViewerHelper.fitExtent(extent, map, 300)
     }
 
     render() {
@@ -49,7 +49,7 @@ class Bookmarks extends React.Component {
                         </ListItem>
                     })}
                 </List>}
-                {(!bookmarks || bookmarks.length == 0)&&<Message message={"No Bookmarks"} type="caption"/>}
+                {(!bookmarks || bookmarks.length == 0) && <Message message={"No Bookmarks"} type="caption" />}
             </div>
         )
     }

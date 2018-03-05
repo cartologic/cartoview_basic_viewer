@@ -51,7 +51,7 @@
                 appLogo:'{% static 'cartoview_basic_viewer/logo.png' %}'
             }
 
-    const props = {"access": {"whoCanDelete": null, "whoCanView": null, "whoCanChangeMetadata": null, "whoCanChangeConfiguration": null}, "showLegend": true, "showBaseMapSwitcher": true, "showZoombar": true, "keywords": [], "showLayerSwitcher": true}
+    const props = {"showLegend": true, "showExportMap": true, "showLayerSwitcher": true, "access": {"whoCanDelete": null, "whoCanView": null, "whoCanChangeMetadata": null, "whoCanChangeConfiguration": null}, "enableFeatureTable": true, "enableHistory": true,"keywords": []}
     
     props.formTitle="{{layer.title}}"
     props.formAbstract="{{layer.abstract}}"

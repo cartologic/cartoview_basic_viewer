@@ -61,8 +61,8 @@ class BasicViewerHelper {
         const transformedExtent = proj.transformExtent(extent, 'EPSG:4326', map.getView().getProjection())
         return transformedExtent
     }
-    fitExtent = (extent, map) => {
-        map.getView().fit(extent, map.getSize())
+    fitExtent = (extent, map, duration = undefined) => {
+        map.getView().fit(extent, map.getSize(), { duration })
     }
     exportMap = (map) => {
         map.once('postcompose', (event) => {

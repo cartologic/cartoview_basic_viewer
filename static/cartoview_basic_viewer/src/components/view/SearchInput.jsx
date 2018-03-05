@@ -54,6 +54,14 @@ class GeoCodeSearchInput extends React.Component {
     reset = () => {
         this.setState({ geocodingResult: [], searchText: '' })
     }
+    handleKeyPress = (event) => {
+        const { searchText } = this.state
+        const { geocodeSearch } = this.props
+        if (event.key == 'Enter' && searchText != '') {
+            geocodeSearch(searchText, (res) => this.setState({ geocodingResult: res }))
+
+        }
+    }
     render() {
         const { classes, geocodeSearch, geocodeSearchLoading } = this.props
         let { searchText, geocodingResult } = this.state
@@ -64,6 +72,7 @@ class GeoCodeSearchInput extends React.Component {
                         placeholder="Search(Geocoding)...."
                         onChange={this.handleChange}
                         className={classes.textField}
+                        inputProps={{ onKeyPress: this.handleKeyPress }}
                         value={searchText}
                     />
                     {searchText && searchText !== '' && <SearchIcon onTouchTap={() => geocodeSearch(searchText, (res) => this.setState({ geocodingResult: res }))} className={classes.icon} />}
@@ -76,7 +85,7 @@ class GeoCodeSearchInput extends React.Component {
                             return (
                                 <ListItem onTouchTap={() => this.zoomTo(item.lon, item.lat)} key={index} button>
                                     {item.icon && <Img src={item.icon} />}
-                                    <ListItemText inset primary={item.display_name} />
+                                    <ListItemText inset primary={item.display_name} secondary={item.class} />
                                 </ListItem>
                             )
                         }))}
