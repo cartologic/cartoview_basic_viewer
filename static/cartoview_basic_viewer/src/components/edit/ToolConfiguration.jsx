@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import { getPropertyFromConfig } from '../../containers/staticMethods'
+import { getPropertyFromConfig } from 'Source/containers/staticMethods'
 import t from 'tcomb-form'
-import { toolFormSchema } from '../../containers/forms'
+import { toolFormSchema } from 'Source/containers/forms'
 const options = {
     fields: {
         showZoombar: {
@@ -23,8 +23,8 @@ const Form = t.form.Form
 export default class ToolConfiguration extends React.Component {
     constructor(props) {
         super(props)
-        this.state={
-            value:this.getFormValue(this.props)
+        this.state = {
+            value: this.getFormValue(this.props)
         }
     }
     getComponentValue = () => {
@@ -33,19 +33,23 @@ export default class ToolConfiguration extends React.Component {
     getFormValue = (props) => {
         const { config } = props
         const value = {
+            enableHistory: getPropertyFromConfig(config,
+                'enableHistory', true),
+            enableFeatureTable: getPropertyFromConfig(config,
+                'enableFeatureTable', true),
             showZoombar: getPropertyFromConfig(config,
                 'showZoombar', true),
             showLayerSwitcher: getPropertyFromConfig(config,
                 'showLayerSwitcher', true),
-            showBaseMapSwitcher: getPropertyFromConfig(config,
-                'showBaseMapSwitcher', true),
+            showExportMap: getPropertyFromConfig(config,
+                'showExportMap', true),
             showLegend: getPropertyFromConfig(config,
                 'showLegend', true)
         }
         return value
     }
     componentWillReceiveProps(nextProps) {
-        const { config,instanceId } = this.props
+        const { config, instanceId } = this.props
         if (config && !instanceId) {
             this.setState({ value: this.getFormValue(nextProps) })
         }
@@ -69,5 +73,5 @@ export default class ToolConfiguration extends React.Component {
 }
 ToolConfiguration.propTypes = {
     config: PropTypes.object,
-    instanceId:PropTypes.number
+    instanceId: PropTypes.number
 }

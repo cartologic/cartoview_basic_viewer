@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import classNames from 'classnames'
 const ActionBar = (props) => {
-    const { save, selectedMap, instanceId, urls, saving,validate } = props
+    const { save, selectedMap, instanceId, urls, saving, validate } = props
     const extraProps = {
         disabled: selectedMap && !saving ? false : true
     }
@@ -43,15 +43,18 @@ const Tabs = (props) => {
     return (
         <div>
             <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3">
-                <ul className="list-group">
+                <ul className="nav nav-pills nav-stacked cartoview-nav-list">
                     {childrenProps.steps.map((step, index) => {
+                        const disabled = checkIfDisabled(step)
                         return (
                             <li key={index} className={getTabClassName(index)}>
-                                <a className="list-link" data-toggle={checkIfDisabled(index) ? "" : "tab"} href={checkIfDisabled(step) ? "#" : `#component-${index}`}>
-                                    {step.title}
+                                <a disabled={disabled} data-toggle={disabled ? "" : "tab"} className="fill-empty" href={disabled ? "javascript:;" : `#component-${index}`}>
+                                    <span>{step.title}</span>
+                                    {step.hasError && <i className="fa fa-exclamation-triangle text-danger pull-right" aria-hidden="true"></i>}
                                 </a>
-                                {step.hasError && <i className="fa fa-exclamation-triangle text-danger pull-right" aria-hidden="true"></i>}
+                                
                             </li>
+
                         )
                     })}
                 </ul>
@@ -105,10 +108,13 @@ export default class EditPageComponent extends React.Component {
         return (!childrenProps.selectedMap) ? index === 0 ? false : true : false
     }
     getTabClassName = (index) => {
+        const check = this.checkIfDisabled(index)
         return classNames({
-            disabled: this.checkIfDisabled(index),
+            disabled: check,
             active: index === 0,
-            "list-group-item": true
+            "nav-item": true,
+            "flex-element": true,
+
         })
     }
     handleHideModal = () => {

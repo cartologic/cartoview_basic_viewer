@@ -34,8 +34,12 @@
                     rest: "{% url 'app_manager_base_url' %}rest/app_manager/",
                     geonodeRest: "{% url 'api_api_top_level' 'api' %}",
                     appLogo:'{% static 'cartoview_basic_viewer/logo.png' %}',
+                    noImage:"{% static 'geonode/img/missing_thumb.png' %}",
                     layerAttributes:"{% url 'app_manager_base_url' %}rest/app_manager/geonodelayerattribute/",
                     mapLayers:"{% url "cartoview_map_layers" %}",
+                    mapDetails: function(id){
+                    return '/maps/'+id
+                },
                     newURL:"{% url "cartoview_basic_viewer.new" %}",
                     editURL:function(id){
                     return "/apps/cartoview_basic_viewer/"+id+"/edit/"

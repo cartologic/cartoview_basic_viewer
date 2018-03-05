@@ -88,16 +88,16 @@ class ContentGrid extends Component {
                         </IconButton>
                     </Paper>
                     <Transition in={childrenProps.drawerOpen} direction={"right"}>
-                        <CartoviewDrawer handleFeaturesTableDrawer={childrenProps.handleFeaturesTableDrawer} exportMap={childrenProps.exportMap} config={childrenProps.config} handleLayerVisibilty={childrenProps.handleLayerVisibilty} changeLayerOrder={childrenProps.changeLayerOrder} mapLayers={childrenProps.mapLayers} urls={childrenProps.urls} legends={childrenProps.legends} className={classnames({ [classes.drawerContentClose]: !childrenProps.drawerOpen })} />
+                        <CartoviewDrawer map={childrenProps.map} handleFeaturesTableDrawer={childrenProps.handleFeaturesTableDrawer} exportMap={childrenProps.exportMap} config={childrenProps.config} handleLayerVisibilty={childrenProps.handleLayerVisibilty} changeLayerOrder={childrenProps.changeLayerOrder} mapLayers={childrenProps.mapLayers} urls={childrenProps.urls} legends={childrenProps.legends} className={classnames({ [classes.drawerContentClose]: !childrenProps.drawerOpen })} />
                     </Transition>
                 </div>
                 <Grid className={classes.root} container alignItems={"stretch"} spacing={0}>
                     <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
                         <GeoCode geocodeSearchLoading={childrenProps.geocodeSearchLoading} geocodeSearch={childrenProps.geocodeSearch} action={childrenProps.zoomToLocation} />
                         <HashRouter>
-                            <Route exact path="/:x0?/:y0?/:x1?/:y1?" render={(props) => <MapViewer loading={childrenProps.mapIsLoading} {...props} map={childrenProps.map} />} />
+                            <Route exact path="/:x0?/:y0?/:x1?/:y1?" render={(props) => <MapViewer loading={childrenProps.mapIsLoading} {...props} enableHistory={childrenProps.config.enableHistory} map={childrenProps.map} />} />
                         </HashRouter>
-                        {childrenProps.mapLayers.length > 0 && <FeatureTableDrawer tableLayer={childrenProps.tableLayer} handleTableLayerChange={childrenProps.handleTableLayerChange} loading={childrenProps.featuresIsLoading} mapLayers={childrenProps.mapLayers} hanldeDrawerOpen={childrenProps.handleFeaturesTableDrawer} pages={childrenProps.tablePages} drawerOpen={childrenProps.featuresTableOpen}>
+                        {childrenProps.mapLayers.length > 0 && childrenProps.config.enableFeatureTable && <FeatureTableDrawer tableLayer={childrenProps.tableLayer} handleTableLayerChange={childrenProps.handleTableLayerChange} loading={childrenProps.featuresIsLoading} mapLayers={childrenProps.mapLayers} hanldeDrawerOpen={childrenProps.handleFeaturesTableDrawer} pages={childrenProps.tablePages} drawerOpen={childrenProps.featuresTableOpen}>
                             <FeaturesTable loading={childrenProps.featuresIsLoading} columns={childrenProps.tableColumns} getTableData={childrenProps.getTableData} pages={childrenProps.tablePages} tableLayer={childrenProps.tableLayer} data={childrenProps.features} />
                         </FeatureTableDrawer>}
                         <CartoviewPopup {...childrenProps} />

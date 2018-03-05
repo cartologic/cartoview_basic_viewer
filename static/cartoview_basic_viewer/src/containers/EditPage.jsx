@@ -5,6 +5,7 @@ import { doGet, doPost } from 'Source/containers/utils'
 
 import AppAccess from 'Source/components/edit/Access'
 import AppConfiguration from 'Source/components/edit/AppConfiguration'
+import Bookmarks from 'Source/components/edit/Bookmarks'
 import EditPageComponent from 'Source/components/edit/EditPage'
 import MapSelector from 'Source/components/edit/MapSelector'
 import PropTypes from 'prop-types'
@@ -23,7 +24,6 @@ class EditPage extends React.Component {
             userMaps: true,
             selectedMap: config ? config.map : null,
             loading: false,
-            mapLayers: [],
             totalMaps: 0,
             layerAttributes: [],
             title: config ? config.title : null,
@@ -33,39 +33,19 @@ class EditPage extends React.Component {
             keywords: [],
             saving: false,
             errors: [],
-            profiles:[],
+            profiles: [],
             instanceId: config ? config.id : null,
             searchEnabled: false
         }
     }
     componentWillMount() {
-        const { selectedMap, config } = this.state
         this.getMaps()
-        if (selectedMap) {
-            this.getMapLayers()
-        }
-        if (config && config.layer) {
-            this.getAttributes(config.layer)
-        }
         this.getKeywords()
         this.getProfiles()
     }
     UserMapsChanged = () => {
         const { userMaps } = this.state
         this.setState({ userMaps: !userMaps }, this.getMaps)
-    }
-    getMapLayers() {
-        this.setState({ loading: true })
-        const { urls } = this.props
-        const { selectedMap } = this.state
-        let url = urls.mapLayers
-        url = this.urls.getParamterizedURL(url, { id: selectedMap.id })
-        doGet(url).then(result => {
-            this.setState({
-                mapLayers: result.objects,
-                loading: false
-            })
-        })
     }
     getMaps = (offset = 0, limit = limit) => {
         this.setState({ loading: true })
@@ -144,12 +124,13 @@ class EditPage extends React.Component {
         })
     }
     selectMap = (map) => {
-        this.setState({ selectedMap: map }, this.getMapLayers)
+        this.setState({ selectedMap: map })
     }
     setStepRef = (name, ref) => {
         this[name] = ref
     }
     getSteps = () => {
+        const { urls } = this.props
         const {
             maps,
             loading,
@@ -180,6 +161,7 @@ class EditPage extends React.Component {
                     totalMaps,
                     UserMapsChanged: this.UserMapsChanged,
                     limit,
+                    urls,
                     search: this.search,
                     handleSearchMode: this.handleSearchMode,
                     searchEnabled
@@ -208,6 +190,16 @@ class EditPage extends React.Component {
                     loading,
                     config,
                     profiles,
+                }
+            },
+            {
+                title: "Bookmarks",
+                component: Bookmarks,
+                ref: 'bookmarksStep',
+                hasErrors: false,
+                props: {
+                    config,
+                    instanceId
                 }
             },
             {
@@ -243,8 +235,9 @@ class EditPage extends React.Component {
             ...this.generalStep.getComponentValue(),
             config: {
                 ...this.toolsStep.getComponentValue(),
+                ...this.bookmarksStep.getComponentValue()
             },
-            access:this.accessConfigurationStep.getComponentValue(),
+            access: this.accessConfigurationStep.getComponentValue(),
             keywords: this.toArray(keywords)
         }
         return finalConfiguration

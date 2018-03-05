@@ -47,15 +47,12 @@
                 layerAttributes:"{% url 'app_manager_base_url' %}rest/app_manager/geonodelayerattribute/",
                 rest: "{% url 'app_manager_base_url' %}rest/app_manager/",
                 geonodeRest: "{% url 'api_api_top_level' 'api' %}",
-                // attachmentUploadUrl:function(layerName){
-                //     return '{{SITEURL}}apps/cartoview_attachment_manager/'+layerName+'/file'
-                // },
-                // commentsUploadUrl:function(layerName){
-                //     return '{{SITEURL}}apps/cartoview_attachment_manager/'+layerName+'/comment'
-                // },
                 appInstancesPage:"{% url 'appinstance_browse' %}?app__name={{instance.app.name}}&app__title={{instance.app.title}}",
                 layers: "{% url 'layer_browse' %}",
                 maps: "{% url 'maps_browse' %}",
+                mapDetails: function(id){
+                    return '/maps/'+id
+                },
                 apps: "{% url 'app_manager_base_url' %}",
                 viewURL: "{% url "cartoview_basic_viewer.view" instance_id=instance.id %}",
                 appLogo:'{% static 'cartoview_basic_viewer/logo.png' %}'

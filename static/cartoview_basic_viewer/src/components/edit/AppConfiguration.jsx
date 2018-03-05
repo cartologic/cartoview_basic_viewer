@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import { generalFormSchema } from '../../containers/forms'
+import { generalFormSchema } from 'Source/containers/forms'
 import {
     getKeywordsTemplate
 } from './AutoCompleteInput'
-import { getPropertyFromConfig } from '../../containers/staticMethods'
+import { getPropertyFromConfig } from 'Source/containers/staticMethods'
 import t from 'tcomb-form'
 const Form = t.form.Form
 export default class AppConfiguration extends React.Component {

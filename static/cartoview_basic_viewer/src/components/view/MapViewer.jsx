@@ -4,6 +4,7 @@ import React from 'react'
 import compose from 'recompose/compose'
 import { withStyles } from 'material-ui/styles'
 import withWidth from 'material-ui/utils/withWidth'
+
 const styles = theme => ({
 
 })
@@ -14,7 +15,10 @@ class MapViewer extends React.Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.loading !== this.props.loading && !nextProps.loading) {
             this.fitHistory()
-            this.handleHistory()
+            if (nextProps.enableHistory) {
+                this.handleHistory()
+            }
+
         }
     }
     componentDidMount() {
@@ -41,7 +45,7 @@ class MapViewer extends React.Component {
             if (match.params.x1 && match.params.y1)
                 extent.push(parseFloat(match.params.x1), parseFloat(match.params.y1))
             if (extent !== map.getView().calculateExtent()) {
-                map.getView().fit(extent, map.getSize())
+                BasicViewerHelper.fitExtent(extent, map)
             }
         }
     }
@@ -59,6 +63,8 @@ class MapViewer extends React.Component {
 MapViewer.propTypes = {
     map: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
+    enableHistory: PropTypes.bool,
+    loading: PropTypes.bool.isRequired,
     width: PropTypes.string,
     match: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,

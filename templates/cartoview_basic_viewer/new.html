@@ -36,7 +36,11 @@
         appLogo:'{% static 'cartoview_basic_viewer/logo.png' %}',
         layerAttributes:"{% url 'app_manager_base_url' %}rest/app_manager/geonodelayerattribute/",
         mapLayers:"{% url "cartoview_map_layers" %}",
+        noImage:"{% static 'geonode/img/missing_thumb.png' %}",
         newURL:"{% url "cartoview_basic_viewer.new" %}",
+        mapDetails: function(id){
+                    return '/maps/'+id
+                },
         editURL:function(id){
           return "/apps/cartoview_basic_viewer/"+id+"/edit/"
         },

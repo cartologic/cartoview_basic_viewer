@@ -89,7 +89,7 @@ export default class MapSelector extends React.Component {
                 </div>
                 {loading && <Loader />}
                 {!loading && maps.map((map, index) => {
-                    return <MapCard key={index} map={map} selectedMap={selectedMap} selectMap={selectMap} />
+                    return <MapCard urls={urls} key={index} map={map} selectedMap={selectedMap} selectMap={selectMap} />
 
                 })}
                 {(!loading && !searchEnabled && maps.length == 0 && userMaps) && <div className="row">
@@ -121,11 +121,11 @@ export default class MapSelector extends React.Component {
 MapSelector.propTypes = {
     maps: PropTypes.array,
     selectedMap: PropTypes.object,
+    urls: PropTypes.object.isRequired,
     selectMap: PropTypes.func.isRequired,
     getMaps: PropTypes.func.isRequired,
     search: PropTypes.func.isRequired,
     handleSearchMode: PropTypes.func.isRequired,
-    urls: PropTypes.object.isRequired,
     UserMapsChanged: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
     userMaps: PropTypes.bool.isRequired,

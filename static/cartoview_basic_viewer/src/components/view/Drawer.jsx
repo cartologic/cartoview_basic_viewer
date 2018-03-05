@@ -1,7 +1,9 @@
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
 
+import Bookmarks from './Bookmarks';
 import CameraIcon from 'material-ui-icons/PhotoCamera'
 import CartoviewAbout from 'Source/components/view/About'
+import CartoviewBookmarks from 'Source/components/view/Bookmarks'
 import CartoviewLayerSwitcher from 'Source/components/view/LayerSwitcher'
 import CartoviewLegends from 'Source/components/view/Legends'
 import CollapsibleListItem from 'Source/components/view/CollapsibleItem'
@@ -9,6 +11,7 @@ import HomeIcon from 'material-ui-icons/Home'
 import ImageIcon from 'material-ui-icons/Image'
 import InfoIcons from 'material-ui-icons/Info'
 import LayersIcons from 'material-ui-icons/Layers'
+import LocationIcon from 'material-ui-icons/LocationOn'
 import NavBar from 'Source/components/view/NavBar.jsx'
 import Paper from 'material-ui/Paper'
 import PropTypes from 'prop-types'
@@ -40,7 +43,8 @@ class CartoviewDrawer extends React.Component {
             handleLayerVisibilty,
             config,
             exportMap,
-            handleFeaturesTableDrawer
+            handleFeaturesTableDrawer,
+            map
         } = this.props
         const { about } = this.state
         return (
@@ -60,24 +64,29 @@ class CartoviewDrawer extends React.Component {
                             </ListItemIcon>
                             <ListItemText primary="About" />
                         </ListItem>
-                        <ListItem onTouchTap={exportMap} button>
+                        {config.showExportMap && <ListItem onTouchTap={exportMap} button>
                             <ListItemIcon>
                                 <CameraIcon />
                             </ListItemIcon>
                             <ListItemText primary="Export Map" />
-                        </ListItem>
-                        <ListItem onTouchTap={handleFeaturesTableDrawer} button>
+                        </ListItem>}
+                        {config.enableFeatureTable && <ListItem onTouchTap={handleFeaturesTableDrawer} button>
                             <ListItemIcon>
                                 <TableIcon />
                             </ListItemIcon>
                             <ListItemText primary="Feature Table" />
-                        </ListItem>
-                        <CollapsibleListItem open={false} title="Layers" icon={<LayersIcons />} >
+                        </ListItem>}
+
+                        {config.bookmarks && <CollapsibleListItem open={false} title="Bookmarks" icon={<LocationIcon />} >
+                            <CartoviewBookmarks map={map} bookmarks={config.bookmarks} />
+                        </CollapsibleListItem>}
+                        {config.showLayerSwitcher && <CollapsibleListItem open={false} title="Layers" icon={<LayersIcons />} >
                             <CartoviewLayerSwitcher handleLayerVisibilty={handleLayerVisibilty} changeLayerOrder={changeLayerOrder} mapLayers={mapLayers} />
-                        </CollapsibleListItem>
-                        <CollapsibleListItem open={false} title="Legend" icon={<ImageIcon />} >
+                        </CollapsibleListItem>}
+                        {config.showLegend && <CollapsibleListItem open={false} title="Legend" icon={<ImageIcon />} >
                             <CartoviewLegends legends={legends} />
-                        </CollapsibleListItem>
+                        </CollapsibleListItem>}
+
                         <CartoviewAbout open={about} title={config.formTitle} abstract={config.formAbstract} close={this.handleAboutChange} />
                     </List>
                 </Paper>
@@ -95,6 +104,7 @@ CartoviewDrawer.propTypes = {
     handleLayerVisibilty: PropTypes.func.isRequired,
     exportMap: PropTypes.func.isRequired,
     handleFeaturesTableDrawer: PropTypes.func.isRequired,
-    config: PropTypes.object.isRequired
+    config: PropTypes.object.isRequired,
+    map: PropTypes.object.isRequired
 }
 export default withStyles(styles)(CartoviewDrawer)

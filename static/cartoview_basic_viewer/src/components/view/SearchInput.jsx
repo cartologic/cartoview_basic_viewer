@@ -61,7 +61,7 @@ class GeoCodeSearchInput extends React.Component {
             <div>
                 <Paper className={classNames("search-paper", [classes.paper])} elevation={1}>
                     <Input
-                        placeholder="search(Geocoding)...."
+                        placeholder="Search(Geocoding)...."
                         onChange={this.handleChange}
                         className={classes.textField}
                         value={searchText}
