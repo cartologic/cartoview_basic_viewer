@@ -9,16 +9,16 @@ class URLS {
     }
     getParamterizedURL = (url, query) => {
         let newURL = url
-        if (Object.keys(query).length > 0) {
+        if (Object.keys(query).length > 0 && newURL.indexOf('?') === -1) {
             newURL += '?'
+        } else {
+            newURL += '&'
         }
+        let newQuery = []
         Object.keys(query).map((key, index) => {
-            if (index != 0) {
-                newURL += '&'
-            }
-            newURL += `${key}=${query[key]}`
+            newQuery.push(`${key}=${query[key]}`)
         })
-        return newURL
+        return newURL + newQuery.join('&')
     }
     getMapApiURL = (username, userMaps = false, limit, offset, query = {}) => {
         let params = {

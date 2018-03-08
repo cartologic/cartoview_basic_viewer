@@ -17,12 +17,12 @@ import MapConfigService from 'Source/services/MapConfigService'
 import MapConfigTransformService from 'Source/services/MapConfigTransformService'
 import Overlay from 'ol/overlay'
 import PropTypes from 'prop-types'
-import URLS from 'Source/containers/URLS'
+import URLS from 'Source/utils/URLS'
 import Vector from 'ol/layer/vector'
 import { default as VectorSource } from 'ol/source/vector'
 import _ from "lodash"
 import { arrayMove } from 'react-sortable-hoc'
-import { doGet } from 'Source/containers/utils'
+import { doGet } from 'Source/utils/utils'
 import proj from 'ol/proj'
 import proj4 from 'proj4'
 import { render } from 'react-dom'
@@ -199,6 +199,7 @@ class BasicViewerContainer extends Component {
             'FORMAT': 'image/png',
             "LAYER": layerName
         })
+        console.log(url)
         return this.urls.getProxiedURL(url)
     }
     toggleDrawer = () => {
