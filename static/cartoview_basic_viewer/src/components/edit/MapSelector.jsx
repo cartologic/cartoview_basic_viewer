@@ -80,7 +80,7 @@ export default class MapSelector extends React.Component {
     render() {
         const { loading, selectedMap, selectMap, maps, userMaps, totalMaps, UserMapsChanged, limit, urls, searchEnabled } = this.props
         return (
-            <div className="grid">
+            <div className="flex-row">
                 <div className="row row-fix">
                     <SearchBox searchByTitle={this.searchByTitle} />
                 </div>

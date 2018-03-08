@@ -23,7 +23,6 @@ class FeaturesTable extends React.Component {
                     pages={pages}
                     loading={loading}
                     onFetchData={getTableData}
-                    filterable
                     defaultPageSize={10}
                     className="-striped -highlight"
                 />

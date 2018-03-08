@@ -1,7 +1,10 @@
 .wrapping {
     padding-top: 20px
 }
-
+.flex-row{
+    display: flex;
+    flex-direction: column;
+}
 .hidden {
     display: none;
 }

@@ -104,7 +104,7 @@ class BasicViewerContainer extends Component {
         })
 
     }
-    getFeatures = (typeNames, startIndex, pagination) => {
+    getFeatures = (typeNames, startIndex, pagination = null, sortBy = null) => {
         const { map } = this.state
         const { urls } = this.props
         let query = {
@@ -120,6 +120,9 @@ class BasicViewerContainer extends Component {
         }
         if (startIndex) {
             query.startIndex = startIndex
+        }
+        if (sortBy) {
+            query.sortBy = sortBy
         }
         const requestUrl = this.urls.getParamterizedURL(urls.wfsURL, query)
         const proxiedURL = this.urls.getProxiedURL(requestUrl)
@@ -143,39 +146,48 @@ class BasicViewerContainer extends Component {
         const sorted = state.sorted
         const page = state.page
         const filtered = state.filtered
-        this.getFeatures(tableLayer).then(data => {
+        let sortAtrr = null
+        let startIndex = page
+        let count = (page + 1) * pagination
+        let featuresPromise = this.getFeatures(tableLayer)
+        if (sorted.length > 0 && sorted[0].id !== 'featureId') {
+            sortAtrr = sorted[0].id
+            sortAtrr += sorted[0].desc ? "+D" : "+A"
+        }
+        featuresPromise = this.getFeatures(tableLayer, startIndex, count, sortAtrr)
+        featuresPromise.then(data => {
             const total = data.totalFeatures
             let features = wmsGetFeatureInfoFormats['application/json'].readFeatures(data, {
                 featureProjection: map.getView().getProjection()
             })
             features = this.getData(features)
-            if (filtered.length) {
-                features = filtered.reduce((filteredSoFar, nextFilter) => {
-                    return filteredSoFar.filter(row => {
-                        return (row[nextFilter.id] + "").includes(nextFilter.value)
-                    })
-                }, features)
-            }
-            const sortedData = _.orderBy(
-                features,
-                sorted.map(sort => {
-                    return row => {
-                        if (row[sort.id] === null || row[sort.id] === undefined) {
-                            return -Infinity
+            if (sorted.length > 0 && sorted[0].id !== 'featureId') {
+                features = _.orderBy(
+                    features,
+                    sorted.map(sort => {
+                        return row => {
+                            if (row[sort.id] === null || row[sort.id] === undefined) {
+                                return -Infinity
+                            }
+                            return typeof row[sort.id] === "string"
+                                ? row[sort.id].toLowerCase()
+                                : row[sort.id]
                         }
-                        return typeof row[sort.id] === "string"
-                            ? row[sort.id].toLowerCase()
-                            : row[sort.id]
-                    }
-                }),
-                sorted.map(d => (d.desc ? "desc" : "asc"))
-            )
-
-            const rows = sortedData.slice(pagination * page, pagination * page + pagination)
+                    }),
+                    sorted.map(d => (d.desc ? "desc" : "asc"))
+                )
+            }
+            // if (filtered.length) {
+            //     features = filtered.reduce((filteredSoFar, nextFilter) => {
+            //         return filteredSoFar.filter(row => {
+            //             return (row[nextFilter.id] + "").includes(nextFilter.value)
+            //         })
+            //     }, features)
+            // }
             const pages = Math.ceil(total
                 / pagination)
 
-            this.setState({ features: rows, tablePages: pages, featuresIsLoading: false })
+            this.setState({ features, tablePages: pages, featuresIsLoading: false })
         })
 
     }

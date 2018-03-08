@@ -8,7 +8,17 @@ class URLS {
         return encodeURIComponent(url).replace(/%20/g, '+')
     }
     getParamterizedURL = (url, query) => {
-        return UrlAssembler(url).query(query).toString()
+        let newURL = url
+        if (Object.keys(query).length > 0) {
+            newURL += '?'
+        }
+        Object.keys(query).map((key, index) => {
+            if (index != 0) {
+                newURL += '&'
+            }
+            newURL += `${key}=${query[key]}`
+        })
+        return newURL
     }
     getMapApiURL = (username, userMaps = false, limit, offset, query = {}) => {
         let params = {
