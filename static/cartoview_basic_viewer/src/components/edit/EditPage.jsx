@@ -82,11 +82,11 @@ Tabs.propTypes = {
 const AppBar = (props) => {
     const { handleHideModal } = props
     return (
-        <div className="row">
-            <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+        <div className="flex-element full-width">
+            <div className="grow">
                 <h1>{"BasicViewer"}</h1>
             </div>
-            <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-center">
+            <div className="text-center">
                 <h1>
                     <button onClick={handleHideModal} className="btn btn-primary">
                         <i className="fa fa-question-circle fa-lg" aria-hidden="true"></i>
@@ -131,11 +131,9 @@ export default class EditPageComponent extends React.Component {
         const { childrenProps } = this.props
         let { showModal } = this.state
         return (
-            <div>
+            <div className="base">
                 <AppBar handleHideModal={this.handleHideModal} />
-                <hr />
                 <ActionBar validate={childrenProps.validate} saving={childrenProps.saving} urls={childrenProps.urls} save={childrenProps.save} selectedMap={childrenProps.selectedMap} instanceId={childrenProps.instanceId} />
-                <hr />
                 <div className="row content">
                     <Tabs childrenProps={childrenProps} checkIfDisabled={this.checkIfDisabled} getContentClassName={this.getContentClassName} getTabClassName={this.getTabClassName} />
                 </div>

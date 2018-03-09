@@ -1,5 +1,3 @@
-import UrlAssembler from 'url-assembler'
-
 class URLS {
     constructor(urls) {
         this.urls = urls
@@ -29,7 +27,7 @@ class URLS {
         if (userMaps) {
             params['owner__username'] = username
         }
-        const url = UrlAssembler(this.urls.MapsAPI).query(params).toString()
+        const url = this.getParamterizedURL(this.urls.MapsAPI, params)
         return url
     }
     getMapApiSearchURL = (username, userMaps = false, text) => {
@@ -37,7 +35,8 @@ class URLS {
         if (userMaps) {
             params['owner__username'] = username
         }
-        const url = UrlAssembler(this.urls.MapsAPI).query(params).toString()
+
+        const url = this.getParamterizedURL(this.urls.MapsAPI, params)
         return url
     }
     getProxiedURL = (url) => {

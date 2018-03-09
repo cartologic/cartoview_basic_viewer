@@ -84,7 +84,7 @@ class GeoCodeSearchInput extends React.Component {
                         {geocodingResult.map(((item, index) => {
                             return (
                                 <ListItem onTouchTap={() => this.zoomTo(item.lon, item.lat)} key={index} button>
-                                    {item.icon && <Img src={item.icon} />}
+                                    {item.icon && <Img src={item.icon} loader={<Loader />} />}
                                     <ListItemText inset primary={item.display_name} secondary={item.class} />
                                 </ListItem>
                             )

@@ -60,7 +60,7 @@ export const CartoviewSnackBar = (props) => {
     const messageComponent = <SnackMessage message={message} />
     return <Snackbar
         open={open}
-        onRequestClose={handleClose ? handleClose : () => { }}
+        onClose={handleClose ? handleClose : () => { }}
         transition={Fade}
         SnackbarContentProps={{
             'aria-describedby': 'message-id',

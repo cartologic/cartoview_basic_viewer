@@ -35,7 +35,7 @@ class Collapsible extends React.Component {
         const { classes, children, title, icon } = this.props
         return (
             <div>
-                <ListItem>
+                <ListItem button onTouchTap={this.handleDetailsExpand}>
                     <ListItemIcon>
                         {icon}
                     </ListItemIcon>

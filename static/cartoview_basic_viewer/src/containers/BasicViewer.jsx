@@ -199,7 +199,6 @@ class BasicViewerContainer extends Component {
             'FORMAT': 'image/png',
             "LAYER": layerName
         })
-        console.log(url)
         return this.urls.getProxiedURL(url)
     }
     toggleDrawer = () => {

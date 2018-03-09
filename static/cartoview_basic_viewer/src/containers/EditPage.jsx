@@ -13,7 +13,7 @@ import React from 'react'
 import ToolConfiguration from 'Source/components/edit/ToolConfiguration'
 import URLS from 'Source/utils/URLS'
 
-const limit = 9
+const LIMIT = 9
 class EditPage extends React.Component {
     constructor(props) {
         super(props)
@@ -47,7 +47,7 @@ class EditPage extends React.Component {
         const { userMaps } = this.state
         this.setState({ userMaps: !userMaps }, this.getMaps)
     }
-    getMaps = (offset = 0, limit = limit) => {
+    getMaps = (offset = 0, limit = LIMIT) => {
         this.setState({ loading: true })
         const { username } = this.props
         const { userMaps } = this.state
@@ -160,7 +160,7 @@ class EditPage extends React.Component {
                     userMaps,
                     totalMaps,
                     UserMapsChanged: this.UserMapsChanged,
-                    limit,
+                    limit: LIMIT,
                     urls,
                     search: this.search,
                     handleSearchMode: this.handleSearchMode,
@@ -291,9 +291,7 @@ class EditPage extends React.Component {
     }
     render() {
         return (
-            <div>
-                <EditPageComponent childrenProps={this.getChildrenProps()} />
-            </div>
+            <EditPageComponent childrenProps={this.getChildrenProps()} />
         )
     }
 }
