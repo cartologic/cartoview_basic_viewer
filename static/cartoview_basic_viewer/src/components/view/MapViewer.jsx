@@ -56,7 +56,7 @@ class MapViewer extends React.Component {
         }
     }
     render() {
-        return <div ref={(mapDiv) => this.mapDiv = mapDiv} className="map-panel"></div>
+        return <div id="map" ref={(mapDiv) => this.mapDiv = mapDiv} className="map-panel"></div>
 
     }
 }

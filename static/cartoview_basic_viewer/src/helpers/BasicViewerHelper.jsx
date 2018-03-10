@@ -15,19 +15,18 @@ class BasicViewerHelper {
         return center
     }
     getMap = () => {
-        let osmLayer = new Tile({
-            title: 'OpenStreetMap',
-            source: new OSM()
-        })
         let map = new Map({
             interactions: interaction.defaults().extend([
                 new DragRotateAndZoom()
             ]),
-            layers: [osmLayer],
+            layers: [
+                new Tile({
+                    title: 'OpenStreetMap',
+                    source: new OSM()
+                })
+            ],
             view: new View({
                 center: proj.fromLonLat([0, 0]),
-                minZoom: 4,
-                maxZoom: 16,
                 zoom: 6
             })
         })

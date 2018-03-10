@@ -290,9 +290,10 @@ class BasicViewerContainer extends Component {
     zoomToFeature = (feature) => {
         let { map } = this.state
         this.addStyleToFeature([feature])
-        const featureCenter = feature.getGeometry().getExtent()
-        const center = BasicViewerHelper.getCenterOfExtent(featureCenter)
-        Animation.flyTo(center, map.getView(), 14, () => { })
+        // const featureCenter = feature.getGeometry().getExtent()
+        // const center = BasicViewerHelper.getCenterOfExtent(featureCenter)
+        // Animation.flyTo(center, map.getView(), 14, () => { })
+        BasicViewerHelper.fitExtent(feature.getGeometry().getExtent(), map, 400)
     }
     zoomToLocation = (pointArray) => {
         let { map } = this.state

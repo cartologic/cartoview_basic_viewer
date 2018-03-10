@@ -1,27 +1,30 @@
-var webpack = require('webpack')
-var CompressionPlugin = require("compression-webpack-plugin")
-var BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-var path = require('path')
-var BUILD_DIR = path.resolve(__dirname, 'dist')
-var APP_DIR = path.resolve(__dirname, 'src')
+var webpack = require( 'webpack' )
+var CompressionPlugin = require( "compression-webpack-plugin" )
+var BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' ).BundleAnalyzerPlugin;
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+
+var path = require( 'path' )
+var BUILD_DIR = path.resolve( __dirname, 'dist' )
+var APP_DIR = path.resolve( __dirname, 'src' )
 var filename = '[name].bundle.js'
-const production = process.argv.indexOf('-p') !== -1
+const production = process.argv.indexOf( '-p' ) !== -1
 const plugins = [
-    new webpack.DefinePlugin({
+    new webpack.DefinePlugin( {
         'process.env': {
-            'NODE_ENV': JSON.stringify(production ? 'production' : '')
+            'NODE_ENV': JSON.stringify( production ? 'production' : '' )
         },
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
+    } ),
+    new webpack.optimize.CommonsChunkPlugin( {
         name: 'commons',
         filename: 'commons.js'
-    })
+    } ),
+    new ExtractTextPlugin("[name].css")
 
 ]
 const config = {
     entry: {
-        config: path.join(APP_DIR, 'EditPageEntry.jsx'),
-        BasicViewer: path.join(APP_DIR, 'containers', 'BasicViewer.jsx'),
+        config: path.join( APP_DIR, 'EditPageEntry.jsx' ),
+        BasicViewer: path.join( APP_DIR, 'containers', 'BasicViewer.jsx' ),
     },
     output: {
         path: BUILD_DIR,
@@ -37,44 +40,55 @@ const config = {
     },
     plugins: plugins,
     resolve: {
-        extensions: ['*', '.js', '.jsx'],
+        extensions: [ '*', '.js', '.jsx' ],
         alias: {
             Source: APP_DIR
         },
     },
     module: {
-        loaders: [{
-            test: /\.(js|jsx)$/,
-            loader: 'babel-loader',
-            exclude: /node_modules/
-        }, {
-            test: /\.xml$/,
-            loader: 'raw-loader'
-        }, {
-            test: /\.json$/,
-            loader: "json-loader"
-        }, {
-            test: /\.css$/,
-            loader: "style-loader!css-loader"
-        }, {
-            test: /\.(png|jpg|gif)$/,
-            loader: 'file-loader'
+        loaders: [ {
+                test: /\.(js|jsx)$/,
+                loader: 'babel-loader',
+                exclude: /node_modules/
         },
-        {
-            test: /\.(woff|woff2)$/,
-            loader: 'url-loader?limit=100000'
+            {
+                test: /\.css$/,
+                loader: ExtractTextPlugin.extract({
+                    use: 'css-loader',
+                    fallback: 'style-loader'
+              })
+        },
+            {
+                test: /\.xml$/,
+                loader: 'raw-loader'
+        },
+            {
+                test: /\.json$/,
+                loader: "json-loader"
+        },
+        //     {
+        //         test: /\.css$/,
+        //         loader: "style-loader!css-loader"
+        // },
+            {
+                test: /\.(png|jpg|gif)$/,
+                loader: 'file-loader'
+        },
+            {
+                test: /\.(woff|woff2)$/,
+                loader: 'url-loader?limit=100000'
         }
         ],
-        noParse: [/dist\/ol\.js/, /dist\/jspdf.debug\.js/,
-            /dist\/js\/tether\.js/]
+        noParse: [ /dist\/ol\.js/, /dist\/jspdf.debug\.js/,
+            /dist\/js\/tether\.js/ ]
     }
 }
-if (production) {
+if ( production ) {
     const prodPlugins = [
         new webpack.optimize.AggressiveMergingPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.optimize.ModuleConcatenationPlugin(),
-        new webpack.optimize.UglifyJsPlugin({
+        new webpack.optimize.UglifyJsPlugin( {
             compress: {
                 warnings: false,
                 pure_getters: true,
@@ -85,8 +99,8 @@ if (production) {
             output: {
                 comments: false,
             },
-            exclude: [/\.min\.js$/gi] // skip pre-minified libs
-        }),
+            exclude: [ /\.min\.js$/gi ] // skip pre-minified libs
+        } ),
         new CompressionPlugin( {
             asset: '[path].gz[query]',
             algorithm: 'gzip',
@@ -97,7 +111,7 @@ if (production) {
         new webpack.HashedModuleIdsPlugin(),
         new BundleAnalyzerPlugin()
     ]
-    Array.prototype.push.apply(plugins, prodPlugins)
+    Array.prototype.push.apply( plugins, prodPlugins )
 } else {
     config.devtool = 'eval-cheap-module-source-map'
 }
