@@ -8,6 +8,7 @@ import IconButton from 'material-ui/IconButton'
 import { InputLabel } from 'material-ui/Input'
 import { Loader } from 'Source/containers/CommonComponents'
 import PropTypes from 'prop-types'
+import QueryPanel from 'Source/components/view/QueryPanel'
 import Select from 'material-ui/Select'
 import { withStyles } from 'material-ui/styles'
 
@@ -33,6 +34,12 @@ const styles = theme => ({
         display: 'flex',
         justifyContent: 'flex-end',
     },
+    queryPanel: {
+        gridColumn: 2,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     button: {
         margin: theme.spacing.unit,
     },
@@ -43,7 +50,7 @@ class Sidenav extends Component {
         super(props)
     }
     render() {
-        const { drawerOpen, classes, hanldeDrawerOpen, mapLayers, children, loading, tableLayer, handleTableLayerChange } = this.props
+        const { drawerOpen, classes, hanldeDrawerOpen, mapLayers, children, loading, tableLayer, handleTableLayerChange, handleCQLFilterChange, cqlFilter, getTableData } = this.props
         return (
             <Drawer
                 variant="persistent"
@@ -69,6 +76,9 @@ class Sidenav extends Component {
                             {mapLayers.map((layer, index) => <option key={index} value={layer.get('name')}>{layer.get('name')}</option>)}
                         </Select>
                     </FormControl>
+                    <div className={classes.queryPanel}>
+                        <QueryPanel getTableData={getTableData} cqlFilter={cqlFilter} handleCQLFilterChange={handleCQLFilterChange} />
+                    </div>
                     <div className={classes.closeButton}>
                         <IconButton onClick={hanldeDrawerOpen} color="primary" className={classes.button} aria-label="Close">
                             <CloseIcon />
@@ -96,7 +106,10 @@ Sidenav.propTypes = {
     mapLayers: PropTypes.array.isRequired,
     loading: PropTypes.bool.isRequired,
     tableLayer: PropTypes.string.isRequired,
-    handleTableLayerChange: PropTypes.func.isRequired
+    cqlFilter: PropTypes.string.isRequired,
+    handleTableLayerChange: PropTypes.func.isRequired,
+    handleCQLFilterChange: PropTypes.func.isRequired,
+    getTableData: PropTypes.func.isRequired,
 }
 
 export default withStyles(styles)(Sidenav)

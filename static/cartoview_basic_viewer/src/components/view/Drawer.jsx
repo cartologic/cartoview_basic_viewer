@@ -1,6 +1,5 @@
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
 
-import Bookmarks from './Bookmarks';
 import CameraIcon from 'material-ui-icons/PhotoCamera'
 import CartoviewAbout from 'Source/components/view/About'
 import CartoviewBookmarks from 'Source/components/view/Bookmarks'

@@ -52,6 +52,9 @@
 .space-per-line {
     white-space: pre-line
 }
+.zoom-button{
+    cursor: pointer;
+}
 
 .attrs-table-title {
     align-items: center;

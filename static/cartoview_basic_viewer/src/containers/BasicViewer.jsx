@@ -20,6 +20,7 @@ import PropTypes from 'prop-types'
 import URLS from 'Source/utils/URLS'
 import Vector from 'ol/layer/vector'
 import { default as VectorSource } from 'ol/source/vector'
+import ZoomIcon from 'material-ui-icons/ZoomIn'
 import _ from "lodash"
 import { arrayMove } from 'react-sortable-hoc'
 import { doGet } from 'Source/utils/utils'
@@ -37,6 +38,7 @@ class BasicViewerContainer extends Component {
             drawerOpen: false,
             featureIdentifyLoading: false,
             activeFeature: 0,
+            cqlFilter: '',
             mouseCoordinates: [0, 0],
             featureIdentifyResult: [],
             showPopup: false,
@@ -62,6 +64,9 @@ class BasicViewerContainer extends Component {
     capitalize = (s) => {
         return s && s[0].toUpperCase() + s.slice(1)
     }
+    handleCQLFilterChange = (event) => {
+        this.setState({ cqlFilter: event.target.value })
+    }
     getData = (features) => {
         let data = []
         features.map(feature => {
@@ -72,6 +77,7 @@ class BasicViewerContainer extends Component {
                     featureObject[key] = featureProperties[key]
                 }
             })
+            featureObject.feature = feature
             featureObject.featureId = feature.getId()
             data.push(featureObject)
         })
@@ -87,6 +93,11 @@ class BasicViewerContainer extends Component {
             let columns = [{
                 Header: "FeatureID",
                 accessor: "featureId"
+            },
+            {
+                Header: "Action",
+                accessor: "feature",
+                show: false
             }]
             if (features.length > 0) {
                 const featureProperties = features[0].getProperties()
@@ -100,11 +111,20 @@ class BasicViewerContainer extends Component {
                     }
                 })
             }
+            columns.push(
+                {
+                    Header: "Action",
+                    id: "action",
+                    show: true,
+                    Cell: rowInfo => (<div className="element-flex attrs-table-title"><ZoomIcon className="zoom-button"  onClick={(e) => this.zoomToFeature(rowInfo.row.feature)} /></div>)
+
+                }
+            )
             this.setState({ tableColumns: columns })
         })
 
     }
-    getFeatures = (typeNames, startIndex, pagination = null, sortBy = null) => {
+    getFeatures = (typeNames, startIndex, pagination = null, sortBy = null, cqlFilter = null) => {
         const { map } = this.state
         const { urls } = this.props
         let query = {
@@ -117,6 +137,9 @@ class BasicViewerContainer extends Component {
         }
         if (pagination) {
             query.count = pagination
+        }
+        if (cqlFilter) {
+            query.cql_filter = this.urls.encodeURL(cqlFilter)
         }
         if (startIndex) {
             query.startIndex = startIndex
@@ -132,7 +155,7 @@ class BasicViewerContainer extends Component {
     handleTableLayerChange = event => {
         const layer = event.target.value
         if (layer !== this.state.tableLayer) {
-            this.setState({ tableLayer: event.target.value, features: [] }, () => {
+            this.setState({ tableLayer: event.target.value, features: [], cqlFilter: '' }, () => {
                 this.getTableData({ pageSize: 10, sorted: [], page: 0, filtered: [] }, {})
                 this.getColumns()
             })
@@ -141,12 +164,13 @@ class BasicViewerContainer extends Component {
     }
     getTableData = (state, instance) => {
         this.setState({ featuresIsLoading: true })
-        const { map, tableLayer } = this.state
+        const { map, tableLayer, cqlFilter } = this.state
         const pagination = state.pageSize
         const sorted = state.sorted
         const page = state.page
         const filtered = state.filtered
         let sortAtrr = null
+        let filter = cqlFilter === '' ? null : cqlFilter
         let startIndex = page
         let count = (page + 1) * pagination
         let featuresPromise = this.getFeatures(tableLayer)
@@ -154,7 +178,7 @@ class BasicViewerContainer extends Component {
             sortAtrr = sorted[0].id
             sortAtrr += sorted[0].desc ? "+D" : "+A"
         }
-        featuresPromise = this.getFeatures(tableLayer, startIndex, count, sortAtrr)
+        featuresPromise = this.getFeatures(tableLayer, startIndex, count, sortAtrr, filter)
         featuresPromise.then(data => {
             const total = data.totalFeatures
             let features = wmsGetFeatureInfoFormats['application/json'].readFeatures(data, {
@@ -412,6 +436,7 @@ class BasicViewerContainer extends Component {
             zoomToLocation: this.zoomToLocation,
             exportMap: this.exportMap,
             geocodeSearch: this.geocodeSearch,
+            handleCQLFilterChange: this.handleCQLFilterChange,
             handleFeaturesTableDrawer: this.handleFeaturesTableDrawer
         }
         return <BasicViewer childrenProps={childrenProps} />

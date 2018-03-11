@@ -9,7 +9,7 @@ export const MapCard = (props) => {
         <div
             onClick={() => selectMap(map)}
             key={map.id}
-            className={selectedMap.id === map.id
+            className={ selectedMap && (selectedMap.id === map.id)
                 ? "row row-fix resource-box bg-success"
                 : "row row-fix resource-box"}>
 
@@ -39,6 +39,6 @@ export const MapCard = (props) => {
 MapCard.propTypes = {
     selectMap: PropTypes.func.isRequired,
     map: PropTypes.object.isRequired,
-    selectedMap: PropTypes.object.isRequired,
+    selectedMap: PropTypes.object,
     urls: PropTypes.object.isRequired
 }

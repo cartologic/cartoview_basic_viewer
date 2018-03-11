@@ -1,14 +1,12 @@
-import List, { ListItem, ListItemSecondaryAction } from 'material-ui/List'
+import List, { ListItem } from 'material-ui/List'
 import { SortableContainer, SortableElement } from 'react-sortable-hoc'
 
 import Checkbox from 'material-ui/Checkbox'
-import IconButton from 'material-ui/IconButton'
 import ListSubheader from 'material-ui/List/ListSubheader'
 import { Message } from 'Source/containers/CommonComponents'
 import Paper from 'material-ui/Paper'
 import PropTypes from 'prop-types'
 import React from 'react'
-import ZoomIcon from 'material-ui-icons/ZoomIn'
 import { withStyles } from 'material-ui/styles'
 
 const styles = theme => ({

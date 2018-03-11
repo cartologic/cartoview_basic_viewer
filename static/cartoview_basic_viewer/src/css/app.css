@@ -27,7 +27,6 @@
 .resource-box {
     display: flex;
     border: 1px solid darkgray;
-    border-radius: 5px;
     margin-bottom: 20px;
     height: 200px;
     margin-left: 10px !important;
@@ -96,7 +95,7 @@
 }
 
 .resource-box-img {
-    border-right: 2px solid darkgray;
+    border-right: 1px solid darkgray;
     width: 240px;
     height: 100%;
 }
@@ -185,7 +184,6 @@
     }
     .resource-box {
         border: 1px solid darkgray;
-        border-radius: 5px;
         margin-bottom: 20px;
         margin: 10px;
         height: auto !important;

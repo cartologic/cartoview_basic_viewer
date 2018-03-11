@@ -1,5 +1,6 @@
 import 'react-table/react-table.css'
 
+import BasicViewerHelper from 'Source/helpers/BasicViewerHelper'
 import PropTypes from 'prop-types'
 import React from 'react'
 import ReactTable from 'react-table'
@@ -36,6 +37,6 @@ FeaturesTable.propTypes = {
     getTableData: PropTypes.func.isRequired,
     pages: PropTypes.number,
     loading: PropTypes.bool.isRequired,
-    tableLayer: PropTypes.string.isRequired
+    tableLayer: PropTypes.string.isRequired,
 }
 export default FeaturesTable
