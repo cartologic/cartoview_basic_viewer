@@ -18,16 +18,11 @@ const styles = theme => ({
         height: '40%',
         width: '100%',
         display: "flex",
-
+        flexDirection: 'column'
     },
     formControl: {
         margin: theme.spacing.unit,
         minWidth: 120,
-    },
-    formContainer: {
-        display: 'grid',
-        gridTemplateColumns: '30% auto 20%',
-        gridTemplateRows: 'auto',
     },
     closeButton: {
         gridColumn: 3,
@@ -61,21 +56,23 @@ class Sidenav extends Component {
                 anchor={'bottom'}
             >
                 <Divider />
-                <div className={classes.formContainer}>
-                    <FormControl className={classes.formControl}>
-                        <InputLabel htmlFor="layer-select">{"Layer"}</InputLabel>
-                        <Select
-                            native
-                            onChange={handleTableLayerChange}
-                            value={tableLayer}
+                <div className="table-drawer-head ">
+                    <div >
+                        <FormControl className={classes.formControl}>
+                            <InputLabel htmlFor="layer-select">{"Layer"}</InputLabel>
+                            <Select
+                                native
+                                onChange={handleTableLayerChange}
+                                value={tableLayer}
 
-                            inputProps={{
-                                id: 'layer-select',
-                            }}
-                        >
-                            {mapLayers.map((layer, index) => <option key={index} value={layer.get('name')}>{layer.get('name')}</option>)}
-                        </Select>
-                    </FormControl>
+                                inputProps={{
+                                    id: 'layer-select',
+                                }}
+                            >
+                                {mapLayers.map((layer, index) => <option key={index} value={layer.get('name')}>{layer.get('name')}</option>)}
+                            </Select>
+                        </FormControl>
+                    </div>
                     <div className={classes.queryPanel}>
                         <QueryPanel getTableData={getTableData} cqlFilter={cqlFilter} handleCQLFilterChange={handleCQLFilterChange} />
                     </div>
@@ -86,7 +83,7 @@ class Sidenav extends Component {
                     </div>
                 </div>
                 <Divider />
-                {tableLayer && tableLayer !== '' && <div>
+                {tableLayer && tableLayer !== '' && <div className="element-flex">
                     {children}
                 </div>}
                 {loading && <Loader />}

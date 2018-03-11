@@ -16,7 +16,7 @@ class FeaturesTable extends React.Component {
             pages,
             loading } = this.props
         return (
-            <div>
+            <div className="feature-table-container">
                 <ReactTable
                     columns={columns}
                     manual
