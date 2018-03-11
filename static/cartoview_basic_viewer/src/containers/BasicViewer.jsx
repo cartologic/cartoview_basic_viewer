@@ -116,7 +116,7 @@ class BasicViewerContainer extends Component {
                     Header: "Action",
                     id: "action",
                     show: true,
-                    Cell: rowInfo => (<div className="element-flex attrs-table-title"><ZoomIcon className="zoom-button"  onClick={(e) => this.zoomToFeature(rowInfo.row.feature)} /></div>)
+                    Cell: rowInfo => (<div className="element-flex attrs-table-title"><ZoomIcon className="zoom-button" onClick={(e) => this.zoomToFeature(rowInfo.row.feature)} /></div>)
 
                 }
             )
@@ -171,8 +171,8 @@ class BasicViewerContainer extends Component {
         const filtered = state.filtered
         let sortAtrr = null
         let filter = cqlFilter === '' ? null : cqlFilter
-        let startIndex = page
-        let count = (page + 1) * pagination
+        let startIndex = (page) * pagination
+        let count = pagination
         let featuresPromise = this.getFeatures(tableLayer)
         if (sorted.length > 0 && sorted[0].id !== 'featureId') {
             sortAtrr = sorted[0].id
