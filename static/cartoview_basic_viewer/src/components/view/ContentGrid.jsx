@@ -1,18 +1,18 @@
 import { HashRouter, Route } from 'react-router-dom'
 import React, { Component } from 'react'
 
-import ArrowLeft from 'material-ui-icons/KeyboardArrowLeft'
-import ArrowRight from 'material-ui-icons/KeyboardArrowRight'
 import CartoviewDrawer from 'Source/components/view/Drawer'
 import CartoviewPopup from 'Source/components/view/popup'
 import Fade from 'material-ui/transitions/Fade'
 import FeatureTableDrawer from 'Source/components/view/FeatureTableDrawer'
 import FeaturesTable from 'Source/components/view/FeaturesTable'
-import GeoCode from 'Source/components/view/GeoCode'
+import GeoCodeResult from 'Source/components/view/GeoCodeResult'
+import GeoCodeSearchInput from 'Source/components/view/SearchInput'
 import Grid from 'material-ui/Grid'
 import IconButton from 'material-ui/IconButton'
 import { Loader } from 'Source/containers/CommonComponents'
 import MapViewer from 'Source/components/view/MapViewer'
+import MenuIcon from 'material-ui-icons/Menu'
 import Paper from 'material-ui/Paper'
 import PropTypes from 'prop-types'
 import Slide from 'material-ui/transitions/Slide'
@@ -46,6 +46,27 @@ const styles = theme => ({
     },
     drawerContainer: {
         left: "0px !important"
+    },
+    DrawerBar: {
+        width: '28%',
+        [theme.breakpoints.down('md')]: {
+            width: "88%"
+        },
+        zIndex: '12',
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'fixed',
+        top: '1%',
+        left: '1%',
+    },
+    DrawerOpenBar: {
+        width: '97% !important',
+        zIndex: '12',
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'absolute',
+        top: '1%',
+        left: '1%',
     }
 })
 const SnackMessage = (props) => {
@@ -77,15 +98,31 @@ function Transition(props) {
     return <Slide direction="left" {...props} />
 }
 class ContentGrid extends Component {
+    geoCodingProps = () => {
+        const { childrenProps } = this.props
+        const props = {
+            searchText: childrenProps.searchText,
+            geocodeSearchLoading: childrenProps.geocodeSearchLoading,
+            geocodeSearch: childrenProps.geocodeSearch,
+            resetGeocoding: childrenProps.resetGeocoding,
+            geocodingResult: childrenProps.geocodingResult,
+            handleGeocodingChange: childrenProps.handleGeocodingChange
+        }
+        return props
+    }
     render() {
         const { classes, childrenProps } = this.props
         return (
             <div className={classes.root}>
                 <div className={classnames({ [classes.drawer]: childrenProps.drawerOpen ? true : false, [classes.drawerClose]: childrenProps.drawerOpen ? false : true })}>
-                    <Paper className={classnames({ "drawer-button-container": true, [classes.drawerContainer]: childrenProps.drawerOpen ? false : true })}>
-                        <IconButton onTouchTap={childrenProps.toggleDrawer} color="default" aria-label="add" className={"drawer-button"}>
-                            {childrenProps.drawerOpen ? <ArrowLeft /> : <ArrowRight />}
-                        </IconButton>
+                    <Paper className={classnames(classes.DrawerBar, { [classes.DrawerOpenBar]: childrenProps.drawerOpen })}>
+                        <div className="element-flex ">
+                            <IconButton onTouchTap={childrenProps.toggleDrawer} color="default" aria-label="Open Menu">
+                                <MenuIcon />
+                            </IconButton>
+                            <GeoCodeSearchInput config={this.geoCodingProps()} />
+                        </div>
+                        {!childrenProps.geocodeSearchLoading && childrenProps.geocodingResult.length > 0 && <GeoCodeResult resetGeocoding={childrenProps.resetGeocoding} action={childrenProps.zoomToLocation} geocodingResult={childrenProps.geocodingResult} geocodeSearchLoading={childrenProps.geocodeSearchLoading} />}
                     </Paper>
                     <Transition in={childrenProps.drawerOpen} direction={"right"}>
                         <CartoviewDrawer map={childrenProps.map} handleFeaturesTableDrawer={childrenProps.handleFeaturesTableDrawer} exportMap={childrenProps.exportMap} config={childrenProps.config} handleLayerVisibilty={childrenProps.handleLayerVisibilty} changeLayerOrder={childrenProps.changeLayerOrder} mapLayers={childrenProps.mapLayers} urls={childrenProps.urls} legends={childrenProps.legends} className={classnames({ [classes.drawerContentClose]: !childrenProps.drawerOpen })} />
@@ -93,7 +130,6 @@ class ContentGrid extends Component {
                 </div>
                 <Grid className={classes.root} container alignItems={"stretch"} spacing={0}>
                     <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
-                        <GeoCode geocodeSearchLoading={childrenProps.geocodeSearchLoading} geocodeSearch={childrenProps.geocodeSearch} action={childrenProps.zoomToLocation} />
                         <HashRouter>
                             <Route exact path="/:x0?/:y0?/:x1?/:y1?" render={(props) => <MapViewer loading={childrenProps.mapIsLoading} {...props} enableHistory={childrenProps.config.enableHistory} map={childrenProps.map} />} />
                         </HashRouter>

@@ -22,10 +22,11 @@ import { withStyles } from 'material-ui/styles'
 const styles = theme => ({
     root: {
         height: "100%",
-        overflowY: 'overlay'
     },
     drawerPaper: {
         padding: theme.spacing.unit,
+        height: "calc(100% - 64px)",
+        overflowY: 'overlay'
     }
 })
 class CartoviewDrawer extends React.Component {
@@ -48,7 +49,7 @@ class CartoviewDrawer extends React.Component {
         const { about } = this.state
         return (
             <Paper elevation={6} className={classnames(classes.root, className)}>
-                <NavBar config={config} />
+                <NavBar />
                 <Paper className={classes.drawerPaper} elevation={0}>
                     <List>
                         <ListItem onTouchTap={() => window.location.href = urls.appInstancesPage} button>

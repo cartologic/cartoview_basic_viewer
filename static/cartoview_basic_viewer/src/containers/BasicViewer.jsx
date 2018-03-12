@@ -44,6 +44,8 @@ class BasicViewerContainer extends Component {
             showPopup: false,
             identifyEnabled: true,
             legends: [],
+            geocodingResult: [],
+            searchText: '',
             geocodeSearchLoading: false,
             featureCollection: new Collection(),
             map: BasicViewerHelper.getMap(),
@@ -82,6 +84,18 @@ class BasicViewerContainer extends Component {
             data.push(featureObject)
         })
         return data
+    }
+    resetGeocoding = () => {
+        this.setState({ geocodingResult: [], searchText: '' })
+    }
+    handleGeocodingChange = event => {
+        let data = {
+            searchText: event.target.value
+        }
+        if (event.target.value == '') {
+            data.geocodingResult = []
+        }
+        this.setState(data)
     }
     getColumns = () => {
         const { tableLayer, map } = this.state
@@ -229,10 +243,11 @@ class BasicViewerContainer extends Component {
         const { drawerOpen } = this.state
         this.setState({ drawerOpen: !drawerOpen })
     }
-    geocodeSearch = (text, callback) => {
+    geocodeSearch = (text = null, callback = () => { }) => {
         this.setState({ geocodeSearchLoading: true })
-        GeoCoding.search(text, (result) => {
-            this.setState({ geocodeSearchLoading: false })
+        const { searchText } = this.state
+        GeoCoding.search(text ? text : searchText, (result) => {
+            this.setState({ geocodeSearchLoading: false, geocodingResult: result })
             callback(result)
         })
     }
@@ -412,7 +427,7 @@ class BasicViewerContainer extends Component {
         let { map } = this.state
         BasicViewerHelper.exportMap(map)
     }
-    render() {
+    getChildrenProps = () => {
         const { config, urls } = this.props
         let childrenProps = {
             config,
@@ -437,9 +452,15 @@ class BasicViewerContainer extends Component {
             exportMap: this.exportMap,
             geocodeSearch: this.geocodeSearch,
             handleCQLFilterChange: this.handleCQLFilterChange,
-            handleFeaturesTableDrawer: this.handleFeaturesTableDrawer
+            handleFeaturesTableDrawer: this.handleFeaturesTableDrawer,
+            handleGeocodingChange: this.handleGeocodingChange,
+            resetGeocoding: this.resetGeocoding,
         }
-        return <BasicViewer childrenProps={childrenProps} />
+        return childrenProps
+    }
+    render() {
+
+        return <BasicViewer childrenProps={this.getChildrenProps()} />
     }
 }
 BasicViewerContainer.propTypes = {

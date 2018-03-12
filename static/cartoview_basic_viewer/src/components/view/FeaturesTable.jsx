@@ -1,6 +1,5 @@
 import 'react-table/react-table.css'
 
-import BasicViewerHelper from 'Source/helpers/BasicViewerHelper'
 import PropTypes from 'prop-types'
 import React from 'react'
 import ReactTable from 'react-table'
