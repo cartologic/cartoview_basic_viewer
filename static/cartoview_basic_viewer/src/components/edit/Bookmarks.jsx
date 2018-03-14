@@ -1,6 +1,6 @@
 import 'ol/ol.css'
 
-import BasicViewerHelper from 'Source/helpers/BasicViewerHelper'
+import BasicViewerHelper from 'cartoview-sdk/helpers/BasicViewerHelper'
 import PropTypes from 'prop-types'
 import React from 'react'
 import classNames from 'classnames'

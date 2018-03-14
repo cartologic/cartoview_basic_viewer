@@ -1246,6 +1246,13 @@ caniuse-lite@^1.0.30000757:
   version "1.0.30000758"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000758.tgz#e261140076651049cf6891ed4bc649b5c8c26c69"
 
+cartoview-sdk@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/cartoview-sdk/-/cartoview-sdk-1.0.2.tgz#39d3ef8429596ca49c6c612ad1c36e57f6464748"
+  dependencies:
+    ol "^4.6.4"
+    proj4 "^2.4.4"
+
 caseless@~0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"

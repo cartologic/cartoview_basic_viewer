@@ -1,7 +1,7 @@
 import List, { ListItem, ListItemSecondaryAction, ListItemText } from 'material-ui/List'
 
 import Avatar from 'material-ui/Avatar'
-import BasicViewerHelper from 'Source/helpers/BasicViewerHelper'
+import BasicViewerHelper from 'cartoview-sdk/helpers/BasicViewerHelper'
 import CityIcon from 'material-ui-icons/LocationCity'
 import IconButton from 'material-ui/IconButton'
 import { Message } from 'Source/containers/CommonComponents'

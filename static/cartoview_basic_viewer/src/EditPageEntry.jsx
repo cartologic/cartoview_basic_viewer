@@ -1,6 +1,6 @@
 import EditPage from './containers/EditPage'
 import React from 'react'
-import { getCRSFToken } from './helpers/helpers.jsx'
+import { getCRSFToken } from 'cartoview-sdk/helpers/helpers'
 import { render } from 'react-dom'
 class Viewer {
     constructor( domId, username, urls ) {

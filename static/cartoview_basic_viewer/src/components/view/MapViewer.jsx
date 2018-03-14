@@ -1,4 +1,4 @@
-import BasicViewerHelper from 'Source/helpers/BasicViewerHelper'
+import BasicViewerHelper from 'cartoview-sdk/helpers/BasicViewerHelper'
 import PropTypes from 'prop-types'
 import React from 'react'
 import compose from 'recompose/compose'
