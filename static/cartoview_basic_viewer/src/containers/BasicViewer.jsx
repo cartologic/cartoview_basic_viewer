@@ -50,6 +50,7 @@ class BasicViewerContainer extends Component {
             featureCollection: new Collection(),
             map: BasicViewerHelper.getMap(),
             mapLayers: [],
+            baseMaps: [],
             features: [],
             featuresIsLoading: false,
             featuresTableOpen: false,
@@ -109,36 +110,36 @@ class BasicViewerContainer extends Component {
                 'application/json'].readFeatures(data, {
                     featureProjection: map.getView().getProjection()
                 })
-            let columns = [{
-                Header: "FeatureID",
-                accessor: "featureId"
-            },
-            {
-                Header: "Action",
-                accessor: "feature",
-                show: false
-            }]
-            if (features.length > 0) {
-                const featureProperties = features[0].getProperties()
-                Object.keys(featureProperties).forEach(key => {
-                    if (key.toLowerCase() !== 'geometry') {
-                        columns.push({
-                            id: key,
-                            Header: this.capitalize(key),
-                            accessor: key
-                        })
-                    }
-                })
-            }
-            columns.push(
+            let columns = [
                 {
                     Header: "Action",
                     id: "action",
                     show: true,
                     Cell: rowInfo => (<div className="element-flex attrs-table-title"><ZoomIcon className="zoom-button" onClick={(e) => this.zoomToFeature(rowInfo.row.feature)} /></div>)
 
-                }
-            )
+                },
+                {
+
+                    Header: "FeatureID",
+                    accessor: "featureId"
+                },
+                {
+                    Header: "Action",
+                    accessor: "feature",
+                    show: false
+                }]
+            if (features.length > 0) {
+                const featureProperties = features[0].getProperties()
+                Object.keys(featureProperties).forEach(key => {
+                    if (key.toLowerCase() !== 'geometry') {
+                        columns.push({
+                            id: key,
+                            Header: key,
+                            accessor: key
+                        })
+                    }
+                })
+            }
             this.setState({ tableColumns: columns })
         })
 
@@ -320,16 +321,32 @@ class BasicViewerContainer extends Component {
     setLayerSwitcherLayers(mapLayers) {
         const { tableLayer } = this.state
         let layers = []
+        let baseMaps = []
         mapLayers.map(layer => {
             if (!(layer instanceof Group)) {
                 layers.push(layer)
             }
+            if (layer instanceof Group && layer.get('type') === 'base-group') {
+                layer.getLayers().getArray().map(lyr => baseMaps.push(lyr))
+            }
         })
-        let data = { mapLayers: layers.slice(0).reverse() }
+        let data = { mapLayers: layers.slice(0).reverse(), baseMaps }
         if (data.mapLayers.length > 0 && (!tableLayer || tableLayer !== '')) {
             data.tableLayer = data.mapLayers[0].get('name')
         }
         this.setState(data, this.getColumns)
+    }
+    handleBaseMapVisibilty = (event, value) => {
+        const { baseMaps } = this.state
+        baseMaps.map(layer => {
+            if (value === layer.get('id')) {
+                layer.setVisible(true)
+            } else {
+                layer.setVisible(false)
+            }
+        })
+        this.setState({ baseMaps })
+
     }
     zoomToFeature = (feature) => {
         let { map } = this.state
@@ -457,6 +474,7 @@ class BasicViewerContainer extends Component {
             zoomToLocation: this.zoomToLocation,
             exportMap: this.exportMap,
             geocodeSearch: this.geocodeSearch,
+            handleBaseMapVisibilty: this.handleBaseMapVisibilty,
             handleCQLFilterChange: this.handleCQLFilterChange,
             handleFeaturesTableDrawer: this.handleFeaturesTableDrawer,
             handleGeocodingChange: this.handleGeocodingChange,

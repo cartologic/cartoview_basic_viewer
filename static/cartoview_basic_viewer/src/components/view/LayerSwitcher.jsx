@@ -1,4 +1,6 @@
+import { FormControl, FormControlLabel, FormLabel } from 'material-ui/Form';
 import List, { ListItem } from 'material-ui/List'
+import Radio, { RadioGroup } from 'material-ui/Radio';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc'
 
 import Checkbox from 'material-ui/Checkbox'
@@ -29,13 +31,57 @@ const LayerItem = SortableElement(({ layer, layerIndex, handleLayerVisibilty }) 
 })
 const LayerList = SortableContainer(({ layers, handleLayerVisibilty }) => {
     return (
-        <List subheader={<ListSubheader>Drag&Drop To Order the Layes</ListSubheader>}>
+        <List subheader={<ListSubheader>{"Drag&Drop To Order the Layers"}</ListSubheader>}>
             {layers.map((layer, index) => (
                 <LayerItem handleLayerVisibilty={handleLayerVisibilty} key={`item-${index}`} index={index} layerIndex={index} layer={layer} />
             ))}
         </List>
     )
 })
+const baseMapsStyles = theme => ({
+    formControl: {
+        margin: theme.spacing.unit * 3,
+    },
+    group: {
+        margin: `${theme.spacing.unit}px 0`,
+    },
+});
+class BaseMapsList extends React.Component {
+    render() {
+        const { baseMaps, handleBaseMapVisibilty, classes } = this.props
+        let current = null
+        for (let i = 0; i < baseMaps.length; i++) {
+            const lyr = baseMaps[i]
+            if (lyr.getVisible()) {
+                current = lyr.get('id')
+                break
+            }
+        }
+        return (
+            <FormControl component="fieldset" className={classes.formControl}>
+                <FormLabel component="legend">{"BaseMaps"}</FormLabel>
+                <RadioGroup
+                    aria-label="BaseMapSwithcer"
+                    name="base_map_switcher"
+                    className={classes.group}
+                    value={current}
+                    onChange={handleBaseMapVisibilty}
+                >
+                    {baseMaps.map((layer, index) => (
+                        <FormControlLabel key={`item-${index}`} value={layer.get('id')} control={<Radio />} label={layer.get('title')} />
+                    ))}
+                </RadioGroup>
+            </FormControl>
+        )
+    }
+
+}
+BaseMapsList.propTypes = {
+    baseMaps: PropTypes.array.isRequired,
+    classes: PropTypes.object.isRequired,
+    handleBaseMapVisibilty: PropTypes.func.isRequired
+}
+export const BaseMapSwitcher = withStyles(baseMapsStyles)(BaseMapsList)
 class CartoviewLayerSwitcher extends React.Component {
     render() {
         const {

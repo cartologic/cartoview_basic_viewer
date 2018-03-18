@@ -110,6 +110,24 @@ class ContentGrid extends Component {
         }
         return props
     }
+    getDrawerProps = () => {
+        const { childrenProps } = this.props
+        return {
+            setThumbnail: childrenProps.setThumbnail,
+            map: childrenProps.map,
+            handleFeaturesTableDrawer: childrenProps.handleFeaturesTableDrawer,
+            exportMap: childrenProps.exportMap,
+            config: childrenProps.config,
+            handleLayerVisibilty: childrenProps.handleLayerVisibilty,
+            changeLayerOrder: childrenProps.changeLayerOrder,
+            mapLayers: childrenProps.mapLayers,
+            urls: childrenProps.urls,
+            legends: childrenProps.legends,
+            baseMaps: childrenProps.baseMaps,
+            handleBaseMapVisibilty:childrenProps.handleBaseMapVisibilty
+        }
+
+    }
     render() {
         const { classes, childrenProps } = this.props
         return (
@@ -125,7 +143,7 @@ class ContentGrid extends Component {
                         {!childrenProps.geocodeSearchLoading && childrenProps.geocodingResult.length > 0 && <GeoCodeResult resetGeocoding={childrenProps.resetGeocoding} action={childrenProps.zoomToLocation} geocodingResult={childrenProps.geocodingResult} geocodeSearchLoading={childrenProps.geocodeSearchLoading} />}
                     </Paper>
                     <Transition in={childrenProps.drawerOpen} direction={"right"}>
-                        <CartoviewDrawer setThumbnail={childrenProps.setThumbnail} map={childrenProps.map} handleFeaturesTableDrawer={childrenProps.handleFeaturesTableDrawer} exportMap={childrenProps.exportMap} config={childrenProps.config} handleLayerVisibilty={childrenProps.handleLayerVisibilty} changeLayerOrder={childrenProps.changeLayerOrder} mapLayers={childrenProps.mapLayers} urls={childrenProps.urls} legends={childrenProps.legends} className={classnames({ [classes.drawerContentClose]: !childrenProps.drawerOpen })} />
+                        <CartoviewDrawer {...this.getDrawerProps()} className={classnames({ [classes.drawerContentClose]: !childrenProps.drawerOpen })} />
                     </Transition>
                 </div>
                 <Grid className={classes.root} container alignItems={"stretch"} spacing={0}>
