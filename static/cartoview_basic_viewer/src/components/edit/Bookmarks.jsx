@@ -71,7 +71,7 @@ export default class Bookmarks extends React.Component {
             <div>
                 <h3>{"Bookmarks"}</h3>
                 <div ref={(mapDiv) => this.mapDiv = mapDiv} className={classNames("bookmarks-map", { 'hidden': !showMap })}></div>
-                <hr/>
+                <hr />
                 <div className="bookmark-item">
                     <button onClick={this.showMap} className='btn btn-primary'>{`${showMap ? 'Hide' : 'Show'} Map`}</button>
                     {showMap && <button onClick={this.addBookmark} className='btn btn-primary'>{`add Bookmark`}</button>}

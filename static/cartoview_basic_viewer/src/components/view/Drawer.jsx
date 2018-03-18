@@ -16,6 +16,7 @@ import Paper from 'material-ui/Paper'
 import PropTypes from 'prop-types'
 import React from 'react'
 import TableIcon from 'material-ui-icons/GridOn'
+import UploadIcon from 'material-ui-icons/InsertPhoto'
 import classnames from 'classnames'
 import { withStyles } from 'material-ui/styles'
 
@@ -44,7 +45,8 @@ class CartoviewDrawer extends React.Component {
             config,
             exportMap,
             handleFeaturesTableDrawer,
-            map
+            map,
+            setThumbnail
         } = this.props
         const { about } = this.state
         return (
@@ -76,6 +78,12 @@ class CartoviewDrawer extends React.Component {
                             </ListItemIcon>
                             <ListItemText primary="Feature Table" />
                         </ListItem>}
+                        <ListItem onTouchTap={setThumbnail} button>
+                            <ListItemIcon>
+                                <UploadIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="set Thumbnail" />
+                        </ListItem>
 
                         {config.bookmarks && <CollapsibleListItem open={false} title="Bookmarks" icon={<LocationIcon />} >
                             <CartoviewBookmarks map={map} bookmarks={config.bookmarks} />
@@ -105,6 +113,7 @@ CartoviewDrawer.propTypes = {
     exportMap: PropTypes.func.isRequired,
     handleFeaturesTableDrawer: PropTypes.func.isRequired,
     config: PropTypes.object.isRequired,
-    map: PropTypes.object.isRequired
+    map: PropTypes.object.isRequired,
+    setThumbnail: PropTypes.func.isRequired
 }
 export default withStyles(styles)(CartoviewDrawer)

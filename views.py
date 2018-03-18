@@ -5,6 +5,12 @@ from cartoview.app_manager.views import StandardAppViews
 from django.shortcuts import HttpResponse, render
 from geonode.layers.views import layer_detail
 from django.conf.urls import patterns, url
+from geonode.utils import resolve_object
+from geonode.maps.models import Map
+import base64
+from django.utils.translation import ugettext as _
+
+
 from . import APP_NAME
 _js_permissions_mapping = {
     'whoCanView': 'view_resourcebase',
@@ -12,12 +18,26 @@ _js_permissions_mapping = {
     'whoCanDelete': 'delete_resourcebase',
     'whoCanChangeConfiguration': 'change_resourcebase'
 }
+_PERMISSION_MSG_GENERIC = _('You do not have permissions for this map.')
 
 
 def change_dict_None_to_list(access):
     for permission, users in list(access.items()):
         if not users:
             access[permission] = []
+
+
+def _resolve_map(request, id, permission='base.change_resourcebase',
+                 msg=_PERMISSION_MSG_GENERIC, **kwargs):
+    '''
+    Resolve the Map by the provided typename and check the optional permission.
+    '''
+    if id.isdigit():
+        key = 'pk'
+    else:
+        key = 'urlsuffix'
+    return resolve_object(request, Map, {key: id}, permission=permission,
+                          permission_msg=msg, **kwargs)
 
 
 class BasicViewer(StandardAppViews):
@@ -97,12 +117,41 @@ class BasicViewer(StandardAppViews):
         return render(request, '%s/layer_view.html' % (self.app_name),
                       context={'layer': layer})
 
+    def map_thumbnail(self, request, mapid):
+        if request.method == 'POST':
+            map_obj = _resolve_map(request, mapid)
+            try:
+                try:
+                    preview = json.loads(request.body).get('preview', None)
+                except:
+                    preview = None
+
+                if preview and preview == 'react':
+                    format, image = json.loads(
+                        request.body)['image'].split(';base64,')
+                    image = base64.b64decode(image)
+
+                    if not image:
+                        return
+                filename = "map-%s-thumb.png" % map_obj.uuid
+                map_obj.save_thumbnail(filename, image)
+
+                return HttpResponse('Thumbnail saved')
+            except BaseException:
+                return HttpResponse(
+                    content='error saving thumbnail',
+                    status=500,
+                    content_type='text/plain'
+                )
+
     def get_url_patterns(self):
         urls = super(BasicViewer, self).get_url_patterns()
         urls += patterns('',
                          url(r'^(?P<layername>[^/]*)/view/$',
                              self.layer_view,
-                             name='%s.layer.view' % self.app_name)
+                             name='%s.layer.view' % self.app_name),
+                         url(r'^(?P<mapid>\d+)/thumbnail$',
+                             self.map_thumbnail, name='%s_map_thumbnail' % self.app_name),
                          )
         return urls
 

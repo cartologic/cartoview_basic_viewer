@@ -4,6 +4,7 @@ import 'typeface-roboto'
 
 import FeaturesHelper, { wmsGetFeatureInfoFormats } from 'cartoview-sdk/helpers/FeaturesHelper'
 import React, { Component } from 'react'
+import { doGet, doPost } from 'cartoview-sdk/utils/utils'
 
 import Animation from 'cartoview-sdk/helpers/AnimationHelper'
 import BasicViewer from 'Source/components/view/BasicViewer'
@@ -23,7 +24,6 @@ import { default as VectorSource } from 'ol/source/vector'
 import ZoomIcon from 'material-ui-icons/ZoomIn'
 import _ from "lodash"
 import { arrayMove } from 'react-sortable-hoc'
-import { doGet } from 'cartoview-sdk/utils/utils'
 import proj from 'ol/proj'
 import proj4 from 'proj4'
 import { render } from 'react-dom'
@@ -84,6 +84,11 @@ class BasicViewerContainer extends Component {
             data.push(featureObject)
         })
         return data
+    }
+    setThumbnail = () => {
+        const { map } = this.state
+        const { urls } = this.props
+        BasicViewerHelper.setThumbnail(map, urls.thumbnailURL)
     }
     resetGeocoding = () => {
         this.setState({ geocodingResult: [], searchText: '' })
@@ -439,6 +444,7 @@ class BasicViewerContainer extends Component {
             layerNameSpace: LayersHelper.layerNameSpace,
             toggleDrawer: this.toggleDrawer,
             urls,
+            setThumbnail: this.setThumbnail,
             getFeatures: this.getFeatures,
             getTableData: this.getTableData,
             handleTableLayerChange: this.handleTableLayerChange,
