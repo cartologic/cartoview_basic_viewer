@@ -17,22 +17,23 @@ import MapConfigService from 'cartoview-sdk/services/MapConfigService'
 import MapConfigTransformService from 'cartoview-sdk/services/MapConfigTransformService'
 import Overlay from 'ol/overlay'
 import PropTypes from 'prop-types'
+import StyleHelper from 'cartoview-sdk/helpers/StyleHelper'
 import URLS from 'cartoview-sdk/urls/urls'
 import Vector from 'ol/layer/vector'
 import { default as VectorSource } from 'ol/source/vector'
+import WFSService from 'cartoview-sdk/services/WFSService'
 import ZoomIcon from 'material-ui-icons/ZoomIn'
 import _ from "lodash"
 import { arrayMove } from 'react-sortable-hoc'
-import { doGet } from 'cartoview-sdk/utils/utils'
 import proj from 'ol/proj'
 import proj4 from 'proj4'
 import { render } from 'react-dom'
-import { styleFunction } from 'cartoview-sdk/helpers/StyleHelper'
 
 proj.setProj4(proj4)
 class BasicViewerContainer extends Component {
     constructor(props) {
         super(props)
+        const { urls } = this.props
         this.state = {
             mapIsLoading: true,
             drawerOpen: false,
@@ -58,7 +59,9 @@ class BasicViewerContainer extends Component {
             tableLayer: '',
             tablePages: null,
         }
-        this.urls = new URLS(this.props.urls)
+        this.styleHelper = new StyleHelper()
+        this.urls = new URLS(urls.proxy)
+        this.wfsService = new WFSService(urls.wfsURL, urls.proxy)
     }
     handleFeaturesTableDrawer = () => {
         const { featuresTableOpen } = this.state
@@ -105,7 +108,8 @@ class BasicViewerContainer extends Component {
     }
     getColumns = () => {
         const { tableLayer, map } = this.state
-        this.getFeatures(tableLayer, 0, 1).then((data) => {
+        const projectionCode = map.getView().getProjection().getCode()
+        this.wfsService.getFeatures(tableLayer, projectionCode, 0, 1).then((data) => {
             let features = wmsGetFeatureInfoFormats[
                 'application/json'].readFeatures(data, {
                     featureProjection: map.getView().getProjection()
@@ -144,37 +148,10 @@ class BasicViewerContainer extends Component {
         })
 
     }
-    getFeatures = (typeNames, startIndex, pagination = null, sortBy = null, cqlFilter = null) => {
-        const { map } = this.state
-        const { urls } = this.props
-        let query = {
-            service: 'wfs',
-            version: '2.0.0',
-            request: 'GetFeature',
-            typeNames,
-            outputFormat: 'json',
-            srsName: map.getView().getProjection().getCode()
-        }
-        if (pagination) {
-            query.count = pagination
-        }
-        if (cqlFilter) {
-            query.cql_filter = this.urls.encodeURL(cqlFilter)
-        }
-        if (startIndex) {
-            query.startIndex = startIndex
-        }
-        if (sortBy) {
-            query.sortBy = sortBy
-        }
-        const requestUrl = this.urls.getParamterizedURL(urls.wfsURL, query)
-        const proxiedURL = this.urls.getProxiedURL(requestUrl)
-        return doGet(proxiedURL)
-
-    }
     handleTableLayerChange = event => {
         const layer = event.target.value
-        if (layer !== this.state.tableLayer) {
+        const { tableLayer } = this.state
+        if (layer !== tableLayer) {
             this.setState({ tableLayer: event.target.value, features: [], cqlFilter: '' }, () => {
                 this.getTableData({ pageSize: 10, sorted: [], page: 0, filtered: [] }, {})
                 this.getColumns()
@@ -185,6 +162,7 @@ class BasicViewerContainer extends Component {
     getTableData = (state, instance) => {
         this.setState({ featuresIsLoading: true })
         const { map, tableLayer, cqlFilter } = this.state
+        const projectionCode = map.getView().getProjection().getCode()
         const pagination = state.pageSize
         const sorted = state.sorted
         const page = state.page
@@ -193,12 +171,11 @@ class BasicViewerContainer extends Component {
         let filter = cqlFilter === '' ? null : cqlFilter
         let startIndex = (page) * pagination
         let count = pagination
-        let featuresPromise = this.getFeatures(tableLayer)
         if (sorted.length > 0 && sorted[0].id !== 'featureId') {
             sortAtrr = sorted[0].id
             sortAtrr += sorted[0].desc ? "+D" : "+A"
         }
-        featuresPromise = this.getFeatures(tableLayer, startIndex, count, sortAtrr, filter)
+        let featuresPromise = this.wfsService.getFeatures(tableLayer, projectionCode, startIndex, count, sortAtrr, filter)
         featuresPromise.then(data => {
             const total = data.totalFeatures
             let features = wmsGetFeatureInfoFormats['application/json'].readFeatures(data, {
@@ -221,16 +198,8 @@ class BasicViewerContainer extends Component {
                     sorted.map(d => (d.desc ? "desc" : "asc"))
                 )
             }
-            // if (filtered.length) {
-            //     features = filtered.reduce((filteredSoFar, nextFilter) => {
-            //         return filteredSoFar.filter(row => {
-            //             return (row[nextFilter.id] + "").includes(nextFilter.value)
-            //         })
-            //     }, features)
-            // }
             const pages = Math.ceil(total
                 / pagination)
-
             this.setState({ features, tablePages: pages, featuresIsLoading: false })
         })
 
@@ -293,7 +262,7 @@ class BasicViewerContainer extends Component {
         let source = new VectorSource({ features: featureCollection })
         new Vector({
             source: source,
-            style: styleFunction,
+            style: this.styleHelper.styleFunction,
             title: "Selected Features",
             zIndex: 10000,
             format: new GeoJSON({
@@ -462,7 +431,7 @@ class BasicViewerContainer extends Component {
             toggleDrawer: this.toggleDrawer,
             urls,
             setThumbnail: this.setThumbnail,
-            getFeatures: this.getFeatures,
+            getFeatures: this.wfsService.getFeatures,
             getTableData: this.getTableData,
             handleTableLayerChange: this.handleTableLayerChange,
             addOverlay: this.addOverlay,

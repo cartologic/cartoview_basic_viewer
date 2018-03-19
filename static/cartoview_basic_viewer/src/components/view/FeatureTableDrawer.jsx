@@ -83,9 +83,9 @@ class Sidenav extends Component {
                     </div>
                 </div>
                 <Divider />
-                {tableLayer && tableLayer !== '' && <div className="element-flex">
+                <div className="element-flex">
                     {children}
-                </div>}
+                </div>
                 {loading && <Loader />}
 
 

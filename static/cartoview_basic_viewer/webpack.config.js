@@ -53,7 +53,12 @@ const config = {
             {
                 test: /\.css$/,
                 loader: ExtractTextPlugin.extract( {
-                    use: 'css-loader',
+                    use: {
+                        loader: 'css-loader',
+                        options: {
+                            minimize: true
+                        }
+                    },
                     fallback: 'style-loader'
                 } )
         },

@@ -18,7 +18,7 @@ class CartoviewAbout extends React.Component {
             <Dialog
                 fullScreen={fullScreen}
                 open={open}
-                onRequestClose={close}
+                onClose={close}
             >
                 <DialogTitle>{title}</DialogTitle>
                 <DialogContent>

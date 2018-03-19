@@ -6,6 +6,7 @@ import { doGet, doPost } from 'cartoview-sdk/utils/utils'
 import AppAccess from 'Source/components/edit/Access'
 import AppConfiguration from 'Source/components/edit/AppConfiguration'
 import Bookmarks from 'Source/components/edit/Bookmarks'
+import Configuration from 'cartoview-sdk/services/Configuration'
 import EditPageComponent from 'Source/components/edit/EditPage'
 import MapSelector from 'Source/components/edit/MapSelector'
 import PropTypes from 'prop-types'
@@ -17,7 +18,10 @@ const LIMIT = 9
 class EditPage extends React.Component {
     constructor(props) {
         super(props)
-        this.urls = new URLS(this.props.urls)
+        const { urls } = this.props
+
+        this.configService = new Configuration(urls.proxy)
+        this.urls = new URLS(urls.proxy)
         const { config } = this.props
         this.state = {
             maps: [],
@@ -49,9 +53,9 @@ class EditPage extends React.Component {
     }
     getMaps = (offset = 0, limit = LIMIT) => {
         this.setState({ loading: true })
-        const { username } = this.props
+        const { username, urls } = this.props
         const { userMaps } = this.state
-        const url = this.urls.getMapApiURL(username, userMaps, limit,
+        const url = this.configService.getMapApiURL(urls.MapsAPI, username, userMaps, limit,
             offset)
         doGet(url).then(result => {
             this.setState({
@@ -77,9 +81,9 @@ class EditPage extends React.Component {
     }
     search = (text) => {
         this.setState({ loading: true, searchEnabled: true })
-        const { username } = this.props
+        const { username, urls } = this.props
         const { userMaps } = this.state
-        const url = this.urls.getMapApiSearchURL(username, userMaps, text)
+        const url = this.configService.getMapApiSearchURL(urls.MapsAPI, username, userMaps, text)
         doGet(url).then(result => {
             this.setState({
                 maps: result.objects,
