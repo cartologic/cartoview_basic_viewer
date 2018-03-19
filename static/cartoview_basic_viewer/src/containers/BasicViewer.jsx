@@ -4,7 +4,6 @@ import 'typeface-roboto'
 
 import FeaturesHelper, { wmsGetFeatureInfoFormats } from 'cartoview-sdk/helpers/FeaturesHelper'
 import React, { Component } from 'react'
-import { doGet, doPost } from 'cartoview-sdk/utils/utils'
 
 import Animation from 'cartoview-sdk/helpers/AnimationHelper'
 import BasicViewer from 'Source/components/view/BasicViewer'
@@ -24,6 +23,7 @@ import { default as VectorSource } from 'ol/source/vector'
 import ZoomIcon from 'material-ui-icons/ZoomIn'
 import _ from "lodash"
 import { arrayMove } from 'react-sortable-hoc'
+import { doGet } from 'cartoview-sdk/utils/utils'
 import proj from 'ol/proj'
 import proj4 from 'proj4'
 import { render } from 'react-dom'

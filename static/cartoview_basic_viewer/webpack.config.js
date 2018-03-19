@@ -1,8 +1,7 @@
 var webpack = require( 'webpack' )
 var CompressionPlugin = require( "compression-webpack-plugin" )
-var BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' ).BundleAnalyzerPlugin;
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
-
+const UglifyJsPlugin = require( 'uglifyjs-webpack-plugin' )
+var ExtractTextPlugin = require( "extract-text-webpack-plugin" );
 var path = require( 'path' )
 var BUILD_DIR = path.resolve( __dirname, 'dist' )
 var APP_DIR = path.resolve( __dirname, 'src' )
@@ -18,7 +17,7 @@ const plugins = [
         name: 'commons',
         filename: 'commons.js'
     } ),
-    new ExtractTextPlugin("[name].css")
+    new ExtractTextPlugin( "[name].css" )
 
 ]
 const config = {
@@ -53,10 +52,10 @@ const config = {
         },
             {
                 test: /\.css$/,
-                loader: ExtractTextPlugin.extract({
+                loader: ExtractTextPlugin.extract( {
                     use: 'css-loader',
                     fallback: 'style-loader'
-              })
+                } )
         },
             {
                 test: /\.xml$/,
@@ -66,10 +65,6 @@ const config = {
                 test: /\.json$/,
                 loader: "json-loader"
         },
-        //     {
-        //         test: /\.css$/,
-        //         loader: "style-loader!css-loader"
-        // },
             {
                 test: /\.(png|jpg|gif)$/,
                 loader: 'file-loader'
@@ -88,18 +83,22 @@ if ( production ) {
         new webpack.optimize.AggressiveMergingPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.optimize.ModuleConcatenationPlugin(),
-        new webpack.optimize.UglifyJsPlugin( {
-            compress: {
-                warnings: false,
-                pure_getters: true,
-                unsafe: true,
-                unsafe_comps: true,
-                screw_ie8: true
-            },
-            output: {
-                comments: false,
-            },
-            exclude: [ /\.min\.js$/gi ] // skip pre-minified libs
+        new UglifyJsPlugin( {
+            uglifyOptions: {
+                ecma: 6,
+                compress: {
+                    warnings: false,
+                    pure_getters: true,
+                    unsafe: true,
+                    unsafe_comps: true
+                },
+                output: {
+                    comments: false,
+                    beautify: false
+                },
+                ie8: true,
+                exclude: [ /\.min\.js$/gi ]
+            }
         } ),
         new CompressionPlugin( {
             asset: '[path].gz[query]',
@@ -109,7 +108,6 @@ if ( production ) {
             minRatio: 0
         } ),
         new webpack.HashedModuleIdsPlugin(),
-        new BundleAnalyzerPlugin()
     ]
     Array.prototype.push.apply( plugins, prodPlugins )
 } else {
