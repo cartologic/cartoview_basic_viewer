@@ -21,7 +21,7 @@
 <body>
 <div style="height: 100%;" id="root"></div>
 <script src="{{ STATIC_URL }}cartoview_basic_viewer/dist/commons.js"></script>
-<script src="{% static 'cartoview_basic_viewer/dist/BasicViewer.bundle.js?version=1.5.9' %}"></script>
+<script src="{% static 'cartoview_basic_viewer/dist/BasicViewer.bundle.js?version=1.6.1' %}"></script>
 <script type="text/javascript">
     {% if instance %}
             const instanceId= {{ instance.id }}
@@ -67,6 +67,7 @@
     props.formTitle={{instance.title|dump_json}}
     props.formAbstract={{instance.abstract|dump_json}}
     props.username="{{request.user.username}}"
+    props.token="{{request.session.access_token}}"
     BasicViewerContainer.show('root', props,urls);
   </script>
 </body>

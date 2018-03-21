@@ -360,8 +360,8 @@ class BasicViewerContainer extends Component {
         }
     }
     featureIdentify = (map, coordinate) => {
-        const { urls } = this.props
-        FeaturesHelper.featureIdentify(map, coordinate, urls.proxy).then(result => {
+        const { urls, config } = this.props
+        FeaturesHelper.featureIdentify(map, coordinate, urls.proxy, config.token).then(result => {
             this.setState({
                 featureIdentifyLoading: false,
                 featureIdentifyResult: result,
