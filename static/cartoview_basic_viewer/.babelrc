@@ -1,8 +1,14 @@
 {
     "presets": [
-    [ "env", { "loose": true } ],
+      [ "env", {
+            "targets": {
+                "node": "current",
+                "uglify": true
+            }
+      } ],
+    "es2015",
     "stage-1",
     "react"
   ],
-    "plugins": [ "transform-object-rest-spread"]
+    "plugins": [ "transform-object-rest-spread" ]
 }

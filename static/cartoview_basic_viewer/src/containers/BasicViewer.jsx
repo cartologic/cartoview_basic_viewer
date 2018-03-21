@@ -13,8 +13,6 @@ import GeoCoding from 'cartoview-sdk/services/GeoCodingService'
 import GeoJSON from 'ol/format/geojson'
 import Group from 'ol/layer/group'
 import LayersHelper from 'cartoview-sdk/helpers/LayersHelper'
-import MapConfigService from 'cartoview-sdk/services/MapConfigService'
-import MapConfigTransformService from 'cartoview-sdk/services/MapConfigTransformService'
 import Overlay from 'ol/overlay'
 import PropTypes from 'prop-types'
 import StyleHelper from 'cartoview-sdk/helpers/StyleHelper'
@@ -204,16 +202,6 @@ class BasicViewerContainer extends Component {
         })
 
     }
-    getLegendURL = (layerName) => {
-        const { urls } = this.props
-        const url = this.urls.getParamterizedURL(urls.wmsURL, {
-            'REQUEST': 'GetLegendGraphic',
-            'VERSION': '1.0.0',
-            'FORMAT': 'image/png',
-            "LAYER": layerName
-        })
-        return this.urls.getProxiedURL(url)
-    }
     toggleDrawer = () => {
         const { drawerOpen } = this.state
         this.setState({ drawerOpen: !drawerOpen })
@@ -242,20 +230,12 @@ class BasicViewerContainer extends Component {
         const { showPopup } = this.state
         this.setState({ showPopup: !showPopup })
     }
-    mapInit = () => {
-        const { urls } = this.props
+    mapLoaded = () => {
         let { map } = this.state
-        fetch(urls.mapJsonUrl, {
-            method: "GET",
-            credentials: 'include'
-        }).then((response) => response.json()).then((config) => {
-            MapConfigService.load(MapConfigTransformService.transform(
-                config), map, urls.proxy)
-            const mapLayers = map.getLayers().getArray()
-            this.setLayerSwitcherLayers(mapLayers)
-            this.createLegends(LayersHelper.getLayers(mapLayers))
-            this.setState({ mapIsLoading: false })
-        })
+        const mapLayers = map.getLayers().getArray()
+        this.setLayerSwitcherLayers(mapLayers)
+        this.createLegends(LayersHelper.getLayers(mapLayers))
+        this.setState({ mapIsLoading: false })
     }
     addSelectionLayer = () => {
         let { featureCollection, map } = this.state
@@ -277,12 +257,13 @@ class BasicViewerContainer extends Component {
     }
     componentWillMount() {
         let { map } = this.state
+        const { urls } = this.props
         this.overlay = new Overlay({
             autoPan: true,
         })
         map.addOverlay(this.overlay)
         this.addSelectionLayer()
-        this.mapInit()
+        BasicViewerHelper.mapInit(urls.mapJsonUrl, map, urls.proxy, this.mapLoaded)
     }
     componentDidMount() {
         this.singleClickListner()
@@ -320,9 +301,6 @@ class BasicViewerContainer extends Component {
     zoomToFeature = (feature) => {
         let { map } = this.state
         this.addStyleToFeature([feature])
-        // const featureCenter = feature.getGeometry().getExtent()
-        // const center = BasicViewerHelper.getCenterOfExtent(featureCenter)
-        // Animation.flyTo(center, map.getView(), 14, () => { })
         BasicViewerHelper.fitExtent(feature.getGeometry().getExtent(), map, 400)
     }
     zoomToLocation = (pointArray) => {
@@ -362,11 +340,10 @@ class BasicViewerContainer extends Component {
     createLegends = (layers) => {
         let legends = []
         layers.map(layer => {
-            const layerName = layer.getProperties().name
             const layerTitle = layer.getProperties().title
             legends.push({
                 layer: layerTitle,
-                url: this.getLegendURL(layerName)
+                url: LayersHelper.getLegendURL(layer)
             })
         })
         this.setState({ legends })
@@ -383,21 +360,15 @@ class BasicViewerContainer extends Component {
         }
     }
     featureIdentify = (map, coordinate) => {
-        const view = map.getView()
-        let identifyPromises = LayersHelper.getLayers(map.getLayers().getArray())
-            .map(
-                (layer) => FeaturesHelper.readFeaturesThenTransform(
-                    this.urls, layer, coordinate, view, map))
-        Promise.all(identifyPromises).then(result => {
-            const featureIdentifyResult = result.reduce((array1,
-                array2) => array1.concat(array2), [])
+        const { urls } = this.props
+        FeaturesHelper.featureIdentify(map, coordinate, urls.proxy).then(result => {
             this.setState({
                 featureIdentifyLoading: false,
-                featureIdentifyResult,
+                featureIdentifyResult: result,
                 activeFeature: 0,
                 showPopup: true
             }, () => this.addStyleToFeature(
-                featureIdentifyResult))
+                result))
         })
     }
     addStyleToCurrentFeature = () => {

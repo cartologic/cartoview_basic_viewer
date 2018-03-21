@@ -1,5 +1,4 @@
-// import Search from "./Search.jsx"
-import 'react-toggle-switch/dist/css/switch.min.css'
+import 'react-toggle-switch/src/css/switch.css'
 
 import { MapCard } from './MapCard'
 import PropTypes from 'prop-types'

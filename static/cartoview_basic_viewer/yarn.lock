@@ -711,7 +711,7 @@ babel-plugin-transform-es2015-modules-amd@^6.22.0, babel-plugin-transform-es2015
     babel-runtime "^6.22.0"
     babel-template "^6.24.1"
 
-babel-plugin-transform-es2015-modules-commonjs@^6.23.0, babel-plugin-transform-es2015-modules-commonjs@^6.24.1:
+babel-plugin-transform-es2015-modules-commonjs@^6.23.0, babel-plugin-transform-es2015-modules-commonjs@^6.24.1, babel-plugin-transform-es2015-modules-commonjs@^6.26.0:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-es2015-modules-commonjs/-/babel-plugin-transform-es2015-modules-commonjs-6.26.0.tgz#0d8394029b7dc6abe1a97ef181e00758dd2e5d8a"
   dependencies:
@@ -1268,10 +1268,12 @@ caniuse-lite@^1.0.30000757:
   version "1.0.30000758"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000758.tgz#e261140076651049cf6891ed4bc649b5c8c26c69"
 
-cartoview-sdk@^1.0.9:
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/cartoview-sdk/-/cartoview-sdk-1.0.9.tgz#3febd818b2e101584e599d7a1fb369b8620f5cf3"
+cartoview-sdk@^1.1.14:
+  version "1.1.14"
+  resolved "https://registry.yarnpkg.com/cartoview-sdk/-/cartoview-sdk-1.1.14.tgz#bed5871cc1b2d630ae11da5820cc6b59095e4262"
   dependencies:
+    babel-plugin-transform-es2015-modules-commonjs "^6.26.0"
+    babel-preset-stage-2 "^6.24.1"
     ol "^4.6.4"
     pica "^4.0.2"
     proj4 "^2.4.4"
@@ -1456,6 +1458,10 @@ commander@^2.11.0, commander@^2.9.0:
 commander@~2.13.0:
   version "2.13.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.13.0.tgz#6964bca67685df7c1f1430c584f07d7597885b9c"
+
+commander@~2.15.0:
+  version "2.15.1"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-2.15.1.tgz#df46e867d0fc2aec66a34662b406a9ccafff5b0f"
 
 commondir@^1.0.1:
   version "1.0.1"
@@ -4409,9 +4415,9 @@ react-tap-event-plugin@^3.0.2:
   dependencies:
     fbjs "^0.8.6"
 
-react-toggle-switch@^2.1.4:
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/react-toggle-switch/-/react-toggle-switch-2.1.4.tgz#c5e70e922505605842cb34f5f2eb9f12d5b9cfd1"
+react-toggle-switch@^3.0.4:
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/react-toggle-switch/-/react-toggle-switch-3.0.4.tgz#87e516e2bbc421ce4998b8eb28b29457db180724"
 
 react-tooltip@^3.4.0:
   version "3.4.0"
@@ -5222,6 +5228,13 @@ uglify-js@^2.8.29:
     yargs "~3.10.0"
   optionalDependencies:
     uglify-to-browserify "~1.0.0"
+
+uglify-js@^3.3.16:
+  version "3.3.16"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.3.16.tgz#23ba13efa27aa00885be7417819e8a9787f94028"
+  dependencies:
+    commander "~2.15.0"
+    source-map "~0.6.1"
 
 uglify-to-browserify@~1.0.0:
   version "1.0.2"

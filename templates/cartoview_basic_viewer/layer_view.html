@@ -1,4 +1,4 @@
-{% load static %}
+{% load static cartoview_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,8 +56,8 @@
 
     const props = {"showLegend": true, "showExportMap": true, "showLayerSwitcher": true, "access": {"whoCanDelete": null, "whoCanView": null, "whoCanChangeMetadata": null, "whoCanChangeConfiguration": null}, "enableFeatureTable": true, "enableHistory": true,"keywords": []}
     
-    props.formTitle="{{layer.title}}"
-    props.formAbstract="{{layer.abstract}}"
+    props.formTitle={{instance.title|dump_json}}
+    props.formAbstract={{instance.abstract|dump_json}}
     props.username="{{request.user.username}}"
     BasicViewerContainer.show('root', props,urls);
   </script>

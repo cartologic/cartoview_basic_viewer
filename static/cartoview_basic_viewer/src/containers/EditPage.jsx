@@ -1,5 +1,5 @@
 import 'Source/css/app.css'
-import 'react-select/dist/react-select.css'
+import 'react-select/dist/react-select.min.css'
 
 import { doGet, doPost } from 'cartoview-sdk/utils/utils'
 
