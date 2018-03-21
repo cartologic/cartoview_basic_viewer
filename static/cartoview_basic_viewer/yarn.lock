@@ -1268,9 +1268,9 @@ caniuse-lite@^1.0.30000757:
   version "1.0.30000758"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000758.tgz#e261140076651049cf6891ed4bc649b5c8c26c69"
 
-cartoview-sdk@^1.1.16:
-  version "1.1.16"
-  resolved "https://registry.yarnpkg.com/cartoview-sdk/-/cartoview-sdk-1.1.16.tgz#9edfdb0df11fbafcaa74edb070f70b74434cd2fe"
+cartoview-sdk@^1.1.17:
+  version "1.1.17"
+  resolved "https://registry.yarnpkg.com/cartoview-sdk/-/cartoview-sdk-1.1.17.tgz#d8d0002c594d2d2aa377d8c99bb8f19801ddb056"
   dependencies:
     babel-plugin-transform-es2015-modules-commonjs "^6.26.0"
     babel-preset-stage-2 "^6.24.1"
