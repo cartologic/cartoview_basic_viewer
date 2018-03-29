@@ -260,6 +260,10 @@ class BasicViewerContainer extends Component {
         const { urls } = this.props
         this.overlay = new Overlay({
             autoPan: true,
+            autoPanAnimation: {
+                duration: 250
+            },
+            positioning: 'center-center'
         })
         map.addOverlay(this.overlay)
         this.addSelectionLayer()

@@ -135,10 +135,9 @@ class CartoviewPopup extends React.Component {
         const { featureIdentifyResult, activeFeature } = nextProps
         if (nextProps.showPopup) {
             this.node.style.display = 'block'
-            addOverlay(this.node)
             let currentFeature = featureIdentifyResult.length > 0 ?
                 featureIdentifyResult[activeFeature] : null
-            this.setState({ currentFeature })
+            this.setState({ currentFeature }, () => addOverlay(this.node))
             this.ensureEvents()
         } else {
             this.node.style.display = 'none'
