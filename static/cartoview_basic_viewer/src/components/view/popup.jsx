@@ -1,5 +1,7 @@
 import 'Source/css/popup.css'
 
+import Table, { TableBody, TableCell, TableRow } from 'material-ui/Table';
+
 import ArrowLeft from 'material-ui-icons/KeyboardArrowLeft'
 import ArrowRight from 'material-ui-icons/KeyboardArrowRight'
 import Button from 'material-ui/Button'
@@ -8,12 +10,21 @@ import IconButton from 'material-ui/IconButton'
 import Paper from 'material-ui/Paper'
 import PropTypes from 'prop-types'
 import React from 'react'
+import Tooltip from 'material-ui/Tooltip'
 import Typography from 'material-ui/Typography'
 import ZoomIcon from 'material-ui-icons/ZoomIn'
 import classnames from 'classnames'
 import { withStyles } from 'material-ui/styles'
 
 const styles = theme => ({
+    root: {
+        width: '100%',
+        maxWidth: 360,
+        backgroundColor: theme.palette.background.paper,
+        position: 'relative',
+        overflow: 'auto',
+        maxHeight: 300,
+    },
     button: {
         height: 'auto'
     },
@@ -23,29 +34,58 @@ const styles = theme => ({
     },
     content: {
         backgroundColor: theme.palette.background.paper
+    },
+    table: {
+        display: 'block',
+        width: '100%',
+        overflowX: 'auto'
+    },
+    tableRow: {
+        display: 'flex',
+        width: '100%',
+        flexGrow: "1",
+        height: 'auto !important',
+        flexBasis: "0",
+        '&:nth-of-type(odd)': {
+            backgroundColor: theme.palette.background.default,
+        },
+    },
+    tableCell: {
+        flex: ".5",
+        alignItems: "center",
+        padding: `${theme.spacing.unit}px !important`,
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
     }
 })
-const FeatureAttributesTable = (props) => {
-    const { currentFeature } = props
+const FeatureAttributesTable = withStyles(styles)((props) => {
+    const { currentFeature, classes } = props
     return (
-        <ul>
-            {Object.keys(currentFeature.getProperties()).map((key, index) => {
-                if (key != "geometry" && key !== "_layerTitle") {
-                    return (
-                        <div key={index}>
-                            <li>
-                                {`${key}`}
-                            </li>
-                            <li>
-                                {`${currentFeature.getProperties()[key]}`}
-                            </li>
-                        </div>
-                    )
-                }
-            })}
-        </ul>
+        <Table className={classes.table}>
+            <TableBody className={classes.table}>
+                {Object.keys(currentFeature.getProperties()).map((key, index) => {
+                    if (key != "geometry" && key !== "_layerTitle" && key !== "_attributesAlias" && key !== "_layerName") {
+                        let attributesAlias = currentFeature.getProperties()._attributesAlias
+                        let attibuteLabel = attributesAlias ? attributesAlias[key] || key : key
+                        return (
+                            <TableRow classes={{ root: classes.tableRow }} key={index}>
+                                <TableCell classes={{ body: classes.tableCell }}>{`${attibuteLabel}`}</TableCell>
+
+                                <TableCell classes={{ body: classes.tableCell }}>
+                                    <Tooltip id="tooltip-top" title={`${currentFeature.getProperties()[key]}`} placement="top">
+                                        <span>{`${currentFeature.getProperties()[key]}`}</span>
+                                    </Tooltip>
+                                </TableCell>
+
+                            </TableRow>
+                        )
+                    }
+                })}
+            </TableBody>
+        </Table>
     )
-}
+})
 FeatureAttributesTable.propTypes = {
     currentFeature: PropTypes.object.isRequired
 }

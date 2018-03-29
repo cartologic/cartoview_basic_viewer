@@ -117,7 +117,7 @@ ul:after {
     margin-left: 1px;
 }
 
-.ol-popup-cartoview li {
+/* .ol-popup-cartoview li {
     text-align: left;
     padding: 3px;
     width: 40%;
@@ -126,7 +126,7 @@ ul:after {
     word-wrap: break-word;
     margin-bottom: -1px;
     white-space: pre-line
-}
+} */
 
 li:nth-child(even) {
     margin-left: -1px;
