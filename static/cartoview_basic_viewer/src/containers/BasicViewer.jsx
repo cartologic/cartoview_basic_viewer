@@ -361,15 +361,16 @@ class BasicViewerContainer extends Component {
     }
     featureIdentify = (map, coordinate) => {
         const { urls, config } = this.props
-        FeaturesHelper.featureIdentify(map, coordinate, urls.proxy, config.token).then(result => {
-            this.setState({
-                featureIdentifyLoading: false,
-                featureIdentifyResult: result,
-                activeFeature: 0,
-                showPopup: true
-            }, () => this.addStyleToFeature(
-                result))
-        })
+        FeaturesHelper.featureIdentify(map, coordinate, urls.proxy, config.token,
+            urls.layerAttributes).then(result => {
+                this.setState({
+                    featureIdentifyLoading: false,
+                    featureIdentifyResult: result,
+                    activeFeature: 0,
+                    showPopup: true
+                }, () => this.addStyleToFeature(
+                    result))
+            })
     }
     addStyleToCurrentFeature = () => {
         const { activeFeature, featureIdentifyResult } = this.state
@@ -423,7 +424,6 @@ class BasicViewerContainer extends Component {
         return childrenProps
     }
     render() {
-
         return <BasicViewer childrenProps={this.getChildrenProps()} />
     }
 }
@@ -433,7 +433,10 @@ BasicViewerContainer.propTypes = {
 }
 global.BasicViewerContainer = {
     show: (el, props, urls) => {
-        render(<BasicViewerContainer urls={urls} config={props} />,
-            document.getElementById(el))
+        render(<BasicViewerContainer urls={urls} config={props} />, document.getElementById(el))
+    },
+    getComponent: (props, urls) => {
+        let App = <BasicViewerContainer urls={urls} config={props} />
+        return App
     }
 }
