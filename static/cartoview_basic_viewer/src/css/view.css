@@ -227,6 +227,16 @@
     bottom: 8em;
 }
 
+.ol-zoomslider button {
+    width: 10px !important;
+}
+
+.ol-zoomslider {
+    width: 12px !important;
+    left: 1% !important;
+    background-color: #9e9e9ec7 !important;
+}
+
 @media screen and (max-width: 1024px) {
     .big-avatar {
         width: 85px
