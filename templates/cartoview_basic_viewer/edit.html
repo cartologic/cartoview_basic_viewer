@@ -4,8 +4,6 @@
 
 {% block title %} {{ block.super }} - {% trans "BasicViewer" %} {% endblock %}
 {% block head %}
-    {% include "geonode/ext_header.html" %}
-    {% include "geonode/app_header.html" %}
     {{ block.super }}
     <link rel="stylesheet" type="text/css" href="{% static 'cartoview_basic_viewer/dist/commons.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'cartoview_basic_viewer/dist/config.css' %}"/>
