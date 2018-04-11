@@ -12,7 +12,7 @@ import Collection from 'ol/collection'
 import GeoCoding from 'cartoview-sdk/services/GeoCodingService'
 import GeoJSON from 'ol/format/geojson'
 import Group from 'ol/layer/group'
-import LayersHelper from 'cartoview-sdk/helpers/LayersHelper'
+import LayersHelper from 'cartoview-sdk/helpers/layersHelper'
 import Overlay from 'ol/overlay'
 import PrintService from 'cartoview-sdk/services/PrintService'
 import PropTypes from 'prop-types'
@@ -24,6 +24,7 @@ import WFSService from 'cartoview-sdk/services/WFSService'
 import ZoomIcon from 'material-ui-icons/ZoomIn'
 import _ from "lodash"
 import { arrayMove } from 'react-sortable-hoc'
+import { downloadFile } from 'cartoview-sdk/utils/utils'
 import proj from 'ol/proj'
 import proj4 from 'proj4'
 import { render } from 'react-dom'
@@ -282,6 +283,10 @@ class BasicViewerContainer extends Component {
     componentDidMount() {
         this.singleClickListner()
     }
+    downloadLayer = (typeName) => {
+        const downloadURL = this.wfsService.buildGetFeatureURL(typeName, undefined, undefined, undefined, undefined, undefined, "shape-zip")
+        downloadFile(downloadURL, "layer.zip")
+    }
     setLayerSwitcherLayers(mapLayers) {
         const { tableLayer } = this.state
         let layers = []
@@ -412,6 +417,7 @@ class BasicViewerContainer extends Component {
             ...this.state,
             handlePrintModal: this.handlePrintModal,
             print: this.print,
+            downloadLayer: this.downloadLayer,
             zoomToFeature: this.zoomToFeature,
             addStyleToFeature: this.addStyleToFeature,
             resetFeatureCollection: this.resetFeatureCollection,

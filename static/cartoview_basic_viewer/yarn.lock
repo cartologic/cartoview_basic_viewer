@@ -1268,9 +1268,9 @@ caniuse-lite@^1.0.30000757:
   version "1.0.30000758"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000758.tgz#e261140076651049cf6891ed4bc649b5c8c26c69"
 
-cartoview-sdk@^1.1.33:
-  version "1.1.33"
-  resolved "https://registry.yarnpkg.com/cartoview-sdk/-/cartoview-sdk-1.1.33.tgz#72333c3a6422ee3c2e8c68ed9717d745793c3369"
+cartoview-sdk@^1.1.39:
+  version "1.1.39"
+  resolved "https://registry.yarnpkg.com/cartoview-sdk/-/cartoview-sdk-1.1.39.tgz#274d4ab71eb3186a228c4869496cc4fa7e4371da"
   dependencies:
     babel-plugin-transform-es2015-modules-commonjs "^6.26.0"
     babel-preset-stage-2 "^6.24.1"
@@ -3765,8 +3765,8 @@ performance-now@^0.2.0:
   resolved "https://registry.yarnpkg.com/performance-now/-/performance-now-0.2.0.tgz#33ef30c5c77d4ea21c5a53869d91b56d8f2555e5"
 
 pica@^4.0.2:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/pica/-/pica-4.0.2.tgz#26e4053e7585ebf94361dfc72636ddb9d1f90e93"
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/pica/-/pica-4.1.1.tgz#b639f4bc4bfc255b65d731da8ac889eec39b9b11"
   dependencies:
     inherits "^2.0.3"
     multimath "^1.0.3"

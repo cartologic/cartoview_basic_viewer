@@ -6,12 +6,16 @@ import CartoviewAbout from 'Source/components/view/About'
 import CartoviewBookmarks from 'Source/components/view/Bookmarks'
 import CartoviewLegends from 'Source/components/view/Legends'
 import CollapsibleListItem from 'Source/components/view/CollapsibleItem'
+import DownloadIcon from 'material-ui-icons/FileDownload'
+import EventIcon from 'material-ui-icons/EventAvailable'
 import HomeIcon from 'material-ui-icons/Home'
+import IconButton from 'material-ui/IconButton'
 import ImageIcon from 'material-ui-icons/Image'
 import InfoIcons from 'material-ui-icons/Info'
 import LayersIcons from 'material-ui-icons/Layers'
 import LocationIcon from 'material-ui-icons/LocationOn'
 import MapIcon from 'material-ui-icons/Map'
+import { Message } from 'Source/containers/CommonComponents'
 import NavBar from 'Source/components/view/NavBar.jsx'
 import Paper from 'material-ui/Paper'
 import PrintIcon from 'material-ui-icons/Print'
@@ -19,6 +23,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import TableIcon from 'material-ui-icons/GridOn'
 import UploadIcon from 'material-ui-icons/InsertPhoto'
+import ViewListIcon from 'material-ui-icons/ViewList'
 import classnames from 'classnames'
 import { withStyles } from 'material-ui/styles'
 
@@ -30,6 +35,9 @@ const styles = theme => ({
         padding: theme.spacing.unit,
         height: "calc(100% - 64px)",
         overflowY: 'overlay'
+    },
+    button: {
+        margin: theme.spacing.unit,
     }
 })
 class CartoviewDrawer extends React.Component {
@@ -51,7 +59,8 @@ class CartoviewDrawer extends React.Component {
             setThumbnail,
             baseMaps,
             handleBaseMapVisibilty,
-            handlePrintModal
+            handlePrintModal,
+            downloadLayer
         } = this.props
         const { about } = this.state
         return (
@@ -95,12 +104,28 @@ class CartoviewDrawer extends React.Component {
                             </ListItemIcon>
                             <ListItemText primary="Set Thumbnail" />
                         </ListItem>
-
+                        <CollapsibleListItem open={false} title="Layer Details" icon={<ViewListIcon />} >
+                            <List className={classes.button} dense>
+                                {mapLayers.length > 0 && mapLayers.map((lyr, index) => {
+                                    return (
+                                        <ListItem key={index}>
+                                            <ListItemIcon>
+                                                <EventIcon />
+                                            </ListItemIcon>
+                                            <Message message={lyr.getProperties().title} wrap={false} align="left" type="body1" />
+                                            <IconButton color="primary" onClick={() => downloadLayer(lyr.getProperties().name)} aria-label="Download">
+                                                <DownloadIcon />
+                                            </IconButton>
+                                        </ListItem>
+                                    )
+                                })}
+                            </List>
+                        </CollapsibleListItem>
                         {config.bookmarks && <CollapsibleListItem open={false} title="Bookmarks" icon={<LocationIcon />} >
                             <CartoviewBookmarks map={map} bookmarks={config.bookmarks} />
                         </CollapsibleListItem>}
                         {config.showLayerSwitcher && <CollapsibleListItem open={false} title="Layers" icon={<LayersIcons />} >
-                            <CartoviewLayerSwitcher handleLayerVisibilty={handleLayerVisibilty} changeLayerOrder={changeLayerOrder} mapLayers={mapLayers} />
+                            <CartoviewLayerSwitcher downloadLayer={downloadLayer} handleLayerVisibilty={handleLayerVisibilty} changeLayerOrder={changeLayerOrder} mapLayers={mapLayers} />
                         </CollapsibleListItem>}
                         <CollapsibleListItem open={false} title="Base Maps" icon={<MapIcon />} >
                             <BaseMapSwitcher baseMaps={baseMaps} handleBaseMapVisibilty={handleBaseMapVisibilty} />
@@ -126,6 +151,7 @@ CartoviewDrawer.propTypes = {
     baseMaps: PropTypes.array.isRequired,
     handleLayerVisibilty: PropTypes.func.isRequired,
     exportMap: PropTypes.func.isRequired,
+    downloadLayer: PropTypes.func.isRequired,
     handleFeaturesTableDrawer: PropTypes.func.isRequired,
     config: PropTypes.object.isRequired,
     map: PropTypes.object.isRequired,
