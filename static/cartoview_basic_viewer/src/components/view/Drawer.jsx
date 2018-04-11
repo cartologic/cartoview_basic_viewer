@@ -14,6 +14,7 @@ import LocationIcon from 'material-ui-icons/LocationOn'
 import MapIcon from 'material-ui-icons/Map'
 import NavBar from 'Source/components/view/NavBar.jsx'
 import Paper from 'material-ui/Paper'
+import PrintIcon from 'material-ui-icons/Print'
 import PropTypes from 'prop-types'
 import React from 'react'
 import TableIcon from 'material-ui-icons/GridOn'
@@ -49,7 +50,8 @@ class CartoviewDrawer extends React.Component {
             map,
             setThumbnail,
             baseMaps,
-            handleBaseMapVisibilty
+            handleBaseMapVisibilty,
+            handlePrintModal
         } = this.props
         const { about } = this.state
         return (
@@ -68,6 +70,12 @@ class CartoviewDrawer extends React.Component {
                                 <InfoIcons />
                             </ListItemIcon>
                             <ListItemText primary="About" />
+                        </ListItem>
+                        <ListItem onTouchTap={handlePrintModal} button>
+                            <ListItemIcon>
+                                <PrintIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Print" />
                         </ListItem>
                         {config.showExportMap && <ListItem onTouchTap={exportMap} button>
                             <ListItemIcon>
@@ -121,6 +129,8 @@ CartoviewDrawer.propTypes = {
     handleFeaturesTableDrawer: PropTypes.func.isRequired,
     config: PropTypes.object.isRequired,
     map: PropTypes.object.isRequired,
-    setThumbnail: PropTypes.func.isRequired
+    setThumbnail: PropTypes.func.isRequired,
+    handleBaseMapVisibilty: PropTypes.func.isRequired,
+    handlePrintModal: PropTypes.func.isRequired,
 }
 export default withStyles(styles)(CartoviewDrawer)

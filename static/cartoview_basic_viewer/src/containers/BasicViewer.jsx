@@ -14,6 +14,7 @@ import GeoJSON from 'ol/format/geojson'
 import Group from 'ol/layer/group'
 import LayersHelper from 'cartoview-sdk/helpers/LayersHelper'
 import Overlay from 'ol/overlay'
+import PrintService from 'cartoview-sdk/services/PrintService'
 import PropTypes from 'prop-types'
 import StyleHelper from 'cartoview-sdk/helpers/StyleHelper'
 import URLS from 'cartoview-sdk/urls/urls'
@@ -56,10 +57,19 @@ class BasicViewerContainer extends Component {
             tableColumns: [],
             tableLayer: '',
             tablePages: null,
+            printOpened: false,
+
         }
         this.styleHelper = new StyleHelper()
         this.urls = new URLS(urls.proxy)
         this.wfsService = new WFSService(urls.wfsURL, urls.proxy)
+        this.printModule = new PrintService(this.state.map, urls.geoserverUrl, this.props.config.token, urls.proxy)
+    }
+    handlePrintModal = () => {
+        this.setState({ printOpened: !this.state.printOpened })
+    }
+    print = (title, comment, layout) => {
+        this.printModule.createPDF(title, comment, layout)
     }
     handleFeaturesTableDrawer = () => {
         const { featuresTableOpen } = this.state
@@ -340,6 +350,7 @@ class BasicViewerContainer extends Component {
             })
             this.featureIdentify(map, e.coordinate)
         })
+
     }
     createLegends = (layers) => {
         let legends = []
@@ -399,6 +410,8 @@ class BasicViewerContainer extends Component {
         let childrenProps = {
             config,
             ...this.state,
+            handlePrintModal: this.handlePrintModal,
+            print: this.print,
             zoomToFeature: this.zoomToFeature,
             addStyleToFeature: this.addStyleToFeature,
             resetFeatureCollection: this.resetFeatureCollection,

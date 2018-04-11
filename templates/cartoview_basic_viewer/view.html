@@ -43,7 +43,6 @@
                     wfsURL : "{{ GEOSERVER_BASE_URL }}wfs",
                     wmsURL : "{{ GEOSERVER_BASE_URL }}wms",
                 {% endif %}
-                geoserverPdfInfo:"{{ GEOSERVER_BASE_URL }}pdf/info.json",
                 static: "{{ STATIC_URL }}",
                 media: "{{ MEDIA_URL }}",
                 layerAttributes:{% reverse_url 'api_dispatch_list' api_name='api' resource_name='attributes'|safe %},

@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 
 import CartoviewDrawer from 'Source/components/view/Drawer'
 import CartoviewPopup from 'Source/components/view/popup'
+import CartoviewPrint from 'Source/components/view/PrintModal'
 import Fade from 'material-ui/transitions/Fade'
 import FeatureTableDrawer from 'Source/components/view/FeatureTableDrawer'
 import FeaturesTable from 'Source/components/view/FeaturesTable'
@@ -124,7 +125,8 @@ class ContentGrid extends Component {
             urls: childrenProps.urls,
             legends: childrenProps.legends,
             baseMaps: childrenProps.baseMaps,
-            handleBaseMapVisibilty:childrenProps.handleBaseMapVisibilty
+            handleBaseMapVisibilty: childrenProps.handleBaseMapVisibilty,
+            handlePrintModal: childrenProps.handlePrintModal
         }
 
     }
@@ -157,6 +159,7 @@ class ContentGrid extends Component {
                         <CartoviewPopup {...childrenProps} />
                     </Grid>
                 </Grid>
+                <CartoviewPrint print={childrenProps.print} opened={childrenProps.printOpened} handlePrintModal={childrenProps.handlePrintModal} />
                 <CartoviewSnackBar open={childrenProps.featureIdentifyLoading} message={"Searching For Features at this Point"} />
             </div>
         )
