@@ -1,13 +1,13 @@
 import CartoviewLayerSwitcher, { BaseMapSwitcher } from 'Source/components/view/LayerSwitcher'
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List'
 
+import ArchiveIcon from 'material-ui-icons/Archive'
 import CameraIcon from 'material-ui-icons/PhotoCamera'
 import CartoviewAbout from 'Source/components/view/About'
 import CartoviewBookmarks from 'Source/components/view/Bookmarks'
 import CartoviewLegends from 'Source/components/view/Legends'
 import CollapsibleListItem from 'Source/components/view/CollapsibleItem'
 import DownloadIcon from 'material-ui-icons/FileDownload'
-import EventIcon from 'material-ui-icons/EventAvailable'
 import HomeIcon from 'material-ui-icons/Home'
 import IconButton from 'material-ui/IconButton'
 import ImageIcon from 'material-ui-icons/Image'
@@ -110,7 +110,7 @@ class CartoviewDrawer extends React.Component {
                                     return (
                                         <ListItem key={index}>
                                             <ListItemIcon>
-                                                <EventIcon />
+                                                <ArchiveIcon />
                                             </ListItemIcon>
                                             <Message message={lyr.getProperties().title} wrap={false} align="left" type="body1" />
                                             <IconButton color="primary" onClick={() => downloadLayer(lyr.getProperties().name)} aria-label="Download">

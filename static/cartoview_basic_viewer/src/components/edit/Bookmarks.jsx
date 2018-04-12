@@ -14,6 +14,7 @@ export default class Bookmarks extends React.Component {
             map: BasicViewerHelper.getMap(),
             showMap: false
         }
+        global.map=this.state.map
     }
     getComponentValue = () => {
         return { bookmarks: this.state.bookmarks }
@@ -38,7 +39,10 @@ export default class Bookmarks extends React.Component {
 
     }
     showMap = () => {
-        this.setState({ showMap: !this.state.showMap }, () => this.state.map.updateSize())
+        this.setState({ showMap: !this.state.showMap }, () => {
+            this.state.map.updateSize()
+            this.state.map.render()
+        })
     }
     addBookmark = () => {
         const { bookmarks, map } = this.state
@@ -70,7 +74,7 @@ export default class Bookmarks extends React.Component {
         return (
             <div>
                 <h3>{"Bookmarks"}</h3>
-                <div ref={(mapDiv) => this.mapDiv = mapDiv} className={classNames("bookmarks-map", { 'hidden': !showMap })}></div>
+                <div id="map" ref={(mapDiv) => this.mapDiv = mapDiv} className={classNames("bookmarks-map", { 'hidden': !showMap })}></div>
                 <hr />
                 <div className="bookmark-item">
                     <button onClick={this.showMap} className='btn btn-primary'>{`${showMap ? 'Hide' : 'Show'} Map`}</button>

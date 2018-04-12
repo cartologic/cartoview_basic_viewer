@@ -284,6 +284,7 @@ class BasicViewerContainer extends Component {
         this.singleClickListner()
     }
     downloadLayer = (typeName) => {
+        //TODO: check download permission
         const downloadURL = this.wfsService.buildGetFeatureURL(typeName, undefined, undefined, undefined, undefined, undefined, "shape-zip")
         downloadFile(downloadURL, "layer.zip")
     }
