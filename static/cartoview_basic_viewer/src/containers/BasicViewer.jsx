@@ -69,8 +69,8 @@ class BasicViewerContainer extends Component {
     handlePrintModal = () => {
         this.setState({ printOpened: !this.state.printOpened })
     }
-    print = (title, comment, layout) => {
-        this.printModule.createPDF(title, comment, layout)
+    print = (title, comment, layout, dpi) => {
+        this.printModule.createPDF(title, comment, layout, dpi)
     }
     handleFeaturesTableDrawer = () => {
         const { featuresTableOpen } = this.state
@@ -419,6 +419,7 @@ class BasicViewerContainer extends Component {
             handlePrintModal: this.handlePrintModal,
             print: this.print,
             downloadLayer: this.downloadLayer,
+            printInfo: this.printModule.pdfInfo,
             zoomToFeature: this.zoomToFeature,
             addStyleToFeature: this.addStyleToFeature,
             resetFeatureCollection: this.resetFeatureCollection,

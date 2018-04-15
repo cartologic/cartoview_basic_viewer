@@ -160,7 +160,7 @@ class ContentGrid extends Component {
                         <CartoviewPopup {...childrenProps} />
                     </Grid>
                 </Grid>
-                <CartoviewPrint print={childrenProps.print} opened={childrenProps.printOpened} handlePrintModal={childrenProps.handlePrintModal} />
+                <CartoviewPrint printInfo={childrenProps.printInfo} print={childrenProps.print} opened={childrenProps.printOpened} handlePrintModal={childrenProps.handlePrintModal} />
                 <CartoviewSnackBar open={childrenProps.featureIdentifyLoading} message={"Searching For Features at this Point"} />
             </div>
         )

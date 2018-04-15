@@ -46,18 +46,27 @@ class PrintModal extends React.Component {
     state = {
         title: "",
         comment: "",
-        layout: "A4"
+        layout: "A4",
+        dpi: 96
     }
     handleChange = name => event => {
-        this.setState({
-            [name]: event.target.value,
-        })
+        const value = event.target.value
+        if (name === "title" && value.length < 100) {
+            this.setState({
+                [name]: value,
+            })
+        }
+        else if (name !== "title") {
+            this.setState({
+                [name]: value,
+            })
+        }
     }
-    handleLayoutChange = event => {
+    handleSelectChange = event => {
         this.setState({ [event.target.name]: event.target.value })
     }
     render() {
-        const { fullScreen, classes, handlePrintModal, print } = this.props
+        const { fullScreen, classes, handlePrintModal, print, printInfo } = this.props
         return (
             <div>
                 <Dialog
@@ -73,7 +82,7 @@ class PrintModal extends React.Component {
                                 id="title"
                                 label="Title"
                                 className={classes.textField}
-                                value={this.state.name}
+                                value={this.state.title}
                                 onChange={this.handleChange('title')}
                                 margin="normal"
                             />
@@ -83,28 +92,40 @@ class PrintModal extends React.Component {
                                 multiline
                                 rowsMax="4"
                                 className={classes.textField}
-                                value={this.state.name}
+                                value={this.state.comment}
                                 onChange={this.handleChange('comment')}
                                 margin="normal"
                             />
-                            <FormControl className={classes.formControl}>
+                            {printInfo && <FormControl className={classes.formControl}>
                                 <InputLabel htmlFor="print-layout">{"Layout"}</InputLabel>
                                 <Select
                                     value={this.state.layout}
-                                    onChange={this.handleLayoutChange}
+                                    onChange={this.handleSelectChange}
                                     inputProps={{
                                         name: 'layout',
                                         id: 'print-layout',
                                     }}
                                 >
-                                    <MenuItem value={"A4"}>{"A4"}</MenuItem>
-                                    <MenuItem value={"Wide"}>{"Wide"}</MenuItem>
+                                    {printInfo && printInfo.layouts.map((layout, index) => <MenuItem key={index} value={layout.name}>{layout.name}</MenuItem>)}
                                 </Select>
-                            </FormControl>
+                            </FormControl>}
+                            {printInfo && <FormControl className={classes.formControl}>
+                                <InputLabel htmlFor="print-layout">{"DPI"}</InputLabel>
+                                <Select
+                                    value={this.state.dpi}
+                                    onChange={this.handleSelectChange}
+                                    inputProps={{
+                                        name: 'dpi',
+                                        id: 'print-dpi',
+                                    }}
+                                >
+                                    {printInfo && printInfo.dpis.map((dpi, index) => <MenuItem key={index} value={Number(dpi.value)}>{dpi.name}</MenuItem>)}
+                                </Select>
+                            </FormControl>}
                         </div>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={() => { print(this.state.title, this.state.comment, this.state.layout) }} color="primary">
+                        <Button onClick={() => { print(this.state.title, this.state.comment, this.state.layout, this.state.dpi) }} color="primary">
                             {`Print`}
                         </Button>
                         <Button onClick={handlePrintModal} color="secondary" autoFocus>
@@ -123,6 +144,7 @@ PrintModal.propTypes = {
     print: PropTypes.func.isRequired,
     handlePrintModal: PropTypes.func.isRequired,
     classes: PropTypes.object.isRequired,
+    printInfo: PropTypes.object
 }
 
 export default withMobileDialog()(withStyles(styles)(PrintModal))
