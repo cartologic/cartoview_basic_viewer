@@ -3,6 +3,14 @@
     flex: 1
 }
 
+.geocoding-result {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    overflow-y: overlay;
+    overflow-y: scroll
+}
+
 .full-width {
     width: 100%
 }

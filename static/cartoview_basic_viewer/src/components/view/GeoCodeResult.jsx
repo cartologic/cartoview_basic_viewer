@@ -9,12 +9,6 @@ import classNames from 'classnames'
 import { withStyles } from 'material-ui/styles'
 
 const styles = theme => ({
-    searchItem: {
-        width: '100%',
-        height: '200px',
-        display: 'flex',
-        overflowY: 'overlay'
-    },
     hide: {
         display: 'none'
     }
@@ -28,7 +22,7 @@ class GeocodeResult extends React.Component {
     render() {
         const { geocodingResult, classes, geocodeSearchLoading } = this.props
         return (
-            <Paper className={classNames(classes.searchItem, { [classes.hide]: geocodeSearchLoading })} elevation={0} >
+            <Paper className={classNames("geocoding-result", { [classes.hide]: geocodeSearchLoading })} elevation={0} >
                 <List className="full-width" component="nav">
                     {geocodingResult.map(((item, index) => {
                         return (
