@@ -1,0 +1,72 @@
+{% load static cartoview_tags basic_viewer %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ instance.title }}</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1, user-scalable=no" />  
+    <link rel="shortcut icon" type="image/png" href="{{ STATIC_URL }}cartoview/img/icon.png" />
+    <link rel="stylesheet" type="text/css" href="{% static 'basic_viewer/dist/commons.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'basic_viewer/dist/BasicViewer.css' %}"/>
+    <style>
+        html,body {
+            height: 100%;
+            margin: 0px;
+        }
+        #root{
+            height: 100%
+        }
+    </style>
+</head>
+<body>
+<div style="height: 100%;" id="root"></div>
+<script src="{{ STATIC_URL }}basic_viewer/dist/commons.js"></script>
+<script src="{% static 'basic_viewer/dist/BasicViewer.bundle.js?version=1.6.5' %}"></script>
+<script type="text/javascript">
+    {% if instance %}
+            const instanceId= {{ instance.id }}
+            {% if PROXY_URL %}
+                const PROXY_URL='{{PROXY_URL}}'
+            {% else %}
+                const PROXY_URL=null
+            {% endif %}
+            
+            const urls={
+                mapJsonUrl: "{% url 'map_json' mapid=instance.map.id %}",
+                proxy: PROXY_URL,
+                appInstance: "{% url 'api_dispatch_detail' api_name='api' resource_name='appinstances' pk=instance.id %}",
+                geoserverUrl : "{{ GEOSERVER_BASE_URL }}",
+                {% if 'access_token' in request.session %}
+                    wfsURL : "{{ GEOSERVER_BASE_URL }}wfs?access_token={{request.session.access_token}}",
+                    wmsURL : "{{ GEOSERVER_BASE_URL }}wms?access_token={{request.session.access_token}}",
+                    {% else %}
+                    wfsURL : "{{ GEOSERVER_BASE_URL }}wfs",
+                    wmsURL : "{{ GEOSERVER_BASE_URL }}wms",
+                {% endif %}
+                static: "{{ STATIC_URL }}",
+                media: "{{ MEDIA_URL }}",
+                layerAttributes:{% reverse_url 'api_dispatch_list' api_name='api' resource_name='attributes'|safe %},
+                thumbnailURL:"{% url ''|add:"basic_viewer"|add:'_map_thumbnail' mapid=instance.map.id %}",
+                rest: "{% url 'app_manager_base_url' %}rest/app_manager/",
+                geonodeRest: "{% url 'api_api_top_level' 'api' %}",
+                appInstancesPage:"{% url 'appinstance_browse' %}?app__name={{instance.app.name}}&app__title={{instance.app.title}}",
+                layers: "{% url 'layer_browse' %}",
+                maps: "{% url 'maps_browse' %}",
+                mapDetails: function(id){
+                    return '/maps/'+id
+                },
+                apps: "{% url 'app_manager_base_url' %}",
+                viewURL: "{% url "basic_viewer.view" instance_id=instance.id %}",
+                appLogo:'{% static 'basic_viewer/logo.png' %}'
+            }
+    {% endif %}
+
+    const props = {{ instance.config | safe }}
+    props.formTitle={{instance.title|dump_json}}
+    props.formAbstract={{instance.abstract|dump_json}}
+    props.username="{{request.user.username}}"
+    props.token="{{request.session.access_token}}"
+    BasicViewerContainer.show('root', props,urls);
+  </script>
+</body>
+</html>
