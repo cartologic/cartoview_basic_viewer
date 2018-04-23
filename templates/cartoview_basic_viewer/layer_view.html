@@ -1,0 +1,66 @@
+{% load static cartoview_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ layer.title }}</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1, user-scalable=no" />  
+    <link rel="shortcut icon" type="image/png" href="{{ STATIC_URL }}cartoview/img/icon.png" />
+    <link rel="stylesheet" type="text/css" href="{% static 'cartoview_basic_viewer/dist/commons.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'cartoview_basic_viewer/dist/BasicViewer.css' %}"/>
+    <style>
+        html,body {
+            height: 100%;
+            margin: 0px;
+        }
+        #root{
+            height: 100%
+        }
+    </style>
+</head>
+<body>
+<div style="height: 100%;" id="root"></div>
+<script src="{{ STATIC_URL }}cartoview_basic_viewer/dist/commons.js"></script>
+<script src="{% static 'cartoview_basic_viewer/dist/BasicViewer.bundle.js?version=1.6.5' %}"></script>
+<script type="text/javascript">
+            {% if PROXY_URL %}
+                const PROXY_URL='{{PROXY_URL}}'
+            {% else %}
+                const PROXY_URL=null
+            {% endif %}
+            
+            const urls={
+                mapJsonUrl: "{% url 'layer_json' layername=layer.typename %}",
+                proxy: PROXY_URL,
+                geoserverUrl : "{{ GEOSERVER_BASE_URL }}",
+                {% if 'access_token' in request.session %}
+                    wfsURL : "{{ GEOSERVER_BASE_URL }}wfs?access_token={{request.session.access_token}}",
+                    wmsURL : "{{ GEOSERVER_BASE_URL }}wms?access_token={{request.session.access_token}}",
+                    {% else %}
+                    wfsURL : "{{ GEOSERVER_BASE_URL }}wfs",
+                    wmsURL : "{{ GEOSERVER_BASE_URL }}wms",
+                {% endif %}
+                geoserverPdfInfo:"{{ GEOSERVER_BASE_URL }}pdf/info.json",
+                static: "{{ STATIC_URL }}",
+                media: "{{ MEDIA_URL }}",
+                layerAttributes:"{% url 'app_manager_base_url' %}rest/app_manager/geonodelayerattribute/",
+                thumbnailURL:"{% url 'layer_thumbnail' layername=layer.typename %}",
+                rest: "{% url 'app_manager_base_url' %}rest/app_manager/",
+                geonodeRest: "{% url 'api_api_top_level' 'api' %}",
+                appInstancesPage:"{% url 'layer_browse' %}",
+                layers: "{% url 'layer_browse' %}",
+                maps: "{% url 'maps_browse' %}",
+                apps: "{% url 'app_manager_base_url' %}",
+                appLogo:'{% static 'cartoview_basic_viewer/logo.png' %}'
+            }
+
+    const props = {"showLegend": true, "showExportMap": true, "showLayerSwitcher": true, "access": {"whoCanDelete": null, "whoCanView": null, "whoCanChangeMetadata": null, "whoCanChangeConfiguration": null}, "enableFeatureTable": true, "enableHistory": true,"keywords": []}
+    
+    props.formTitle={{layer.title|dump_json}}
+    props.formAbstract={{layer.abstract|dump_json}}
+    props.username="{{request.user.username}}"
+    props.token="{{request.session.access_token}}"
+    BasicViewerContainer.show('root', props,urls);
+  </script>
+</body>
+</html>
