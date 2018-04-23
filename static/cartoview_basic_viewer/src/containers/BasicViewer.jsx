@@ -268,7 +268,7 @@ class BasicViewerContainer extends Component {
     }
     componentWillMount() {
         let { map } = this.state
-        const { urls } = this.props
+        const { urls, config } = this.props
         this.overlay = new Overlay({
             autoPan: true,
             autoPanAnimation: {
@@ -278,7 +278,7 @@ class BasicViewerContainer extends Component {
         })
         map.addOverlay(this.overlay)
         this.addSelectionLayer()
-        BasicViewerHelper.mapInit(urls.mapJsonUrl, map, urls.proxy, this.mapLoaded)
+        BasicViewerHelper.mapInit(urls.mapJsonUrl, map, urls.proxy, config.token, this.mapLoaded)
     }
     componentDidMount() {
         this.singleClickListner()
