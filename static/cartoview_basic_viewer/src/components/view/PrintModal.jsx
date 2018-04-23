@@ -49,14 +49,6 @@ class PrintModal extends React.Component {
         layout: "A4",
         dpi: 96
     }
-    componentWillReceiveProps(nextProps) {
-        const { printInfo } = this.props
-        if (nextProps && (printInfo !== nextProps.printInfo)) {
-            const dpi = Number(nextProps.printInfo.dpis[0].value)
-            const layout = nextProps.printInfo.layouts[0].name
-            this.setState({ dpi, layout })
-        }
-    }
     handleChange = name => event => {
         const value = event.target.value
         if (name === "title" && value.length < 100) {
@@ -137,7 +129,7 @@ class PrintModal extends React.Component {
                             {`Print`}
                         </Button>
                         <Button onClick={handlePrintModal} color="secondary" autoFocus>
-                            {`Cancel`}
+                            {`Cancle`}
                         </Button>
                     </DialogActions>
                 </Dialog>
