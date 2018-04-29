@@ -31,7 +31,7 @@ const LayerItem = SortableElement(({ layer, layerIndex, handleLayerVisibilty }) 
 })
 const LayerList = SortableContainer(({ layers, handleLayerVisibilty }) => {
     return (
-        <List subheader={<ListSubheader>{"Drag&Drop To Order the Layers"}</ListSubheader>}>
+        <List subheader={<ListSubheader>{"Drag & Drop To Order the Layers"}</ListSubheader>}>
             {layers.map((layer, index) => (
                 <LayerItem handleLayerVisibilty={handleLayerVisibilty} key={`item-${index}`} index={index} layerIndex={index} layer={layer} />
             ))}
