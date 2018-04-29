@@ -12,9 +12,8 @@ import Collection from 'ol/collection'
 import GeoCoding from 'cartoview-sdk/services/GeoCodingService'
 import GeoJSON from 'ol/format/geojson'
 import Group from 'ol/layer/group'
-import LayersHelper from 'cartoview-sdk/helpers/layersHelper'
+import LayersHelper from 'cartoview-sdk/helpers/LayersHelper'
 import Overlay from 'ol/overlay'
-import PrintService from 'cartoview-sdk/services/PrintService'
 import PropTypes from 'prop-types'
 import StyleHelper from 'cartoview-sdk/helpers/StyleHelper'
 import URLS from 'cartoview-sdk/urls/urls'
@@ -44,7 +43,6 @@ class BasicViewerContainer extends Component {
             featureIdentifyResult: [],
             showPopup: false,
             identifyEnabled: true,
-            legends: [],
             geocodingResult: [],
             searchText: '',
             geocodeSearchLoading: false,
@@ -64,13 +62,9 @@ class BasicViewerContainer extends Component {
         this.styleHelper = new StyleHelper()
         this.urls = new URLS(urls.proxy)
         this.wfsService = new WFSService(urls.wfsURL, urls.proxy)
-        this.printModule = new PrintService(this.state.map, urls.geoserverUrl, this.props.config.token, urls.proxy)
     }
     handlePrintModal = () => {
         this.setState({ printOpened: !this.state.printOpened })
-    }
-    print = (title, comment, layout, dpi) => {
-        this.printModule.createPDF(title, comment, layout, dpi)
     }
     handleFeaturesTableDrawer = () => {
         const { featuresTableOpen } = this.state
@@ -245,7 +239,6 @@ class BasicViewerContainer extends Component {
         let { map } = this.state
         const mapLayers = map.getLayers().getArray()
         this.setLayerSwitcherLayers(mapLayers)
-        this.createLegends(LayersHelper.getLayers(mapLayers))
         this.setState({ mapIsLoading: false })
     }
     addSelectionLayer = () => {
@@ -304,7 +297,10 @@ class BasicViewerContainer extends Component {
         if (data.mapLayers.length > 0 && (!tableLayer || tableLayer !== '')) {
             data.tableLayer = data.mapLayers[0].get('name')
         }
-        this.setState(data, this.getColumns)
+        this.setState(data, () => {
+            this.getColumns()
+            this.createLegends()
+        })
     }
     handleBaseMapVisibilty = (event, value) => {
         const { baseMaps } = this.state
@@ -358,16 +354,19 @@ class BasicViewerContainer extends Component {
         })
 
     }
-    createLegends = (layers) => {
+    createLegends = () => {
+        let { mapLayers } = this.state
         let legends = []
-        layers.map(layer => {
+        mapLayers.map(layer => {
             const layerTitle = layer.getProperties().title
-            legends.push({
-                layer: layerTitle,
-                url: LayersHelper.getLegendURL(layer)
-            })
+            if (layer.getVisible()) {
+                legends.push({
+                    layer: layerTitle,
+                    url: LayersHelper.getLegendURL(layer)
+                })
+            }
         })
-        this.setState({ legends })
+        return legends
     }
     resetFeatureCollection = () => {
         let { featureCollection } = this.state
@@ -417,9 +416,7 @@ class BasicViewerContainer extends Component {
             config,
             ...this.state,
             handlePrintModal: this.handlePrintModal,
-            print: this.print,
             downloadLayer: this.downloadLayer,
-            printInfo: this.printModule.pdfInfo,
             zoomToFeature: this.zoomToFeature,
             addStyleToFeature: this.addStyleToFeature,
             resetFeatureCollection: this.resetFeatureCollection,
@@ -427,6 +424,7 @@ class BasicViewerContainer extends Component {
             layerNameSpace: LayersHelper.layerNameSpace,
             toggleDrawer: this.toggleDrawer,
             urls,
+            createLegends: this.createLegends,
             setThumbnail: this.setThumbnail,
             getFeatures: this.wfsService.getFeatures,
             getTableData: this.getTableData,

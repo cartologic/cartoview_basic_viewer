@@ -2,15 +2,18 @@ import Dialog, {
     DialogActions,
     DialogContent,
     DialogTitle,
-    withMobileDialog,
 } from 'material-ui/Dialog'
 
+import AddIcon from 'material-ui-icons/Add'
+import BasicViewerHelper from 'cartoview-sdk/helpers/BasicViewerHelper'
 import Button from 'material-ui/Button'
 import { FormControl } from 'material-ui/Form'
 import { InputLabel } from 'material-ui/Input'
 import { MenuItem } from 'material-ui/Menu'
+import PrintService from 'cartoview-sdk/services/PrintService'
 import PropTypes from 'prop-types'
 import React from 'react'
+import RemoveIcon from 'material-ui-icons/Remove'
 import Select from 'material-ui/Select'
 import TextField from 'material-ui/TextField'
 import { withStyles } from 'material-ui/styles'
@@ -23,39 +26,114 @@ const styles = theme => ({
     textField: {
         marginLeft: theme.spacing.unit,
         marginRight: theme.spacing.unit,
-        width: 200,
     },
     menu: {
         width: 200,
     },
     formControl: {
         margin: theme.spacing.unit,
-        minWidth: 120,
+        width: '100%'
     },
     selectEmpty: {
         marginTop: theme.spacing.unit * 2,
     },
+    fullWidth: {
+        width: '100%'
+    },
     modalContent: {
-        display: "flex",
+        display: "block",
         justifyContent: "center",
         alignItems: "center",
         flexDirection: "column",
+        flex: ".5",
+        margin: theme.spacing.unit * 2
+    },
+    mapDiv: {
+        width: "100%",
+        height: "100%",
+        position: 'relative'
+    },
+    mapContainer: {
+        flex: '.5',
+        border: "2px black solid"
+    },
+    root: {
+        display: 'flex',
+        height: "100%",
+        [theme.breakpoints.down('md')]: {
+            flexDirection: 'column',
+            overflowY: 'scroll'
+        },
+    },
+    button: {
+        margin: theme.spacing.unit
+    },
+    zoomButtons: {
+        zIndex: '12123',
+        position: 'absolute',
+        display: 'flex',
+        flexDirection: 'column'
     }
 })
 class PrintModal extends React.Component {
-    state = {
-        title: "",
-        comment: "",
-        layout: "A4",
-        dpi: 96
-    }
-    componentWillReceiveProps(nextProps) {
-        const { printInfo } = this.props
-        if (nextProps && (printInfo !== nextProps.printInfo)) {
-            const dpi = Number(nextProps.printInfo.dpis[0].value)
-            const layout = nextProps.printInfo.layouts[0].name
-            this.setState({ dpi, layout })
+    constructor(props) {
+        super(props)
+        const { token, urls, } = this.props
+        this.state = {
+            title: "",
+            comment: "",
+            layout: "Landscape",
+            dpi: 96,
+            scale: '',
+            map: BasicViewerHelper.getPrintMap()
         }
+        this.printModule = new PrintService(this.state.map, urls.geoserverUrl, token, urls.proxy)
+    }
+    print = () => {
+        const { title, comment, layout, dpi, scale } = this.state
+        if (layout && dpi && scale) {
+            this.printModule.createPDF(title, comment, layout, dpi, scale)
+        }
+    }
+    getScaleValues = () => {
+        let scaleValues = []
+        if (this.printModule.pdfInfo && this.printModule.pdfInfo.scales.length > 0) {
+            this.printModule.pdfInfo.scales.map(scale => {
+                scaleValues.push(Number(scale.value))
+            })
+        }
+        return scaleValues
+    }
+    handleZoomOut = () => {
+        const scaleValues = this.getScaleValues()
+        const { dpi, map } = this.state
+        let currentScale = this.printModule.getScaleFromResolution(null, dpi)
+        currentScale = this.printModule.getClosestScale(currentScale)
+        let currentScaleIndex = scaleValues.indexOf(currentScale)
+        if (currentScaleIndex < scaleValues.length - 1) {
+            let nextScale = scaleValues[++currentScaleIndex]
+            this.setState({ scale: nextScale })
+            let res = this.printModule.getResolutionFromScale(nextScale, dpi)
+            map.getView().setResolution(res)
+        }
+    }
+    handleZoomIn = () => {
+        const scaleValues = this.getScaleValues()
+        const { dpi, map } = this.state
+        let currentScale = this.printModule.getScaleFromResolution(null, dpi)
+        currentScale = this.printModule.getClosestScale(currentScale)
+        let currentScaleIndex = scaleValues.indexOf(currentScale)
+        if (currentScaleIndex > 0) {
+            let prevScale = scaleValues[--currentScaleIndex]
+            this.setState({ scale: prevScale })
+            let res = this.printModule.getResolutionFromScale(prevScale, dpi)
+            map.getView().setResolution(res)
+        }
+    }
+    componentWillMount() {
+        const { urls, token } = this.props
+        let { map } = this.state
+        BasicViewerHelper.mapInit(urls.mapJsonUrl, map, urls.proxy, token)
     }
     handleChange = name => event => {
         const value = event.target.value
@@ -70,21 +148,30 @@ class PrintModal extends React.Component {
             })
         }
     }
+    showMap = () => {
+        let { map } = this.state
+        map.setTarget(this.mapDiv)
+        map.updateSize()
+    }
     handleSelectChange = event => {
-        this.setState({ [event.target.name]: event.target.value })
+        const { value } = event.target
+        const name = event.target.name
+        this.setState({ [name]: value })
     }
     render() {
-        const { fullScreen, classes, handlePrintModal, print, printInfo } = this.props
+        const { classes, handlePrintModal } = this.props
+        let printInfo = this.printModule.pdfInfo
         return (
             <div>
                 <Dialog
-                    fullScreen={fullScreen}
+                    fullScreen
                     open={this.props.opened}
                     onClose={this.handleClose}
                     aria-labelledby="print-modal"
+                    onEntered={this.showMap}
                 >
-                    <DialogTitle id="print-modal">{"Print"}</DialogTitle>
-                    <DialogContent>
+                    <DialogTitle id="print-modal">{"Print Composer"}</DialogTitle>
+                    <DialogContent className={classes.root}>
                         <div className={classes.modalContent}>
                             <TextField
                                 id="title"
@@ -93,6 +180,7 @@ class PrintModal extends React.Component {
                                 value={this.state.title}
                                 onChange={this.handleChange('title')}
                                 margin="normal"
+                                fullWidth
                             />
                             <TextField
                                 id="comment"
@@ -103,10 +191,12 @@ class PrintModal extends React.Component {
                                 value={this.state.comment}
                                 onChange={this.handleChange('comment')}
                                 margin="normal"
+                                fullWidth
                             />
                             {printInfo && <FormControl className={classes.formControl}>
                                 <InputLabel htmlFor="print-layout">{"Layout"}</InputLabel>
                                 <Select
+                                    classes={{ select: classes.fullWidth }}
                                     value={this.state.layout}
                                     onChange={this.handleSelectChange}
                                     inputProps={{
@@ -118,8 +208,27 @@ class PrintModal extends React.Component {
                                 </Select>
                             </FormControl>}
                             {printInfo && <FormControl className={classes.formControl}>
+                                <InputLabel htmlFor="print-layout">{"Scale"}</InputLabel>
+                                <Select
+                                    classes={{ select: classes.fullWidth }}
+                                    disabled
+                                    value={this.state.scale}
+                                    onChange={this.handleSelectChange}
+                                    inputProps={{
+                                        name: 'scale',
+                                        id: 'print-scale',
+                                    }}
+                                >
+                                    <MenuItem value="">
+                                        <em>None</em>
+                                    </MenuItem>
+                                    {printInfo && printInfo.scales.map((scale, index) => <MenuItem key={index} value={Number(scale.value)}>{scale.name}</MenuItem>)}
+                                </Select>
+                            </FormControl>}
+                            {printInfo && <FormControl className={classes.formControl}>
                                 <InputLabel htmlFor="print-layout">{"DPI"}</InputLabel>
                                 <Select
+                                    classes={{ select: classes.fullWidth }}
                                     value={this.state.dpi}
                                     onChange={this.handleSelectChange}
                                     inputProps={{
@@ -131,9 +240,21 @@ class PrintModal extends React.Component {
                                 </Select>
                             </FormControl>}
                         </div>
+                        <div className={classes.mapContainer}>
+                            <div className={classes.mapDiv} ref={(divRef) => this.mapDiv = divRef}>
+                                <div className={classes.zoomButtons}>
+                                    <Button onClick={this.handleZoomIn} variant="fab" mini color="secondary" aria-label="add" className={classes.button}>
+                                        <AddIcon />
+                                    </Button>
+                                    <Button onClick={this.handleZoomOut} variant="fab" mini color="secondary" aria-label="add" className={classes.button}>
+                                        <RemoveIcon />
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={() => { print(this.state.title, this.state.comment, this.state.layout, this.state.dpi) }} color="primary">
+                        <Button onClick={this.print} color="primary">
                             {`Print`}
                         </Button>
                         <Button onClick={handlePrintModal} color="secondary" autoFocus>
@@ -147,12 +268,11 @@ class PrintModal extends React.Component {
 }
 
 PrintModal.propTypes = {
-    fullScreen: PropTypes.bool.isRequired,
     opened: PropTypes.bool.isRequired,
-    print: PropTypes.func.isRequired,
+    token: PropTypes.string,
     handlePrintModal: PropTypes.func.isRequired,
     classes: PropTypes.object.isRequired,
-    printInfo: PropTypes.object
+    urls: PropTypes.object.isRequired,
 }
 
-export default withMobileDialog()(withStyles(styles)(PrintModal))
+export default withStyles(styles)(PrintModal)

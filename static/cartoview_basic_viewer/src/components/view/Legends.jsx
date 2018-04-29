@@ -8,8 +8,8 @@ import { withStyles } from 'material-ui/styles'
 
 const styles = theme => ({
     legendsPaper: {
-        padding: theme.spacing.unit*2,
-        textAlign:"center"
+        padding: theme.spacing.unit * 2,
+        textAlign: "center"
     }
 })
 const LegendItem = (props) => {
@@ -31,8 +31,9 @@ class CartoviewLegends extends React.Component {
     render() {
         const {
             classes,
-            legends
+            createLegends
         } = this.props
+        const  legends = createLegends()
         return (
             <Paper className={classes.legendsPaper} elevation={0}>
                 {legends.length > 0 && legends.map((legend, index) => <LegendItem key={index} legend={legend} />)}
@@ -43,6 +44,6 @@ class CartoviewLegends extends React.Component {
 }
 CartoviewLegends.propTypes = {
     classes: PropTypes.object.isRequired,
-    legends: PropTypes.array.isRequired,
+    createLegends: PropTypes.func.isRequired,
 }
 export default withStyles(styles)(CartoviewLegends)
