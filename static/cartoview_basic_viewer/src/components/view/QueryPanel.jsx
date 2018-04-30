@@ -27,6 +27,13 @@ const styles = theme => ({
         display: 'flex',
         flexWrap: 'wrap',
     },
+    form: {
+        [theme.breakpoints.down('md')]: {
+            display: 'flex',
+            flexDirection: 'column'
+        },
+
+    }
 })
 class QueryPanel extends React.Component {
     constructor(props) {
@@ -63,7 +70,7 @@ class QueryPanel extends React.Component {
     render() {
         const { attributes, classes } = this.props
         return (
-            <form onSubmit={this.handleSubmit} autoComplete="off">
+            <form className={classes.form} onSubmit={this.handleSubmit} autoComplete="off">
                 <FormControl className={classes.formControl} error={this.state.attribute ? false : true}>
                     <InputLabel htmlFor="layer-select">{"Attribute"}</InputLabel>
                     <Select
