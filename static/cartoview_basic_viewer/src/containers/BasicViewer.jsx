@@ -20,9 +20,8 @@ import URLS from 'cartoview-sdk/urls/urls'
 import Vector from 'ol/layer/vector'
 import { default as VectorSource } from 'ol/source/vector'
 import WFSService from 'cartoview-sdk/services/WFSService'
-import ZoomIcon from 'material-ui-icons/ZoomIn'
-import _ from "lodash"
 import { arrayMove } from 'react-sortable-hoc'
+import { doPost } from 'cartoview-sdk/utils/utils'
 import { downloadFile } from 'cartoview-sdk/utils/utils'
 import proj from 'ol/proj'
 import proj4 from 'proj4'
@@ -41,6 +40,8 @@ class BasicViewerContainer extends Component {
             cqlFilter: '',
             mouseCoordinates: [0, 0],
             featureIdentifyResult: [],
+            layerAttributes: [],
+            attributesLoading: false,
             showPopup: false,
             identifyEnabled: true,
             geocodingResult: [],
@@ -53,7 +54,6 @@ class BasicViewerContainer extends Component {
             features: [],
             featuresIsLoading: false,
             featuresTableOpen: false,
-            tableColumns: [],
             tableLayer: '',
             tablePages: null,
             printOpened: false,
@@ -73,24 +73,21 @@ class BasicViewerContainer extends Component {
     capitalize = (s) => {
         return s && s[0].toUpperCase() + s.slice(1)
     }
-    handleCQLFilterChange = (event) => {
-        this.setState({ cqlFilter: event.target.value })
-    }
-    getData = (features) => {
-        let data = []
-        features.map(feature => {
-            const featureProperties = feature.getProperties()
-            let featureObject = {}
-            Object.keys(featureProperties).forEach(key => {
-                if (key.toLowerCase() !== 'geometry') {
-                    featureObject[key] = featureProperties[key]
-                }
+    handleCQLFilterChange = (filterObj) => {
+        const { map, tableLayer } = this.state
+        const { urls } = this.props
+        this.setState({ featuresIsLoading: true })
+        this.wfsService.writeWFSGetFeature(map, tableLayer, filterObj).then(request => {
+            let data = new XMLSerializer().serializeToString(request)
+            doPost(urls.wfsURL, data).then(res => {
+                this.setState({
+                    features: wmsGetFeatureInfoFormats[
+                        'application/json'].readFeatures(
+                            res),
+                    featuresIsLoading: false
+                })
             })
-            featureObject.feature = feature
-            featureObject.featureId = feature.getId()
-            data.push(featureObject)
         })
-        return data
     }
     setThumbnail = () => {
         const { map } = this.state
@@ -109,45 +106,15 @@ class BasicViewerContainer extends Component {
         }
         this.setState(data)
     }
-    getColumns = () => {
-        const { tableLayer, map } = this.state
-        const projectionCode = map.getView().getProjection().getCode()
-        this.wfsService.getFeatures(tableLayer, projectionCode, 0, 1).then((data) => {
-            let features = wmsGetFeatureInfoFormats[
-                'application/json'].readFeatures(data, {
-                    featureProjection: map.getView().getProjection()
-                })
-            let columns = [
-                {
-                    Header: "Action",
-                    id: "action",
-                    show: true,
-                    Cell: rowInfo => (<div className="element-flex attrs-table-title"><ZoomIcon className="zoom-button" onClick={(e) => this.zoomToFeature(rowInfo.row.feature)} /></div>)
-
-                },
-                {
-
-                    Header: "FeatureID",
-                    accessor: "featureId"
-                },
-                {
-                    Header: "Action",
-                    accessor: "feature",
-                    show: false
-                }]
-            if (features.length > 0) {
-                const featureProperties = features[0].getProperties()
-                Object.keys(featureProperties).forEach(key => {
-                    if (key.toLowerCase() !== 'geometry') {
-                        columns.push({
-                            id: key,
-                            Header: key,
-                            accessor: key
-                        })
-                    }
-                })
+    getTableLayerAttributes = () => {
+        const { tableLayer } = this.state
+        this.setState({ attributesLoading: true })
+        this.wfsService.describeFeatureType(tableLayer).then(result => {
+            let data = { attributesLoading: false }
+            if (result.featureTypes.length > 0) {
+                data["layerAttributes"] = result.featureTypes[0].properties.filter(attr => attr.name !== "the_geom")
             }
-            this.setState({ tableColumns: columns })
+            this.setState(data)
         })
 
     }
@@ -156,55 +123,9 @@ class BasicViewerContainer extends Component {
         const { tableLayer } = this.state
         if (layer !== tableLayer) {
             this.setState({ tableLayer: event.target.value, features: [], cqlFilter: '' }, () => {
-                this.getTableData({ pageSize: 10, sorted: [], page: 0, filtered: [] }, {})
-                this.getColumns()
+                this.getTableLayerAttributes()
             })
         }
-
-    }
-    getTableData = (state, instance) => {
-        this.setState({ featuresIsLoading: true })
-        const { map, tableLayer, cqlFilter } = this.state
-        const projectionCode = map.getView().getProjection().getCode()
-        const pagination = state.pageSize
-        const sorted = state.sorted
-        const page = state.page
-        const filtered = state.filtered
-        let sortAtrr = null
-        let filter = cqlFilter === '' ? null : cqlFilter
-        let startIndex = (page) * pagination
-        let count = pagination
-        if (sorted.length > 0 && sorted[0].id !== 'featureId') {
-            sortAtrr = sorted[0].id
-            sortAtrr += sorted[0].desc ? "+D" : "+A"
-        }
-        let featuresPromise = this.wfsService.getFeatures(tableLayer, projectionCode, startIndex, count, sortAtrr, filter)
-        featuresPromise.then(data => {
-            const total = data.totalFeatures
-            let features = wmsGetFeatureInfoFormats['application/json'].readFeatures(data, {
-                featureProjection: map.getView().getProjection()
-            })
-            features = this.getData(features)
-            if (sorted.length > 0 && sorted[0].id !== 'featureId') {
-                features = _.orderBy(
-                    features,
-                    sorted.map(sort => {
-                        return row => {
-                            if (row[sort.id] === null || row[sort.id] === undefined) {
-                                return -Infinity
-                            }
-                            return typeof row[sort.id] === "string"
-                                ? row[sort.id].toLowerCase()
-                                : row[sort.id]
-                        }
-                    }),
-                    sorted.map(d => (d.desc ? "desc" : "asc"))
-                )
-            }
-            const pages = Math.ceil(total
-                / pagination)
-            this.setState({ features, tablePages: pages, featuresIsLoading: false })
-        })
 
     }
     toggleDrawer = () => {
@@ -298,8 +219,8 @@ class BasicViewerContainer extends Component {
             data.tableLayer = data.mapLayers[0].get('name')
         }
         this.setState(data, () => {
-            this.getColumns()
             this.createLegends()
+            this.getTableLayerAttributes()
         })
     }
     handleBaseMapVisibilty = (event, value) => {
@@ -427,7 +348,7 @@ class BasicViewerContainer extends Component {
             createLegends: this.createLegends,
             setThumbnail: this.setThumbnail,
             getFeatures: this.wfsService.getFeatures,
-            getTableData: this.getTableData,
+            wfsService: this.wfsService,
             handleTableLayerChange: this.handleTableLayerChange,
             addOverlay: this.addOverlay,
             changeShowPopup: this.changeShowPopup,

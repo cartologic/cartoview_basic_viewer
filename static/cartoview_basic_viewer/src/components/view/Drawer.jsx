@@ -21,7 +21,7 @@ import Paper from 'material-ui/Paper'
 import PrintIcon from 'material-ui-icons/Print'
 import PropTypes from 'prop-types'
 import React from 'react'
-import TableIcon from 'material-ui-icons/GridOn'
+import SearchIcon from 'material-ui-icons/Search'
 import UploadIcon from 'material-ui-icons/InsertPhoto'
 import ViewListIcon from 'material-ui-icons/ViewList'
 import classnames from 'classnames'
@@ -94,9 +94,9 @@ class CartoviewDrawer extends React.Component {
                         </ListItem>}
                         {config.enableFeatureTable && <ListItem onTouchTap={handleFeaturesTableDrawer} button>
                             <ListItemIcon>
-                                <TableIcon />
+                                <SearchIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Feature Table" />
+                            <ListItemText primary="Query" />
                         </ListItem>}
                         <ListItem onTouchTap={setThumbnail} button>
                             <ListItemIcon>
