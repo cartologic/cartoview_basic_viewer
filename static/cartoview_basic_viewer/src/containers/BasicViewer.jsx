@@ -76,10 +76,11 @@ class BasicViewerContainer extends Component {
     handleCQLFilterChange = (filterObj) => {
         const { map, tableLayer } = this.state
         const { urls } = this.props
+        const targerURL = this.urls.getProxiedURL(urls.wfsURL)
         this.setState({ featuresIsLoading: true })
         this.wfsService.writeWFSGetFeature(map, tableLayer, filterObj).then(request => {
             let data = new XMLSerializer().serializeToString(request)
-            doPost(urls.wfsURL, data).then(res => {
+            doPost(targerURL, data).then(res => {
                 this.setState({
                     features: wmsGetFeatureInfoFormats[
                         'application/json'].readFeatures(

@@ -62,8 +62,8 @@
     {% endif %}
 
     const props = {{ instance.config | safe }}
-    props.formTitle={{instance.title|dump_json}}
-    props.formAbstract={{instance.abstract|dump_json}}
+    props.title={{instance.title|dump_json}}
+    props.abstract={{instance.abstract|dump_json}}
     props.username="{{request.user.username}}"
     props.token="{{request.session.access_token}}"
     BasicViewerContainer.show('root', props,urls);

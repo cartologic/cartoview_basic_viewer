@@ -134,7 +134,7 @@ class CartoviewDrawer extends React.Component {
                             <CartoviewLegends createLegends={createLegends} />
                         </CollapsibleListItem>}
 
-                        <CartoviewAbout open={about} title={config.formTitle} abstract={config.formAbstract} close={this.handleAboutChange} />
+                        <CartoviewAbout open={about} title={config.title} abstract={config.abstract} close={this.handleAboutChange} />
                     </List>
                 </Paper>
             </Paper >

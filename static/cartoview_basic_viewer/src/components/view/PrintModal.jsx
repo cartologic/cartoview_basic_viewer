@@ -133,7 +133,17 @@ class PrintModal extends React.Component {
     componentWillMount() {
         const { urls, token } = this.props
         let { map } = this.state
-        BasicViewerHelper.mapInit(urls.mapJsonUrl, map, urls.proxy, token)
+        BasicViewerHelper.mapInit(urls.mapJsonUrl, map, urls.proxy, token, () => {
+            //TODO: better handling for default scale
+            this.printModule.getPrintInfo().then((info) => {
+                let currentScale = info.scales[Math.floor(info.scales.length / 2)]
+                currentScale = Number(currentScale.value)
+                const res = this.printModule.getResolutionFromScale(currentScale, this.state.dpi)
+                this.setState({ scale: currentScale })
+                this.state.map.getView().setResolution(res)
+            })
+
+        })
     }
     handleChange = name => event => {
         const value = event.target.value
