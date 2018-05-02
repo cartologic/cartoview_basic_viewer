@@ -223,7 +223,9 @@ class BasicViewerContainer extends Component {
     }
     downloadLayer = (typeName) => {
         //TODO: check download permission
-        const downloadURL = this.wfsService.buildGetFeatureURL(typeName, undefined, undefined, undefined, undefined, undefined, "shape-zip")
+        const { config } = this.props
+        const downloadURL = this.wfsService.buildGetFeatureURL(typeName, undefined,
+            undefined, undefined, undefined, undefined, "shape-zip", config.token)
         downloadFile(downloadURL, `${typeName}.zip`)
     }
     setLayerSwitcherLayers(mapLayers) {
