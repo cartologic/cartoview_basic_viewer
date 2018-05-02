@@ -116,6 +116,7 @@ class ContentGrid extends Component {
         return {
             setThumbnail: childrenProps.setThumbnail,
             map: childrenProps.map,
+            resetTablePagination: childrenProps.resetTablePagination,
             handleFeaturesTableDrawer: childrenProps.handleFeaturesTableDrawer,
             exportMap: childrenProps.exportMap,
             config: childrenProps.config,
@@ -125,6 +126,7 @@ class ContentGrid extends Component {
             downloadLayer: childrenProps.downloadLayer,
             urls: childrenProps.urls,
             createLegends: childrenProps.createLegends,
+            handleTableLayerChange: childrenProps.handleTableLayerChange,
             baseMaps: childrenProps.baseMaps,
             handleBaseMapVisibilty: childrenProps.handleBaseMapVisibilty,
             handlePrintModal: childrenProps.handlePrintModal
@@ -136,13 +138,31 @@ class ContentGrid extends Component {
         return {
             attributes: childrenProps.layerAttributes,
             wfsService: childrenProps.wfsService,
-            handleCQLFilterChange: childrenProps.handleCQLFilterChange,
+            resetTablePagination: childrenProps.resetTablePagination,
+            getFeatureTableData: childrenProps.getFeatureTableData,
             tableLayer: childrenProps.tableLayer,
             handleTableLayerChange: childrenProps.handleTableLayerChange,
             loading: childrenProps.featuresIsLoading,
             mapLayers: childrenProps.mapLayers,
             hanldeDrawerOpen: childrenProps.handleFeaturesTableDrawer,
             drawerOpen: childrenProps.featuresTableOpen
+        }
+    }
+    getFeatureTableProps = () => {
+        const { childrenProps } = this.props
+        return {
+            handlePageChange: childrenProps.handlePageChange,
+            handleRowsPerPage: childrenProps.handleRowsPerPage,
+            page: childrenProps.page,
+            rowsPerPage: childrenProps.rowsPerPage,
+            getFeatureTableData: childrenProps.getFeatureTableData,
+            totalFeatures: childrenProps.totalFeatures,
+            searchEnabled: childrenProps.searchEnabled,
+            resetFeatureCollection: childrenProps.resetFeatureCollection,
+            addStyleToFeature: childrenProps.addStyleToFeature,
+            loading: childrenProps.featuresIsLoading,
+            zoomToFeature: childrenProps.zoomToFeature,
+            features: childrenProps.features
         }
     }
     render() {
@@ -168,8 +188,8 @@ class ContentGrid extends Component {
                         <HashRouter>
                             <Route exact path="/:x0?/:y0?/:x1?/:y1?" render={(props) => <MapViewer loading={childrenProps.mapIsLoading} {...props} enableHistory={childrenProps.config.enableHistory} map={childrenProps.map} />} />
                         </HashRouter>
-                        {childrenProps.mapLayers.length > 0 && !childrenProps.attributesLoading && childrenProps.config.enableFeatureTable && <FeatureTableDrawer {...this.getFeatureTableDrawerProps()}>
-                            <FeaturesTable resetFeatureCollection={childrenProps.resetFeatureCollection} addStyleToFeature={childrenProps.addStyleToFeature} loading={childrenProps.featuresIsLoading} zoomToFeature={childrenProps.zoomToFeature} features={childrenProps.features} />
+                        {childrenProps.mapLayers.length > 0 && childrenProps.config.enableFeatureTable && <FeatureTableDrawer {...this.getFeatureTableDrawerProps()}>
+                            <FeaturesTable {...this.getFeatureTableProps()} />
                         </FeatureTableDrawer>}
                         <CartoviewPopup {...childrenProps} />
                     </Grid>

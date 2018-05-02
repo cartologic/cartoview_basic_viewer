@@ -95,12 +95,14 @@
 
 .paper {
     height: 100%;
-    overflow-y: overlay
+    overflow-y: overlay;
+    overflow-y: scroll;
 }
 
 .comment-list {
     max-height: 250px;
-    overflow-y: overlay
+    overflow-y: overlay;
+    overflow-y: scroll;
 }
 
 .avatar {

@@ -1,0 +1,66 @@
+import IconButton from 'material-ui/IconButton'
+import Menu from 'material-ui/Menu'
+import MoreVertIcon from 'material-ui-icons/MoreVert'
+import PropTypes from 'prop-types'
+import React from 'react'
+
+const ITEM_HEIGHT = 30
+export const guidGenerator = () => {
+    var S4 = () => {
+        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    }
+    return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4())
+}
+class DropDown extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            anchorEl: null,
+        }
+        this.id = guidGenerator()
+    }
+
+    handleClick = event => {
+        this.setState({ anchorEl: event.currentTarget })
+    };
+
+    handleClose = () => {
+        this.setState({ anchorEl: null })
+    };
+
+    render() {
+        const { children } = this.props
+        const { anchorEl } = this.state
+
+        return (
+            <div>
+                <IconButton
+                    aria-label="More"
+                    aria-owns={anchorEl ? this.id : null}
+                    aria-haspopup="true"
+                    onClick={this.handleClick}
+                >
+                    <MoreVertIcon />
+                </IconButton>
+                <Menu
+                    id={this.id}
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={this.handleClose}
+                    PaperProps={{
+                        style: {
+                            maxHeight: ITEM_HEIGHT * 5,
+                            width: 200,
+                        },
+                    }}
+                >
+                    {children}
+                </Menu>
+            </div>
+        )
+    }
+}
+DropDown.propTypes = {
+    children: PropTypes.any.isRequired
+}
+export default DropDown

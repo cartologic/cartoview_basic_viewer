@@ -45,7 +45,7 @@ class Sidenav extends Component {
         super(props)
     }
     render() {
-        const { drawerOpen, classes, hanldeDrawerOpen, mapLayers, children, loading, tableLayer, handleTableLayerChange, handleCQLFilterChange, attributes, getTableData } = this.props
+        const { drawerOpen, classes, resetTablePagination, hanldeDrawerOpen, mapLayers, children, loading, tableLayer, handleTableLayerChange, getFeatureTableData, attributes } = this.props
         return (
             <Drawer
                 variant="persistent"
@@ -74,7 +74,7 @@ class Sidenav extends Component {
                         </FormControl>
                     </div>
                     <div className={classes.queryPanel}>
-                        <QueryPanel attributes={attributes} handleCQLFilterChange={handleCQLFilterChange} />
+                        <QueryPanel resetTablePagination={resetTablePagination} attributes={attributes} getFeatureTableData={getFeatureTableData} />
                     </div>
                     <div className={classes.closeButton}>
                         <IconButton onClick={hanldeDrawerOpen} color="primary" className={classes.button} aria-label="Close">
@@ -99,13 +99,14 @@ Sidenav.propTypes = {
     classes: PropTypes.object.isRequired,
     drawerOpen: PropTypes.bool.isRequired,
     hanldeDrawerOpen: PropTypes.func.isRequired,
+    resetTablePagination: PropTypes.func.isRequired,
     children: PropTypes.node,
     mapLayers: PropTypes.array.isRequired,
     loading: PropTypes.bool.isRequired,
     tableLayer: PropTypes.string.isRequired,
     attributes: PropTypes.array.isRequired,
     handleTableLayerChange: PropTypes.func.isRequired,
-    handleCQLFilterChange: PropTypes.func.isRequired,
+    getFeatureTableData: PropTypes.func.isRequired,
 }
 
 export default withStyles(styles)(Sidenav)

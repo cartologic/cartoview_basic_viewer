@@ -37,10 +37,10 @@ class BasicViewerContainer extends Component {
             drawerOpen: false,
             featureIdentifyLoading: false,
             activeFeature: 0,
-            cqlFilter: '',
             mouseCoordinates: [0, 0],
             featureIdentifyResult: [],
             layerAttributes: [],
+            searchEnabled: false,
             attributesLoading: false,
             showPopup: false,
             identifyEnabled: true,
@@ -52,16 +52,28 @@ class BasicViewerContainer extends Component {
             mapLayers: [],
             baseMaps: [],
             features: [],
+            totalFeatures: 0,
             featuresIsLoading: false,
             featuresTableOpen: false,
             tableLayer: '',
-            tablePages: null,
+            page: 0,
+            rowsPerPage: 25,
             printOpened: false,
 
         }
         this.styleHelper = new StyleHelper()
         this.urls = new URLS(urls.proxy)
         this.wfsService = new WFSService(urls.wfsURL, urls.proxy)
+    }
+    handlePageChange = (event, newPage) => {
+        this.setState({ page: newPage }, () => {
+            this.getFeatureTableData(null, (this.state.page) * this.state.rowsPerPage, this.state.rowsPerPage)
+        })
+    }
+    handleRowsPerPage = (event) => {
+        this.setState({ rowsPerPage: event.target.value }, () => {
+            this.getFeatureTableData(null, (this.state.page) * this.state.rowsPerPage, this.state.rowsPerPage)
+        })
     }
     handlePrintModal = () => {
         this.setState({ printOpened: !this.state.printOpened })
@@ -73,22 +85,32 @@ class BasicViewerContainer extends Component {
     capitalize = (s) => {
         return s && s[0].toUpperCase() + s.slice(1)
     }
-    handleCQLFilterChange = (filterObj) => {
-        const { map, tableLayer } = this.state
-        const { urls } = this.props
-        const targerURL = this.urls.getProxiedURL(urls.wfsURL)
-        this.setState({ featuresIsLoading: true })
-        this.wfsService.writeWFSGetFeature(map, tableLayer, filterObj).then(request => {
-            let data = new XMLSerializer().serializeToString(request)
-            doPost(targerURL, data).then(res => {
-                this.setState({
-                    features: wmsGetFeatureInfoFormats[
-                        'application/json'].readFeatures(
-                            res),
-                    featuresIsLoading: false
+    resetTablePagination = () => {
+        this.setState({ page: 0, rowsPerPage: 25 })
+    }
+    getFeatureTableData = (filterObj = null, startingIndex = null, maxFeatures = 25, tableLayer = null) => {
+        const { map } = this.state
+        if (!tableLayer) {
+            tableLayer = this.state.tableLayer
+        }
+        if (tableLayer) {
+            const { urls } = this.props
+            const targerURL = this.urls.getProxiedURL(urls.wfsURL)
+            this.setState({ featuresIsLoading: true, searchEnabled: filterObj ? true : false })
+            this.wfsService.writeWFSGetFeature(map, tableLayer, filterObj, maxFeatures, startingIndex).then(request => {
+                let data = new XMLSerializer().serializeToString(request)
+                doPost(targerURL, data).then(res => {
+                    let data = {
+                        features: wmsGetFeatureInfoFormats[
+                            'application/json'].readFeatures(
+                                res),
+                        featuresIsLoading: false,
+                        totalFeatures: res.totalFeatures
+                    }
+                    this.setState(data)
                 })
             })
-        })
+        }
     }
     setThumbnail = () => {
         const { map } = this.state
@@ -123,8 +145,9 @@ class BasicViewerContainer extends Component {
         const layer = event.target.value
         const { tableLayer } = this.state
         if (layer !== tableLayer) {
-            this.setState({ tableLayer: event.target.value, features: [], cqlFilter: '' }, () => {
+            this.setState({ tableLayer: event.target.value, features: [], page: 0, rowsPerPage: 25 }, () => {
                 this.getTableLayerAttributes()
+                this.getFeatureTableData(null, 0, 30, layer)
             })
         }
 
@@ -201,7 +224,7 @@ class BasicViewerContainer extends Component {
     downloadLayer = (typeName) => {
         //TODO: check download permission
         const downloadURL = this.wfsService.buildGetFeatureURL(typeName, undefined, undefined, undefined, undefined, undefined, "shape-zip")
-        downloadFile(downloadURL, "layer.zip")
+        downloadFile(downloadURL, `${typeName}.zip`)
     }
     setLayerSwitcherLayers(mapLayers) {
         const { tableLayer } = this.state
@@ -218,6 +241,7 @@ class BasicViewerContainer extends Component {
         let data = { mapLayers: layers.slice(0).reverse(), baseMaps }
         if (data.mapLayers.length > 0 && (!tableLayer || tableLayer !== '')) {
             data.tableLayer = data.mapLayers[0].get('name')
+            this.getFeatureTableData(null, 0, 30, data.tableLayer)
         }
         this.setState(data, () => {
             this.createLegends()
@@ -358,10 +382,13 @@ class BasicViewerContainer extends Component {
             changeLayerOrder: this.changeLayerOrder,
             handleLayerVisibilty: this.handleLayerVisibilty,
             zoomToLocation: this.zoomToLocation,
+            resetTablePagination: this.resetTablePagination,
             exportMap: this.exportMap,
             geocodeSearch: this.geocodeSearch,
+            handlePageChange: this.handlePageChange,
+            handleRowsPerPage: this.handleRowsPerPage,
             handleBaseMapVisibilty: this.handleBaseMapVisibilty,
-            handleCQLFilterChange: this.handleCQLFilterChange,
+            getFeatureTableData: this.getFeatureTableData,
             handleFeaturesTableDrawer: this.handleFeaturesTableDrawer,
             handleGeocodingChange: this.handleGeocodingChange,
             resetGeocoding: this.resetGeocoding,

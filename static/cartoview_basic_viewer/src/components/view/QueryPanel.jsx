@@ -49,10 +49,11 @@ class QueryPanel extends React.Component {
     }
     handleSubmit = (e) => {
         e.preventDefault()
-        const { handleCQLFilterChange } = this.props
+        const { getFeatureTableData } = this.props
         const { attribute, op, value } = this.state
         if (attribute && op && value) {
-            handleCQLFilterChange({ attribute: attribute, operator: op, value: value })
+            this.props.resetTablePagination()
+            getFeatureTableData({ attribute: attribute, operator: op, value: value })
         }
     }
     getAttributeType = (attributes = [], attributeName) => {
@@ -126,7 +127,8 @@ class QueryPanel extends React.Component {
 QueryPanel.propTypes = {
     classes: PropTypes.object.isRequired,
     attributes: PropTypes.array.isRequired,
-    handleCQLFilterChange: PropTypes.func.isRequired,
+    getFeatureTableData: PropTypes.func.isRequired,
+    resetTablePagination: PropTypes.func.isRequired,
 
 }
 export default withStyles(styles)(QueryPanel)
