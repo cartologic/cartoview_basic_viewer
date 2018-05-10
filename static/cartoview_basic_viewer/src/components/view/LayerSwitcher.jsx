@@ -4,19 +4,20 @@ import Radio, { RadioGroup } from 'material-ui/Radio'
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc'
 
 import Checkbox from 'material-ui/Checkbox'
+import DragHandleIcon from 'material-ui-icons/DragHandle'
 // import DownloadIcon from 'material-ui-icons/FileDownload'
 import DropDown from './DropDown'
 import IconButton from 'material-ui/IconButton'
 import ListSubheader from 'material-ui/List/ListSubheader'
-import MenuIcon from 'material-ui-icons/Menu'
 import { MenuItem } from 'material-ui/Menu'
 import { Message } from 'Source/containers/CommonComponents'
 import Paper from 'material-ui/Paper'
 import PropTypes from 'prop-types'
 import React from 'react'
+import { copyToClipboard } from 'cartoview-sdk/utils/utils'
 import { withStyles } from 'material-ui/styles'
 
-const DragHandle = SortableHandle(() => <IconButton color="default"> <MenuIcon /></IconButton>)
+const DragHandle = SortableHandle(() => <IconButton color="default"> <DragHandleIcon /></IconButton>)
 const styles = theme => ({
     legendsPaper: {
         padding: theme.spacing.unit * 2,
@@ -41,6 +42,9 @@ const LayerItem = SortableElement(({ layer, layerIndex, handleLayerVisibilty, do
                 </MenuItem>
                 <MenuItem onClick={() => window.open(urls.layerMetaData(layerName), '_blank')}>
                     {"Metadata Details"}
+                </MenuItem>
+                <MenuItem onClick={() => copyToClipboard(urls.wfsURL).then(result => alert("WFS Copied Successfully"))}>
+                    {"Copy WFS URL"}
                 </MenuItem>
                 <MenuItem onClick={() => {
                     handleTableLayerChange({ target: { value: layerName } })

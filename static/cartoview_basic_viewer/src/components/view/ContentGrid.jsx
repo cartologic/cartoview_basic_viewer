@@ -139,13 +139,20 @@ class ContentGrid extends Component {
             attributes: childrenProps.layerAttributes,
             wfsService: childrenProps.wfsService,
             resetTablePagination: childrenProps.resetTablePagination,
+            combinationType: childrenProps.combinationType,
+            handleCombinationType: childrenProps.handleCombinationType,
             getFeatureTableData: childrenProps.getFeatureTableData,
             tableLayer: childrenProps.tableLayer,
             handleTableLayerChange: childrenProps.handleTableLayerChange,
             loading: childrenProps.featuresIsLoading,
             mapLayers: childrenProps.mapLayers,
             hanldeDrawerOpen: childrenProps.handleFeaturesTableDrawer,
-            drawerOpen: childrenProps.featuresTableOpen
+            drawerOpen: childrenProps.featuresTableOpen,
+            createQueryPanel: childrenProps.createQueryPanel,
+            removeComponent: childrenProps.removeComponent,
+            queryComponents: childrenProps.queryComponents,
+            createQueryRef: childrenProps.createQueryRef,
+            resetQuery: childrenProps.resetQuery
         }
     }
     getFeatureTableProps = () => {
@@ -162,7 +169,8 @@ class ContentGrid extends Component {
             addStyleToFeature: childrenProps.addStyleToFeature,
             loading: childrenProps.featuresIsLoading,
             zoomToFeature: childrenProps.zoomToFeature,
-            features: childrenProps.features
+            features: childrenProps.features,
+            resetQuery: childrenProps.resetQuery
         }
     }
     render() {

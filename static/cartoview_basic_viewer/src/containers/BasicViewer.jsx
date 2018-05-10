@@ -15,6 +15,7 @@ import Group from 'ol/layer/group'
 import LayersHelper from 'cartoview-sdk/helpers/LayersHelper'
 import Overlay from 'ol/overlay'
 import PropTypes from 'prop-types'
+import QueryPanel from 'Source/components/view/QueryPanel'
 import StyleHelper from 'cartoview-sdk/helpers/StyleHelper'
 import URLS from 'cartoview-sdk/urls/urls'
 import Vector from 'ol/layer/vector'
@@ -50,7 +51,10 @@ class BasicViewerContainer extends Component {
             featureCollection: new Collection(),
             map: BasicViewerHelper.getMap(),
             mapLayers: [],
+            combinationType: 'any',
+            selectedRegion: "",
             baseMaps: [],
+            queryComponents: [],
             features: [],
             totalFeatures: 0,
             featuresIsLoading: false,
@@ -65,14 +69,39 @@ class BasicViewerContainer extends Component {
         this.urls = new URLS(urls.proxy)
         this.wfsService = new WFSService(urls.wfsURL, urls.proxy)
     }
+    createQueryPanel = () => {
+        const { queryComponents, layerAttributes } = this.state
+        let cmp = {
+            Component: QueryPanel,
+            props: {
+                attributes: layerAttributes,
+                getFeatureTableData: this.getFeatureTableData,
+                resetTablePagination: this.resetTablePagination
+            },
+            ref: `query_${queryComponents.length}`
+        }
+        this.setState({ queryComponents: [...queryComponents, cmp] })
+    }
+    removeComponent = (index) => {
+        let { queryComponents } = this.state
+        let newComponents = queryComponents
+        newComponents.splice(index, 1)
+        this.setState({ queryComponents: newComponents })
+    }
+    resetQuery = () => {
+        this.setState({ queryComponents: [] }, this.getFeatureTableData)
+    }
+    createQueryRef = (name, node) => {
+        this[name] = node
+    }
     handlePageChange = (event, newPage) => {
         this.setState({ page: newPage }, () => {
-            this.getFeatureTableData(null, (this.state.page) * this.state.rowsPerPage, this.state.rowsPerPage)
+            this.getFeatureTableData((this.state.page) * this.state.rowsPerPage, this.state.rowsPerPage)
         })
     }
     handleRowsPerPage = (event) => {
         this.setState({ rowsPerPage: event.target.value }, () => {
-            this.getFeatureTableData(null, (this.state.page) * this.state.rowsPerPage, this.state.rowsPerPage)
+            this.getFeatureTableData((this.state.page) * this.state.rowsPerPage, this.state.rowsPerPage)
         })
     }
     handlePrintModal = () => {
@@ -82,33 +111,77 @@ class BasicViewerContainer extends Component {
         const { featuresTableOpen } = this.state
         this.setState({ featuresTableOpen: !featuresTableOpen })
     }
+    handleCombinationType = event => {
+        const combType = event.target.value
+        const { combinationType } = this.state
+        if (combType !== combinationType) {
+            this.setState({ combinationType: combType })
+        }
+
+    }
     capitalize = (s) => {
         return s && s[0].toUpperCase() + s.slice(1)
     }
     resetTablePagination = () => {
         this.setState({ page: 0, rowsPerPage: 25 })
     }
-    getFeatureTableData = (filterObj = null, startingIndex = null, maxFeatures = 25, tableLayer = null) => {
-        const { map } = this.state
+    handleNonDownload = (data) => {
+        const { urls } = this.props
+        const targerURL = this.urls.getProxiedURL(urls.wfsURL)
+        doPost(targerURL, data).then(res => {
+            let data = {
+                features: wmsGetFeatureInfoFormats[
+                    'application/json'].readFeatures(
+                        res),
+                featuresIsLoading: false,
+                totalFeatures: res.totalFeatures
+            }
+            this.setState(data)
+        })
+    }
+    handleDownloadFiltered = (data) => {
+        const { tableLayer } = this.state
+        const { urls } = this.props
+        const targerURL = this.urls.getProxiedURL(urls.wfsURL)
+        downloadFile(targerURL, `${tableLayer}.zip`, data)
+    }
+    getFeatureTableData = (startIndex, maxFeatures, tableLayer = null, download = false) => {
+        const { queryComponents, map, combinationType } = this.state
+        let filters = []
+        queryComponents.map(cmp => {
+            const rf = this[cmp.ref]
+            if (rf.isValid()) {
+                filters.push(rf.getFilterObj())
+            }
+        })
         if (!tableLayer) {
             tableLayer = this.state.tableLayer
         }
         if (tableLayer) {
-            const { urls } = this.props
-            const targerURL = this.urls.getProxiedURL(urls.wfsURL)
-            this.setState({ featuresIsLoading: true, searchEnabled: filterObj ? true : false })
-            this.wfsService.writeWFSGetFeature(map, tableLayer, filterObj, maxFeatures, startingIndex).then(request => {
+            let wfsOptions = {
+                filters,
+            }
+            if (!download) {
+                this.setState({ featuresIsLoading: true, searchEnabled: filters ? true : false })
+                wfsOptions = {
+                    ...wfsOptions,
+                    combinationType,
+                    maxFeatures, startIndex, pagination: true,
+                    outputFormat: 'application/json'
+                }
+            } else {
+                wfsOptions = {
+                    ...wfsOptions,
+                    outputFormat: "shape-zip"
+                }
+            }
+            this.wfsService.writeWFSGetFeature(map, tableLayer, wfsOptions).then(request => {
                 let data = new XMLSerializer().serializeToString(request)
-                doPost(targerURL, data).then(res => {
-                    let data = {
-                        features: wmsGetFeatureInfoFormats[
-                            'application/json'].readFeatures(
-                                res),
-                        featuresIsLoading: false,
-                        totalFeatures: res.totalFeatures
-                    }
-                    this.setState(data)
-                })
+                if (!download) {
+                    this.handleNonDownload(data)
+                } else {
+                    this.handleDownloadFiltered(data)
+                }
             })
         }
     }
@@ -147,7 +220,7 @@ class BasicViewerContainer extends Component {
         if (layer !== tableLayer) {
             this.setState({ tableLayer: event.target.value, features: [], page: 0, rowsPerPage: 25 }, () => {
                 this.getTableLayerAttributes()
-                this.getFeatureTableData(null, 0, 30, layer)
+                this.getFeatureTableData(0, 30, layer)
             })
         }
 
@@ -243,7 +316,7 @@ class BasicViewerContainer extends Component {
         let data = { mapLayers: layers.slice(0).reverse(), baseMaps }
         if (data.mapLayers.length > 0 && (!tableLayer || tableLayer !== '')) {
             data.tableLayer = data.mapLayers[0].get('name')
-            this.getFeatureTableData(null, 0, 30, data.tableLayer)
+            this.getFeatureTableData(0, 30, data.tableLayer)
         }
         this.setState(data, () => {
             this.createLegends()
@@ -338,6 +411,8 @@ class BasicViewerContainer extends Component {
                     showPopup: true
                 }, () => this.addStyleToFeature(
                     result))
+            }).catch(err => {
+                this.setState({ featureIdentifyLoading: false }, alert(err.text()))
             })
     }
     addStyleToCurrentFeature = () => {
@@ -372,6 +447,7 @@ class BasicViewerContainer extends Component {
             layerNameSpace: LayersHelper.layerNameSpace,
             toggleDrawer: this.toggleDrawer,
             urls,
+            handleCombinationType: this.handleCombinationType,
             createLegends: this.createLegends,
             setThumbnail: this.setThumbnail,
             getFeatures: this.wfsService.getFeatures,
@@ -391,6 +467,10 @@ class BasicViewerContainer extends Component {
             handleRowsPerPage: this.handleRowsPerPage,
             handleBaseMapVisibilty: this.handleBaseMapVisibilty,
             getFeatureTableData: this.getFeatureTableData,
+            createQueryPanel: this.createQueryPanel,
+            removeComponent: this.removeComponent,
+            resetQuery: this.resetQuery,
+            createQueryRef: this.createQueryRef,
             handleFeaturesTableDrawer: this.handleFeaturesTableDrawer,
             handleGeocodingChange: this.handleGeocodingChange,
             resetGeocoding: this.resetGeocoding,
