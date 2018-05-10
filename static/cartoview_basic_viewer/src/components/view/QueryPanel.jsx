@@ -6,11 +6,12 @@ import React from 'react'
 import Select from 'material-ui/Select'
 import TextField from 'material-ui/TextField'
 import { withStyles } from 'material-ui/styles'
-
+//TODO: check if more types supported by  geoserver
 const INITIAL_TYPE_MAPPING = {
     string: "text",
     double: "number",
     int: "number",
+    number: "number",
     long: "number",
     boolean: "checkbox",
     "date-time": "datetime",
@@ -96,7 +97,7 @@ class QueryPanel extends React.Component {
     getSupportedFilters = () => {
         const { attributes } = this.props
         const attrType = this.getAttributeType(attributes, this.state.attribute)
-        const localType = INITIAL_TYPE_MAPPING[attrType]
+        const localType = INITIAL_TYPE_MAPPING[attrType] || "text"
         const supportedFilters = TYPE_FILTERS_MAPPING[localType] || []
         return supportedFilters
     }

@@ -143,7 +143,7 @@ class BasicViewerContainer extends Component {
         const { tableLayer } = this.state
         const { urls } = this.props
         const targerURL = this.urls.getProxiedURL(urls.wfsURL)
-        downloadFile(targerURL, `${tableLayer}.zip`, data)
+        downloadFile(targerURL, `${tableLayer.split(":").pop()}.zip`, data)
     }
     getFeatureTableData = (startIndex, maxFeatures, tableLayer = null, download = false) => {
         const { queryComponents, map, combinationType } = this.state
@@ -154,6 +154,7 @@ class BasicViewerContainer extends Component {
                 filters.push(rf.getFilterObj())
             }
         })
+        console.dir(filters)
         if (!tableLayer) {
             tableLayer = this.state.tableLayer
         }
