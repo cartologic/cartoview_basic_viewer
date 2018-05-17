@@ -11,6 +11,13 @@ export const generalFormSchema = () => {
     })
     return formSchema
 }
+export const geocodingFormSchema = () => {
+    const formSchema = t.struct({
+        geocodingUrl: t.maybe(t.String),
+        geocodingKey: t.maybe(t.String),
+    })
+    return formSchema
+}
 export const accessFormSchema = () => {
     const selectUserItem = t.struct({
         value: t.String,
