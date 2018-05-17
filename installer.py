@@ -2,7 +2,7 @@ __author__ = 'Cartologic'
 
 info = {
     "title": "Basic Viewer",
-    "description": "General purpose map  viewer with only the essential compoonents for navigation and display. Optimized for mobile. Using Openlayers 3 and Boundless SDK",
+    "description": "General purpose map  viewer with only the essential components for navigation and display. Optimized for mobile. Using Openlayers 3 and Boundless SDK",
     "author": 'Cartologic',
     "home_page": 'http://cartologic.com/cartoview/apps/viewer',
     "help_url": "http://cartologic.com/cartoview/apps/viewer/help/",
