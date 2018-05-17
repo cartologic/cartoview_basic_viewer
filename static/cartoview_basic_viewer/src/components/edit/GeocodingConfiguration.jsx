@@ -35,7 +35,7 @@ export default class GeocodingConfiguration extends React.Component {
     getFormValue = (props) => {
         const { config } = props
         const value = {
-            geocodingUrl: config.geocodingUrl ? config.geocodingUrl : null,
+            boundlessGeoCodingEnabled: config.boundlessGeoCodingEnabled ? config.boundlessGeoCodingEnabled : false,
             geocodingKey: config.geocodingKey ? config.geocodingKey : null,
         }
         return value
@@ -43,11 +43,12 @@ export default class GeocodingConfiguration extends React.Component {
     getFormOptions = () => {
         const options = {
             fields: {
-                geocodingUrl: {
-                    label: "URL"
+                boundlessGeoCodingEnabled: {
+                    label: "Enable Boundless GeoCoding Service"
                 },
                 geocodingKey: {
-                    label: "Key"
+                    label: "Key",
+                    disabled: !this.state.value.boundlessGeoCodingEnabled ? true : false,
                 },
             }
         }
@@ -61,6 +62,7 @@ export default class GeocodingConfiguration extends React.Component {
                     ref={(form) => this.form = form}
                     value={this.state.value}
                     type={geocodingFormSchema()}
+                    options = {this.getFormOptions} 
                     onChange={this.onChange} />
             </div>
         )

@@ -13,7 +13,7 @@ export const generalFormSchema = () => {
 }
 export const geocodingFormSchema = () => {
     const formSchema = t.struct({
-        geocodingUrl: t.maybe(t.String),
+        boundlessGeoCodingEnabled: t.maybe(t.Boolean),
         geocodingKey: t.maybe(t.String),
     })
     return formSchema
