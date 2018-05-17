@@ -21,7 +21,7 @@
 <body>
 <div style="height: 100%;" id="root"></div>
 <script src="{{ STATIC_URL }}cartoview_basic_viewer/dist/commons.js"></script>
-<script src="{% static 'cartoview_basic_viewer/dist/BasicViewer.bundle.js?version=1.6.5' %}"></script>
+<script src="{% static 'cartoview_basic_viewer/dist/BasicViewer.bundle.js?version=1.7.5' %}"></script>
 <script type="text/javascript">
     {% if instance %}
             const instanceId= {{ instance.id }}
@@ -55,6 +55,9 @@
                 mapDetails: function(id){
                     return '/maps/'+id
                 },
+                layerMetaData: function(typename){
+                    return '/layers/'+typename+'/metadata_detail'
+                },
                 apps: "{% url 'app_manager_base_url' %}",
                 viewURL: "{% url "cartoview_basic_viewer.view" instance_id=instance.id %}",
                 appLogo:'{% static 'cartoview_basic_viewer/logo.png' %}'
@@ -62,8 +65,8 @@
     {% endif %}
 
     const props = {{ instance.config | safe }}
-    props.formTitle={{instance.title|dump_json}}
-    props.formAbstract={{instance.abstract|dump_json}}
+    props.title={{instance.title|dump_json}}
+    props.abstract={{instance.abstract|dump_json}}
     props.username="{{request.user.username}}"
     props.token="{{request.session.access_token}}"
     BasicViewerContainer.show('root', props,urls);

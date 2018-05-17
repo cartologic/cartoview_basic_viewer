@@ -116,6 +116,7 @@ class ContentGrid extends Component {
         return {
             setThumbnail: childrenProps.setThumbnail,
             map: childrenProps.map,
+            resetTablePagination: childrenProps.resetTablePagination,
             handleFeaturesTableDrawer: childrenProps.handleFeaturesTableDrawer,
             exportMap: childrenProps.exportMap,
             config: childrenProps.config,
@@ -124,12 +125,53 @@ class ContentGrid extends Component {
             mapLayers: childrenProps.mapLayers,
             downloadLayer: childrenProps.downloadLayer,
             urls: childrenProps.urls,
-            legends: childrenProps.legends,
+            createLegends: childrenProps.createLegends,
+            handleTableLayerChange: childrenProps.handleTableLayerChange,
             baseMaps: childrenProps.baseMaps,
             handleBaseMapVisibilty: childrenProps.handleBaseMapVisibilty,
             handlePrintModal: childrenProps.handlePrintModal
         }
 
+    }
+    getFeatureTableDrawerProps = () => {
+        const { childrenProps } = this.props
+        return {
+            attributes: childrenProps.layerAttributes,
+            wfsService: childrenProps.wfsService,
+            resetTablePagination: childrenProps.resetTablePagination,
+            combinationType: childrenProps.combinationType,
+            handleCombinationType: childrenProps.handleCombinationType,
+            getFeatureTableData: childrenProps.getFeatureTableData,
+            tableLayer: childrenProps.tableLayer,
+            handleTableLayerChange: childrenProps.handleTableLayerChange,
+            loading: childrenProps.featuresIsLoading,
+            mapLayers: childrenProps.mapLayers,
+            hanldeDrawerOpen: childrenProps.handleFeaturesTableDrawer,
+            drawerOpen: childrenProps.featuresTableOpen,
+            createQueryPanel: childrenProps.createQueryPanel,
+            removeComponent: childrenProps.removeComponent,
+            queryComponents: childrenProps.queryComponents,
+            createQueryRef: childrenProps.createQueryRef,
+            resetQuery: childrenProps.resetQuery
+        }
+    }
+    getFeatureTableProps = () => {
+        const { childrenProps } = this.props
+        return {
+            handlePageChange: childrenProps.handlePageChange,
+            handleRowsPerPage: childrenProps.handleRowsPerPage,
+            page: childrenProps.page,
+            rowsPerPage: childrenProps.rowsPerPage,
+            getFeatureTableData: childrenProps.getFeatureTableData,
+            totalFeatures: childrenProps.totalFeatures,
+            searchEnabled: childrenProps.searchEnabled,
+            resetFeatureCollection: childrenProps.resetFeatureCollection,
+            addStyleToFeature: childrenProps.addStyleToFeature,
+            loading: childrenProps.featuresIsLoading,
+            zoomToFeature: childrenProps.zoomToFeature,
+            features: childrenProps.features,
+            resetQuery: childrenProps.resetQuery
+        }
     }
     render() {
         const { classes, childrenProps } = this.props
@@ -154,13 +196,13 @@ class ContentGrid extends Component {
                         <HashRouter>
                             <Route exact path="/:x0?/:y0?/:x1?/:y1?" render={(props) => <MapViewer loading={childrenProps.mapIsLoading} {...props} enableHistory={childrenProps.config.enableHistory} map={childrenProps.map} />} />
                         </HashRouter>
-                        {childrenProps.mapLayers.length > 0 && childrenProps.config.enableFeatureTable && <FeatureTableDrawer cqlFilter={childrenProps.cqlFilter} handleCQLFilterChange={childrenProps.handleCQLFilterChange} tableLayer={childrenProps.tableLayer} handleTableLayerChange={childrenProps.handleTableLayerChange} loading={childrenProps.featuresIsLoading} mapLayers={childrenProps.mapLayers} hanldeDrawerOpen={childrenProps.handleFeaturesTableDrawer} pages={childrenProps.tablePages} getTableData={childrenProps.getTableData} drawerOpen={childrenProps.featuresTableOpen}>
-                            <FeaturesTable loading={childrenProps.featuresIsLoading} columns={childrenProps.tableColumns} getTableData={childrenProps.getTableData} pages={childrenProps.tablePages} tableLayer={childrenProps.tableLayer} data={childrenProps.features} />
+                        {childrenProps.mapLayers.length > 0 && childrenProps.config.enableFeatureTable && <FeatureTableDrawer {...this.getFeatureTableDrawerProps()}>
+                            <FeaturesTable {...this.getFeatureTableProps()} />
                         </FeatureTableDrawer>}
                         <CartoviewPopup {...childrenProps} />
                     </Grid>
                 </Grid>
-                <CartoviewPrint printInfo={childrenProps.printInfo} print={childrenProps.print} opened={childrenProps.printOpened} handlePrintModal={childrenProps.handlePrintModal} />
+                <CartoviewPrint token={childrenProps.config.token} urls={childrenProps.urls} opened={childrenProps.printOpened} handlePrintModal={childrenProps.handlePrintModal} />
                 <CartoviewSnackBar open={childrenProps.featureIdentifyLoading} message={"Searching For Features at this Point"} />
             </div>
         )

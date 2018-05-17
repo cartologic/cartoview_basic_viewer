@@ -1,6 +1,6 @@
 .element-flex {
     display: flex;
-    flex: 1
+    flex-grow: 1;
 }
 
 .geocoding-result {
@@ -66,16 +66,10 @@
 }
 
 .table-drawer-head {
-    justify-content: space-around;
-    align-content: center;
-    flex-wrap: wrap;
-    display: flex;
-    align-items: center;
-}
-
-.feature-table-container {
-    height: fit-content;
-    width: 100%;
+    /* display: flex;
+    flex-grow: .3;
+    overflow-y: overlay;
+    overflow-y: scroll; */
 }
 
 .attrs-table-title {
@@ -95,12 +89,14 @@
 
 .paper {
     height: 100%;
-    overflow-y: overlay
+    overflow-y: overlay;
+    overflow-y: scroll;
 }
 
 .comment-list {
     max-height: 250px;
-    overflow-y: overlay
+    overflow-y: overlay;
+    overflow-y: scroll;
 }
 
 .avatar {
@@ -126,6 +122,11 @@
 .search-paper {
     padding: 5px;
     display: flex
+}
+
+.rc-table {
+    color: black !important;
+    font-size: 14px !important
 }
 
 .sortable-container {

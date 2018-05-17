@@ -1,39 +1,69 @@
 import { FormControl, FormControlLabel, FormLabel } from 'material-ui/Form';
 import List, { ListItem } from 'material-ui/List'
-import Radio, { RadioGroup } from 'material-ui/Radio';
-import { SortableContainer, SortableElement } from 'react-sortable-hoc'
+import Radio, { RadioGroup } from 'material-ui/Radio'
+import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc'
 
 import Checkbox from 'material-ui/Checkbox'
+import DragHandleIcon from 'material-ui-icons/DragHandle'
+// import DownloadIcon from 'material-ui-icons/FileDownload'
+import DropDown from './DropDown'
+import IconButton from 'material-ui/IconButton'
 import ListSubheader from 'material-ui/List/ListSubheader'
+import { MenuItem } from 'material-ui/Menu'
 import { Message } from 'Source/containers/CommonComponents'
 import Paper from 'material-ui/Paper'
 import PropTypes from 'prop-types'
 import React from 'react'
+import { copyToClipboard } from 'cartoview-sdk/utils/utils'
 import { withStyles } from 'material-ui/styles'
 
+const DragHandle = SortableHandle(() => <IconButton color="default"> <DragHandleIcon /></IconButton>)
 const styles = theme => ({
     legendsPaper: {
         padding: theme.spacing.unit * 2,
     }
 })
-const LayerItem = SortableElement(({ layer, layerIndex, handleLayerVisibilty }) => {
+const LayerItem = SortableElement(({ layer, layerIndex, handleLayerVisibilty, downloadLayer, urls, handleTableLayerChange, handleFeaturesTableDrawer }) => {
+    const layerName = layer.getProperties().name
+    const layerTitle = layer.getProperties().title
     return (
-        <ListItem className="layer-switcher-item dense" button>
+        <ListItem disableGutters={true} className="layer-switcher-item dense">
+            <DragHandle />
             <Checkbox
                 checked={layer.getVisible()}
                 tabIndex={-1}
                 onChange={handleLayerVisibilty(layerIndex)}
                 disableRipple
             />
-            <Message message={layer.getProperties().title} wrap={false} align="left" type="body1" />
-        </ListItem>
+            <Message message={layerTitle} noWrap={true} align="left" type="body1" />
+            <DropDown>
+                <MenuItem onClick={() => downloadLayer(layerName)}>
+                    {"Download Layer"}
+                </MenuItem>
+                <MenuItem onClick={() => window.open(urls.layerMetaData(layerName), '_blank')}>
+                    {"Metadata Details"}
+                </MenuItem>
+                <MenuItem onClick={() => copyToClipboard(urls.wfsURL).then(result => alert("WFS Copied Successfully"))}>
+                    {"Copy WFS URL"}
+                </MenuItem>
+                <MenuItem onClick={() => {
+                    handleTableLayerChange({ target: { value: layerName } })
+                    handleFeaturesTableDrawer()
+                }}>
+                    {"Query/Table"}
+                </MenuItem>
+            </DropDown>
+            {/* <IconButton color="primary" onClick={() => downloadLayer(layer.getProperties().name)} aria-label="Download">
+                <DownloadIcon />
+            </IconButton> */}
+        </ListItem >
     )
 })
-const LayerList = SortableContainer(({ layers, handleLayerVisibilty }) => {
+const LayerList = SortableContainer(({ layers, handleLayerVisibilty, downloadLayer, urls, handleTableLayerChange, handleFeaturesTableDrawer }) => {
     return (
-        <List subheader={<ListSubheader>{"Drag&Drop To Order the Layers"}</ListSubheader>}>
+        <List disablePadding={true} subheader={<ListSubheader>{"Drag & Drop To Order the Layers"}</ListSubheader>}>
             {layers.map((layer, index) => (
-                <LayerItem handleLayerVisibilty={handleLayerVisibilty} key={`item-${index}`} index={index} layerIndex={index} layer={layer} />
+                <LayerItem handleLayerVisibilty={handleLayerVisibilty} downloadLayer={downloadLayer} urls={urls} handleTableLayerChange={handleTableLayerChange} handleFeaturesTableDrawer={handleFeaturesTableDrawer} key={`item-${index}`} index={index} layerIndex={index} layer={layer} />
             ))}
         </List>
     )
@@ -88,18 +118,26 @@ class CartoviewLayerSwitcher extends React.Component {
             classes,
             mapLayers,
             changeLayerOrder,
-            handleLayerVisibilty
+            handleLayerVisibilty,
+            downloadLayer,
+            urls,
+            handleTableLayerChange,
+            handleFeaturesTableDrawer
         } = this.props
         return (
             <Paper className={classes.legendsPaper} elevation={0}>
-                {mapLayers.length > 0 && <LayerList layers={mapLayers} handleLayerVisibilty={handleLayerVisibilty} helperClass="sortable-container" onSortEnd={changeLayerOrder} />}
+                {mapLayers.length > 0 && <LayerList useDragHandle={true} layers={mapLayers} handleLayerVisibilty={handleLayerVisibilty} downloadLayer={downloadLayer} urls={urls} handleTableLayerChange={handleTableLayerChange} handleFeaturesTableDrawer={handleFeaturesTableDrawer} helperClass="sortable-container" onSortEnd={changeLayerOrder} />}
                 {mapLayers.length == 0 && <Message message="No Layers" align="center" type="body1" />}
             </Paper>
         )
     }
 }
 CartoviewLayerSwitcher.propTypes = {
+    urls: PropTypes.object.isRequired,
     classes: PropTypes.object.isRequired,
+    downloadLayer: PropTypes.func.isRequired,
+    handleFeaturesTableDrawer: PropTypes.func.isRequired,
+    handleTableLayerChange: PropTypes.func.isRequired,
     mapLayers: PropTypes.array.isRequired,
     changeLayerOrder: PropTypes.func.isRequired,
     handleLayerVisibilty: PropTypes.func.isRequired
