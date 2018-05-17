@@ -20,7 +20,23 @@ class GeocodeResult extends React.Component {
         action([parseFloat(lon), parseFloat(lat)])
     }
     render() {
-        const { geocodingResult, classes, geocodeSearchLoading } = this.props
+        const { geocodingResult, classes, geocodeSearchLoading, boundlessGeoCodingEnabled } = this.props
+        if (boundlessGeoCodingEnabled) {
+            return (
+                <Paper className={classNames("geocoding-result", { [classes.hide]: geocodeSearchLoading })} elevation={0} >
+                    <List className="full-width" component="nav">
+                        {geocodingResult.map(((item, index) => {
+                            return (
+                                <ListItem onTouchTap={() => this.zoomTo(item.x, item.y)} key={index} button>
+                                    {<Img src={urls.static+'cartoview_basic_viewer/icon.png'} loader={<Loader />} />}
+                                    <ListItemText inset primary={item.candidatePlace} secondary={item.class} />
+                                </ListItem>
+                            )
+                        }))}
+                    </List>
+                </Paper>
+            )
+        }
         return (
             <Paper className={classNames("geocoding-result", { [classes.hide]: geocodeSearchLoading })} elevation={0} >
                 <List className="full-width" component="nav">

@@ -10,6 +10,7 @@ import BasicViewer from 'Source/components/view/BasicViewer'
 import BasicViewerHelper from 'cartoview-sdk/helpers/BasicViewerHelper'
 import Collection from 'ol/collection'
 import GeoCoding from 'cartoview-sdk/services/GeoCodingService'
+import BoundlessGeoCoding from '../tmp/GeoCodingService'
 import GeoJSON from 'ol/format/geojson'
 import Group from 'ol/layer/group'
 import LayersHelper from 'cartoview-sdk/helpers/LayersHelper'
@@ -238,6 +239,15 @@ class BasicViewerContainer extends Component {
             callback(result)
         })
     }
+    boundlessGeocodeSearch = (text = null, callback = () => { }) => {
+        this.setState({ geocodeSearchLoading: true })
+        const { searchText } = this.state
+        const {config} = this.props
+        BoundlessGeoCoding.search(text ? text : searchText, config.geocodingKey, (result) => {
+            this.setState({ geocodeSearchLoading: false, geocodingResult: result.geocodePoints })
+            callback(result.geocodePoints)
+        })
+    }
     addOverlay = (node) => {
         const { activeFeature, featureIdentifyResult, mouseCoordinates } =
             this.state
@@ -463,7 +473,7 @@ class BasicViewerContainer extends Component {
             zoomToLocation: this.zoomToLocation,
             resetTablePagination: this.resetTablePagination,
             exportMap: this.exportMap,
-            geocodeSearch: this.geocodeSearch,
+            geocodeSearch: config.boundlessGeoCodingEnabled ? this.boundlessGeocodeSearch : this.geocodeSearch,
             handlePageChange: this.handlePageChange,
             handleRowsPerPage: this.handleRowsPerPage,
             handleBaseMapVisibilty: this.handleBaseMapVisibilty,
