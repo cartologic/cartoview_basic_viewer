@@ -1,20 +1,22 @@
 import 'Source/css/popup.css'
 
-import Table, { TableBody, TableCell, TableRow } from 'material-ui/Table';
-
-import ArrowLeft from 'material-ui-icons/KeyboardArrowLeft'
-import ArrowRight from 'material-ui-icons/KeyboardArrowRight'
-import Button from 'material-ui/Button'
-import CloseIcon from 'material-ui-icons/Close'
-import IconButton from 'material-ui/IconButton'
-import Paper from 'material-ui/Paper'
+import ArrowLeft from '@material-ui/icons/KeyboardArrowLeft'
+import ArrowRight from '@material-ui/icons/KeyboardArrowRight'
+import Button from '@material-ui/core/Button'
+import CloseIcon from '@material-ui/icons/Close'
+import IconButton from '@material-ui/core/IconButton'
+import Paper from '@material-ui/core/Paper'
 import PropTypes from 'prop-types'
 import React from 'react'
-import Tooltip from 'material-ui/Tooltip'
-import Typography from 'material-ui/Typography'
-import ZoomIcon from 'material-ui-icons/ZoomIn'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableRow from '@material-ui/core/TableRow'
+import Tooltip from '@material-ui/core/Tooltip'
+import Typography from '@material-ui/core/Typography'
+import ZoomIcon from '@material-ui/icons/ZoomIn'
 import classnames from 'classnames'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = theme => ({
     root: {

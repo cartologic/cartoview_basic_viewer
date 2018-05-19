@@ -1,14 +1,14 @@
-import List, { ListItem, ListItemSecondaryAction, ListItemText } from 'material-ui/List'
+import List, { ListItem, ListItemSecondaryAction, ListItemText } from '@material-ui/core/List'
 
-import Avatar from 'material-ui/Avatar'
+import Avatar from '@material-ui/core/Avatar'
 import BasicViewerHelper from 'cartoview-sdk/helpers/BasicViewerHelper'
-import CityIcon from 'material-ui-icons/LocationCity'
-import IconButton from 'material-ui/IconButton'
+import CityIcon from '@material-ui/icons/LocationCity'
+import IconButton from '@material-ui/core/IconButton'
 import { Message } from 'Source/containers/CommonComponents'
 import PropTypes from 'prop-types'
 import React from 'react'
-import ZoomInIcon from 'material-ui-icons/ZoomIn'
-import { withStyles } from 'material-ui/styles'
+import ZoomInIcon from '@material-ui/icons/ZoomIn'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = theme => ({
     root: {

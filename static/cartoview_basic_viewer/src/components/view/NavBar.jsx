@@ -1,9 +1,9 @@
-import AppBar from 'material-ui/AppBar'
+import AppBar from '@material-ui/core/AppBar'
 import { Message } from 'Source/containers/CommonComponents'
 import PropTypes from 'prop-types'
 import React from 'react'
-import Toolbar from 'material-ui/Toolbar'
-import { withStyles } from 'material-ui/styles'
+import Toolbar from '@material-ui/core/Toolbar'
+import { withStyles } from '@material-ui/core/styles'
 
 const drawerWidth = '100%'
 const styles = theme => ({

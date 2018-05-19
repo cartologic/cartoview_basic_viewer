@@ -1,23 +1,25 @@
-import { FormControl, FormControlLabel, FormLabel } from 'material-ui/Form';
-import List, { ListItem } from 'material-ui/List'
-import Radio, { RadioGroup } from 'material-ui/Radio'
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc'
 
-import Checkbox from 'material-ui/Checkbox'
-import DragHandleIcon from 'material-ui-icons/DragHandle'
-// import DownloadIcon from 'material-ui-icons/FileDownload'
+import Checkbox from '@material-ui/core/Checkbox'
+import DragHandleIcon from '@material-ui/icons/DragHandle'
 import DropDown from './DropDown'
-import IconButton from 'material-ui/IconButton'
+import FormControl from '@material-ui/core/FormControl'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import FormLabel from '@material-ui/core/FormLabel'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
 import ListSubheader from 'material-ui/List/ListSubheader'
-import { MenuItem } from 'material-ui/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
 import { Message } from 'Source/containers/CommonComponents'
-import Paper from 'material-ui/Paper'
+import Paper from '@material-ui/core/Paper'
 import PropTypes from 'prop-types'
+import Radio from '@material-ui/core/Radio'
+import RadioGroup from '@material-ui/core/RadioGroup'
 import React from 'react'
 import { copyToClipboard } from 'cartoview-sdk/utils/utils'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
 
-const DragHandle = SortableHandle(() => <IconButton color="default"> <DragHandleIcon /></IconButton>)
+const DragHandle = SortableHandle(() =>  <DragHandleIcon />)
 const styles = theme => ({
     legendsPaper: {
         padding: theme.spacing.unit * 2,
@@ -37,23 +39,23 @@ const LayerItem = SortableElement(({ layer, layerIndex, handleLayerVisibilty, do
             />
             <Message message={layerTitle} noWrap={true} align="left" type="body1" />
             <DropDown>
-                <MenuItem onClick={() => downloadLayer(layerName)}>
+                <MenuItem onTouchTap={() => downloadLayer(layerName)}>
                     {"Download Layer"}
                 </MenuItem>
-                <MenuItem onClick={() => window.open(urls.layerMetaData(layerName), '_blank')}>
+                <MenuItem onTouchTap={() => window.open(urls.layerMetaData(layerName), '_blank')}>
                     {"Metadata Details"}
                 </MenuItem>
-                <MenuItem onClick={() => copyToClipboard(urls.wfsURL).then(result => alert("WFS Copied Successfully"))}>
+                <MenuItem onTouchTap={() => copyToClipboard(urls.wfsURL).then(result => alert("WFS Copied Successfully"))}>
                     {"Copy WFS URL"}
                 </MenuItem>
-                <MenuItem onClick={() => {
+                <MenuItem onTouchTap={() => {
                     handleTableLayerChange({ target: { value: layerName } })
                     handleFeaturesTableDrawer()
                 }}>
                     {"Query/Table"}
                 </MenuItem>
             </DropDown>
-            {/* <IconButton color="primary" onClick={() => downloadLayer(layer.getProperties().name)} aria-label="Download">
+            {/* <IconButton color="primary" onTouchTap={() => downloadLayer(layer.getProperties().name)} aria-label="Download">
                 <DownloadIcon />
             </IconButton> */}
         </ListItem >
