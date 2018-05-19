@@ -1,5 +1,5 @@
 import GeoCodeSearchInput from 'Source/components/view/SearchInput'
-import Grid from 'material-ui/Grid'
+import Grid from '@material-ui/core/Grid'
 import PropTypes from 'prop-types'
 import React from 'react'
 

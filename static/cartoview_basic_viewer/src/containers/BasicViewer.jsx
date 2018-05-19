@@ -1,6 +1,7 @@
 import 'ol/ol.css'
 import 'Source/css/view.css'
 import 'typeface-roboto'
+import 'whatwg-fetch'
 
 import FeaturesHelper, { wmsGetFeatureInfoFormats } from 'cartoview-sdk/helpers/FeaturesHelper'
 import React, { Component } from 'react'
@@ -28,6 +29,7 @@ import proj from 'ol/proj'
 import proj4 from 'proj4'
 import { render } from 'react-dom'
 
+const MAXFEATURES = 25
 proj.setProj4(proj4)
 class BasicViewerContainer extends Component {
     constructor(props) {
@@ -145,7 +147,7 @@ class BasicViewerContainer extends Component {
         const targerURL = this.urls.getProxiedURL(urls.wfsURL)
         downloadFile(targerURL, `${tableLayer.split(":").pop()}.zip`, data)
     }
-    getFeatureTableData = (startIndex, maxFeatures, tableLayer = null, download = false) => {
+    getFeatureTableData = (startIndex, maxFeatures = 25, tableLayer = null, download = false) => {
         const { queryComponents, map, combinationType } = this.state
         let filters = []
         queryComponents.map(cmp => {
@@ -154,7 +156,6 @@ class BasicViewerContainer extends Component {
                 filters.push(rf.getFilterObj())
             }
         })
-        console.dir(filters)
         if (!tableLayer) {
             tableLayer = this.state.tableLayer
         }
@@ -221,7 +222,7 @@ class BasicViewerContainer extends Component {
         if (layer !== tableLayer) {
             this.setState({ tableLayer: event.target.value, features: [], page: 0, rowsPerPage: 25 }, () => {
                 this.getTableLayerAttributes()
-                this.getFeatureTableData(0, 30, layer)
+                this.getFeatureTableData(0, MAXFEATURES, layer)
             })
         }
 
@@ -310,14 +311,14 @@ class BasicViewerContainer extends Component {
             if (!(layer instanceof Group)) {
                 layers.push(layer)
             }
-            if (layer instanceof Group && layer.get('type') === 'base-group') {
+            else if (layer instanceof Group && layer.get('type') === 'base-group') {
                 layer.getLayers().getArray().map(lyr => baseMaps.push(lyr))
             }
         })
         let data = { mapLayers: layers.slice(0).reverse(), baseMaps }
         if (data.mapLayers.length > 0 && (!tableLayer || tableLayer !== '')) {
             data.tableLayer = data.mapLayers[0].get('name')
-            this.getFeatureTableData(0, 30, data.tableLayer)
+            this.getFeatureTableData(0, MAXFEATURES, data.tableLayer)
         }
         this.setState(data, () => {
             this.createLegends()
@@ -378,13 +379,14 @@ class BasicViewerContainer extends Component {
     }
     createLegends = () => {
         let { mapLayers } = this.state
+        const { config, urls } = this.props
         let legends = []
         mapLayers.map(layer => {
             const layerTitle = layer.getProperties().title
             if (layer.getVisible()) {
                 legends.push({
                     layer: layerTitle,
-                    url: LayersHelper.getLegendURL(layer)
+                    url: LayersHelper.getLegendURL(layer, config.token, urls.proxy)
                 })
             }
         })

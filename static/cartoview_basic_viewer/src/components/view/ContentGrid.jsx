@@ -4,24 +4,23 @@ import React, { Component } from 'react'
 import CartoviewDrawer from 'Source/components/view/Drawer'
 import CartoviewPopup from 'Source/components/view/popup'
 import CartoviewPrint from 'Source/components/view/PrintModal'
-import Fade from 'material-ui/transitions/Fade'
 import FeatureTableDrawer from 'Source/components/view/FeatureTableDrawer'
 import FeaturesTable from 'Source/components/view/FeaturesTable'
 import GeoCodeResult from 'Source/components/view/GeoCodeResult'
 import GeoCodeSearchInput from 'Source/components/view/SearchInput'
-import Grid from 'material-ui/Grid'
-import IconButton from 'material-ui/IconButton'
+import Grid from '@material-ui/core/Grid'
+import IconButton from '@material-ui/core/IconButton'
 import { Loader } from 'Source/containers/CommonComponents'
 import MapViewer from 'Source/components/view/MapViewer'
-import MenuIcon from 'material-ui-icons/Menu'
-import Paper from 'material-ui/Paper'
+import MenuIcon from '@material-ui/icons/Menu'
+import Paper from '@material-ui/core/Paper'
 import PropTypes from 'prop-types'
-import Slide from 'material-ui/transitions/Slide'
-import Snackbar from 'material-ui/Snackbar'
+import Slide from '@material-ui/core/Slide'
+import Snackbar from '@material-ui/core/Snackbar'
 import classnames from "classnames"
 import compose from 'recompose/compose'
-import { withStyles } from 'material-ui/styles'
-import withWidth from 'material-ui/utils/withWidth'
+import { withStyles } from '@material-ui/core/styles'
+import withWidth from '@material-ui/core/withWidth'
 
 const styles = theme => ({
     root: {
@@ -83,8 +82,7 @@ export const CartoviewSnackBar = (props) => {
     return <Snackbar
         open={open}
         onClose={handleClose ? handleClose : () => { }}
-        transition={Fade}
-        SnackbarContentProps={{
+        ContentProps={{
             'aria-describedby': 'message-id',
         }}
         message={messageComponent} />

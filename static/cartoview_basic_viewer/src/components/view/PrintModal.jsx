@@ -1,27 +1,25 @@
-import Dialog, {
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-} from 'material-ui/Dialog'
-
-import AddIcon from 'material-ui-icons/Add'
+import AddIcon from '@material-ui/icons/Add'
 import BasicViewerHelper from 'cartoview-sdk/helpers/BasicViewerHelper'
-import Button from 'material-ui/Button'
-import { FormControl } from 'material-ui/Form'
-import { InputLabel } from 'material-ui/Input'
-import { MenuItem } from 'material-ui/Menu'
+import Button from '@material-ui/core/Button'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import FormControl from '@material-ui/core/FormControl'
+import InputLabel from '@material-ui/core/InputLabel'
+import MenuItem from '@material-ui/core/MenuItem'
 import PrintService from 'cartoview-sdk/services/PrintService'
 import PropTypes from 'prop-types'
 import React from 'react'
-import RemoveIcon from 'material-ui-icons/Remove'
-import Select from 'material-ui/Select'
-import TextField from 'material-ui/TextField'
-import { withStyles } from 'material-ui/styles'
+import RemoveIcon from '@material-ui/icons/Remove'
+import Select from '@material-ui/core/Select'
+import TextField from '@material-ui/core/TextField'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = theme => ({
     container: {
         display: 'flex',
-        flexWrap: 'wrap',
+        flexWrap: 'wrap'
     },
     textField: {
         marginLeft: theme.spacing.unit,
@@ -51,14 +49,18 @@ const styles = theme => ({
     mapDiv: {
         width: "100%",
         height: "100%",
+        boxSizing: "content-box",
         position: 'relative'
     },
     mapContainer: {
-        flex: '.5',
+        width: "752px",
+        height: "300px",
+        boxSizing: "content-box",
         border: "2px black solid"
     },
     root: {
         display: 'flex',
+        flexDirection: 'column',
         height: "100%",
         [theme.breakpoints.down('md')]: {
             flexDirection: 'column',

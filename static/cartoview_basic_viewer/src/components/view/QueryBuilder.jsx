@@ -1,11 +1,11 @@
-import AddIcon from 'material-ui-icons/Add'
-import Downloadcon from 'material-ui-icons/FileDownload'
-import IconButton from 'material-ui/IconButton'
+import AddIcon from '@material-ui/icons/Add'
+import Downloadcon from '@material-ui/icons/FileDownload'
+import IconButton from '@material-ui/core/IconButton'
 import PropTypes from 'prop-types'
 import React from 'react'
-import RemoveIcon from 'material-ui-icons/Remove'
-import Searchcon from 'material-ui-icons/Search'
-import { withStyles } from 'material-ui/styles'
+import RemoveIcon from '@material-ui/icons/Remove'
+import Searchcon from '@material-ui/icons/Search'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = theme => ({
     root: {

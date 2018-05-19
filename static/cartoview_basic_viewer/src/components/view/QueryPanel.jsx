@@ -1,11 +1,13 @@
-import { FormControl, } from 'material-ui/Form'
-import { InputLabel } from 'material-ui/Input'
-import { MenuItem } from 'material-ui/Menu'
+import FormControl from '@material-ui/core/FormControl'
+import Input from '@material-ui/core/Input'
+import InputLabel from '@material-ui/core/InputLabel'
+import MenuItem from '@material-ui/core/MenuItem'
 import PropTypes from 'prop-types'
 import React from 'react'
-import Select from 'material-ui/Select'
-import TextField from 'material-ui/TextField'
-import { withStyles } from 'material-ui/styles'
+import Select from '@material-ui/core/Select'
+import TextField from '@material-ui/core/TextField'
+import { withStyles } from '@material-ui/core/styles'
+
 //TODO: check if more types supported by  geoserver
 const INITIAL_TYPE_MAPPING = {
     string: "text",
@@ -70,12 +72,6 @@ class QueryPanel extends React.Component {
     }
     handleChange = event => {
         this.setState({ [event.target.name]: event.target.value })
-    }
-    shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.attributes !== this.props.attributes || nextState !== this.state) {
-            return true
-        }
-        return false
     }
     resetForm = () => {
         this.setState({ value: "", op: "", attribute: "" })
@@ -210,7 +206,7 @@ class QueryPanel extends React.Component {
         return (
             <form className={classes.form} onSubmit={this.handleSubmit} autoComplete="off">
                 <FormControl className={classes.formControl} error={this.state.attribute ? false : true}>
-                    <InputLabel htmlFor="layer-select">{"Attribute"}</InputLabel>
+                    <InputLabel htmlFor="attribute-select">{"Attribute"}</InputLabel>
                     <Select
                         value={this.state.attribute}
                         onChange={this.handleChange}
@@ -229,7 +225,7 @@ class QueryPanel extends React.Component {
                     </Select>
                 </FormControl>
                 <FormControl className={classes.formControl} error={this.state.op ? false : true}>
-                    <InputLabel htmlFor="layer-select">{"Operation"}</InputLabel>
+                    <InputLabel htmlFor="op-select">{"Operation"}</InputLabel>
                     <Select
                         value={this.state.op}
                         onChange={this.handleChange}

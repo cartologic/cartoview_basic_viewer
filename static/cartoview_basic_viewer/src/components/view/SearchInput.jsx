@@ -1,11 +1,11 @@
-import CloseIcon from 'material-ui-icons/Close'
-import Input from 'material-ui/Input'
+import CloseIcon from '@material-ui/icons/Close'
+import Input from '@material-ui/core/Input'
 import { Loader } from 'Source/containers/CommonComponents'
 import PropTypes from 'prop-types'
 import React from 'react'
-import SearchIcon from 'material-ui-icons/Search'
+import SearchIcon from '@material-ui/icons/Search'
 import classNames from 'classnames'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = theme => ({
     textField: {
