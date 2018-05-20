@@ -138,4 +138,4 @@ FeaturesTable.propTypes = {
     rowsPerPage: PropTypes.number.isRequired,
     resetQuery: PropTypes.func.isRequired,
 }
-export default withStyles(styles)(FeaturesTable) 
+export default withStyles(styles)(FeaturesTable)

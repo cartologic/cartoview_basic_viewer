@@ -64,14 +64,14 @@ class Sidenav extends Component {
             children,
             createQueryPanel,
             removeComponent,
-            queryComponents,
+            filters,
             loading,
             combinationType,
             handleCombinationType,
             tableLayer,
             handleTableLayerChange,
             getFeatureTableData,
-            createQueryRef,
+            handleFilterChange,
             resetQuery,
             attributes } = this.props
         return (
@@ -125,7 +125,7 @@ class Sidenav extends Component {
                                     </FormControl>
                                 </div>
                                 <div className={classes.queryPanel}>
-                                    <QueryBuilder createQueryRef={createQueryRef} components={queryComponents} createQueryPanel={createQueryPanel} removeComponent={removeComponent} resetTablePagination={resetTablePagination} attributes={attributes} getFeatureTableData={getFeatureTableData}
+                                    <QueryBuilder handleFilterChange={handleFilterChange} filters={filters} createQueryPanel={createQueryPanel} removeComponent={removeComponent} resetTablePagination={resetTablePagination} attributes={attributes} getFeatureTableData={getFeatureTableData}
                                         resetQuery={resetQuery} />
                                 </div>
                             </Paper>
@@ -161,8 +161,8 @@ Sidenav.propTypes = {
     getFeatureTableData: PropTypes.func.isRequired,
     createQueryPanel: PropTypes.func.isRequired,
     removeComponent: PropTypes.func.isRequired,
-    queryComponents: PropTypes.array.isRequired,
-    createQueryRef: PropTypes.func.isRequired,
+    filters: PropTypes.array.isRequired,
+    handleFilterChange: PropTypes.func.isRequired,
     resetQuery: PropTypes.func.isRequired,
     combinationType: PropTypes.string.isRequired,
     handleCombinationType: PropTypes.func.isRequired,

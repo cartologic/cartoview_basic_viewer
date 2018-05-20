@@ -29,6 +29,16 @@ import proj from 'ol/proj'
 import proj4 from 'proj4'
 import { render } from 'react-dom'
 
+const INITIAL_TYPE_MAPPING = {
+    string: "text",
+    double: "number",
+    int: "number",
+    number: "number",
+    long: "number",
+    boolean: "checkbox",
+    "date-time": "datetime",
+    date: "date",
+}
 const MAXFEATURES = 25
 proj.setProj4(proj4)
 class BasicViewerContainer extends Component {
@@ -56,7 +66,7 @@ class BasicViewerContainer extends Component {
             combinationType: 'any',
             selectedRegion: "",
             baseMaps: [],
-            queryComponents: [],
+            filters: [],
             features: [],
             totalFeatures: 0,
             featuresIsLoading: false,
@@ -72,29 +82,37 @@ class BasicViewerContainer extends Component {
         this.wfsService = new WFSService(urls.wfsURL, urls.proxy)
     }
     createQueryPanel = () => {
-        const { queryComponents, layerAttributes } = this.state
-        let cmp = {
-            Component: QueryPanel,
-            props: {
-                attributes: layerAttributes,
-                getFeatureTableData: this.getFeatureTableData,
-                resetTablePagination: this.resetTablePagination
-            },
-            ref: `query_${queryComponents.length}`
+        const { filters } = this.state
+        let filter = {
+            op: "",
+            value: "",
+            start: new Date().toISOString(),
+            end: new Date().toISOString(),
+            attribute: ""
         }
-        this.setState({ queryComponents: [...queryComponents, cmp] })
+        this.setState({ filters: [...filters, filter] })
     }
     removeComponent = (index) => {
-        let { queryComponents } = this.state
-        let newComponents = queryComponents
+        let { filters } = this.state
+        let newComponents = filters
         newComponents.splice(index, 1)
-        this.setState({ queryComponents: newComponents })
+        this.setState({ filters: newComponents })
     }
     resetQuery = () => {
-        this.setState({ queryComponents: [] }, this.getFeatureTableData)
+        if (this.state.filters.length > 0) {
+            this.setState({ filters: [] }, () => {
+                this.getFeatureTableData(0, 25, this.state.tableLayer, false)
+            })
+        }
     }
-    createQueryRef = (name, node) => {
-        this[name] = node
+    handleFilterChange = (index) => event => {
+        let { filters } = this.state
+        if (index < filters.length) {
+            let newFilters = filters
+            let filter = newFilters[index]
+            filter[event.target.name] = event.target.value
+            this.setState({ filters: newFilters })
+        }
     }
     handlePageChange = (event, newPage) => {
         this.setState({ page: newPage }, () => {
@@ -147,13 +165,56 @@ class BasicViewerContainer extends Component {
         const targerURL = this.urls.getProxiedURL(urls.wfsURL)
         downloadFile(targerURL, `${tableLayer.split(":").pop()}.zip`, data)
     }
-    getFeatureTableData = (startIndex, maxFeatures = 25, tableLayer = null, download = false) => {
-        const { queryComponents, map, combinationType } = this.state
-        let filters = []
-        queryComponents.map(cmp => {
-            const rf = this[cmp.ref]
-            if (rf.isValid()) {
-                filters.push(rf.getFilterObj())
+    isValid = (filterObj) => {
+        const { value, attribute, op, start, end } = filterObj
+        let valid = false
+        if (op !== "DURING") {
+            if (value && attribute && op) {
+                valid = true
+            }
+        } else {
+            if (start && end && attribute && op) {
+                valid = true
+            }
+        }
+        return valid
+    }
+    getAttributeType = (attributeName) => {
+        const { layerAttributes } = this.state
+        let attributeType = null
+        for (let i = 0; i < layerAttributes.length; i++) {
+            const attr = layerAttributes[i]
+            if (attr.name === attributeName) {
+                attributeType = attr.type.split(":").pop()
+                break
+            }
+        }
+        return attributeType
+    }
+    getFilterObj = (filterObj) => {
+        const attrType = this.getAttributeType(this.state.attribute)
+        const localType = INITIAL_TYPE_MAPPING[attrType]
+        const { value, attribute, op, start, end } = filterObj
+        if (this.isValid(filterObj)) {
+            if (op === "DURING") {
+                return {
+                    attribute, operator: op, value,
+                    start: new Date(start).toISOString(),
+                    end: new Date(end).toISOString()
+                }
+            }
+            if (localType === "date" || localType === "datetime") {
+                return { attribute, operator: op, value: new Date(start).toISOString() }
+            }
+            return { attribute, operator: op, value }
+        }
+    }
+    getFeatureTableData = (startIndex, maxFeatures, tableLayer = null, download = false) => {
+        const { filters, map, combinationType } = this.state
+        let filterObjs = []
+        filters.map(filter => {
+            if (this.isValid(filter)) {
+                filterObjs.push(this.getFilterObj(filter))
             }
         })
         if (!tableLayer) {
@@ -161,10 +222,10 @@ class BasicViewerContainer extends Component {
         }
         if (tableLayer) {
             let wfsOptions = {
-                filters,
+                filters: filterObjs,
             }
             if (!download) {
-                this.setState({ featuresIsLoading: true, searchEnabled: filters ? true : false })
+                this.setState({ featuresIsLoading: true, searchEnabled: filterObjs ? true : false })
                 wfsOptions = {
                     ...wfsOptions,
                     combinationType,
@@ -450,6 +511,7 @@ class BasicViewerContainer extends Component {
             layerNameSpace: LayersHelper.layerNameSpace,
             toggleDrawer: this.toggleDrawer,
             urls,
+            handleFilterChange: this.handleFilterChange,
             handleCombinationType: this.handleCombinationType,
             createLegends: this.createLegends,
             setThumbnail: this.setThumbnail,
@@ -473,7 +535,6 @@ class BasicViewerContainer extends Component {
             createQueryPanel: this.createQueryPanel,
             removeComponent: this.removeComponent,
             resetQuery: this.resetQuery,
-            createQueryRef: this.createQueryRef,
             handleFeaturesTableDrawer: this.handleFeaturesTableDrawer,
             handleGeocodingChange: this.handleGeocodingChange,
             resetGeocoding: this.resetGeocoding,

@@ -148,9 +148,9 @@ class ContentGrid extends Component {
             drawerOpen: childrenProps.featuresTableOpen,
             createQueryPanel: childrenProps.createQueryPanel,
             removeComponent: childrenProps.removeComponent,
-            queryComponents: childrenProps.queryComponents,
-            createQueryRef: childrenProps.createQueryRef,
-            resetQuery: childrenProps.resetQuery
+            filters: childrenProps.filters,
+            handleFilterChange: childrenProps.handleFilterChange,
+            resetQuery: childrenProps.resetQuery,
         }
     }
     getFeatureTableProps = () => {
