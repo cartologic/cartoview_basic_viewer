@@ -8,7 +8,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import FormLabel from '@material-ui/core/FormLabel'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
-import ListSubheader from 'material-ui/List/ListSubheader'
+import ListSubheader from '@material-ui/core/ListSubheader'
 import MenuItem from '@material-ui/core/MenuItem'
 import { Message } from 'Source/containers/CommonComponents'
 import Paper from '@material-ui/core/Paper'
@@ -16,10 +16,11 @@ import PropTypes from 'prop-types'
 import Radio from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import React from 'react'
+import URLS from 'cartoview-sdk/urls/urls'
 import { copyToClipboard } from 'cartoview-sdk/utils/utils'
 import { withStyles } from '@material-ui/core/styles'
 
-const DragHandle = SortableHandle(() =>  <DragHandleIcon />)
+const DragHandle = SortableHandle(() => <DragHandleIcon />)
 const styles = theme => ({
     legendsPaper: {
         padding: theme.spacing.unit * 2,
@@ -45,7 +46,11 @@ const LayerItem = SortableElement(({ layer, layerIndex, handleLayerVisibilty, do
                 <MenuItem onTouchTap={() => window.open(urls.layerMetaData(layerName), '_blank')}>
                     {"Metadata Details"}
                 </MenuItem>
-                <MenuItem onTouchTap={() => copyToClipboard(urls.wfsURL).then(result => alert("WFS Copied Successfully"))}>
+                <MenuItem onTouchTap={() => {
+                    let urlHelper = new URLS(urls.proxy)
+                    let url = urlHelper.getParamterizedURL(urls.wfsURL, { service: 'wfs', version: '2.0.0', request: 'GetFeature', typeNames: layer.get('name'), outputFormat: 'json' })
+                    copyToClipboard(url).then(result => alert("WFS URL Copied Successfully"))
+                }}>
                     {"Copy WFS URL"}
                 </MenuItem>
                 <MenuItem onTouchTap={() => {
