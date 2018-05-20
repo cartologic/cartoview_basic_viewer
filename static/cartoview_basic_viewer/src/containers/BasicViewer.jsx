@@ -16,7 +16,6 @@ import Group from 'ol/layer/group'
 import LayersHelper from 'cartoview-sdk/helpers/LayersHelper'
 import Overlay from 'ol/overlay'
 import PropTypes from 'prop-types'
-import QueryPanel from 'Source/components/view/QueryPanel'
 import StyleHelper from 'cartoview-sdk/helpers/StyleHelper'
 import URLS from 'cartoview-sdk/urls/urls'
 import Vector from 'ol/layer/vector'
@@ -56,6 +55,7 @@ class BasicViewerContainer extends Component {
             searchEnabled: false,
             attributesLoading: false,
             showPopup: false,
+            thumbnailSaving: false,
             identifyEnabled: true,
             geocodingResult: [],
             searchText: '',
@@ -251,7 +251,11 @@ class BasicViewerContainer extends Component {
     setThumbnail = () => {
         const { map } = this.state
         const { urls } = this.props
-        BasicViewerHelper.setThumbnail(map, urls.thumbnailURL)
+        this.setState({ thumbnailSaving: true }, () => {
+            BasicViewerHelper.setThumbnail(map, urls.thumbnailURL).then(result => {
+                this.setState({ thumbnailSaving: false }, alert(result))
+            })
+        })
     }
     resetGeocoding = () => {
         this.setState({ geocodingResult: [], searchText: '' })

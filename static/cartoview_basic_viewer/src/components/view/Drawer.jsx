@@ -12,7 +12,9 @@ import LayersIcons from '@material-ui/icons/Layers'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
+import { Loader } from 'Source/containers/CommonComponents'
 import LocationIcon from '@material-ui/icons/LocationOn'
 import MapIcon from '@material-ui/icons/Map'
 import NavBar from 'Source/components/view/NavBar.jsx'
@@ -56,6 +58,7 @@ class CartoviewDrawer extends React.Component {
             handleFeaturesTableDrawer,
             map,
             setThumbnail,
+            thumbnailSaving,
             baseMaps,
             handleBaseMapVisibilty,
             handlePrintModal,
@@ -91,6 +94,9 @@ class CartoviewDrawer extends React.Component {
                                 <UploadIcon />
                             </ListItemIcon>
                             <ListItemText primary="Set Thumbnail" />
+                            {thumbnailSaving && <ListItemSecondaryAction>
+                                <Loader size={20} thickness={4} />
+                            </ListItemSecondaryAction>}
                         </ListItem>
                         <CollapsibleListItem open={false} title="Print Tools" icon={<PrintIcon />} >
                             <List>
@@ -145,6 +151,7 @@ CartoviewDrawer.propTypes = {
     config: PropTypes.object.isRequired,
     map: PropTypes.object.isRequired,
     setThumbnail: PropTypes.func.isRequired,
+    thumbnailSaving: PropTypes.bool.isRequired,
     handleBaseMapVisibilty: PropTypes.func.isRequired,
     handlePrintModal: PropTypes.func.isRequired,
 }

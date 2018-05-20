@@ -113,6 +113,7 @@ class ContentGrid extends Component {
         const { childrenProps } = this.props
         return {
             setThumbnail: childrenProps.setThumbnail,
+            thumbnailSaving: childrenProps.thumbnailSaving,
             map: childrenProps.map,
             resetTablePagination: childrenProps.resetTablePagination,
             handleFeaturesTableDrawer: childrenProps.handleFeaturesTableDrawer,
