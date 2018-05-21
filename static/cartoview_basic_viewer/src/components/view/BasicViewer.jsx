@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 
 import ContentGrid from 'Source/components/view/ContentGrid'
-import { MuiThemeProvider } from 'material-ui/styles'
+import { MuiThemeProvider } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 import { theme } from 'Source/components/view/theme.jsx'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
+
 const styles = theme => ( {
     root: {
         height: '100%'

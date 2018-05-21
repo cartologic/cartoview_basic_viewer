@@ -1,8 +1,8 @@
-import { CircularProgress } from 'material-ui/Progress'
-import { LinearProgress } from 'material-ui/Progress'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import LinearProgress from '@material-ui/core/LinearProgress'
 import PropTypes from 'prop-types'
 import React from 'react'
-import Typography from 'material-ui/Typography'
+import Typography from '@material-ui/core/Typography'
 export const Loader = (props) => {
     const { size, thickness, align, type } = props
     return (

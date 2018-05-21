@@ -1,6 +1,6 @@
-import IconButton from 'material-ui/IconButton'
-import Menu from 'material-ui/Menu'
-import MoreVertIcon from 'material-ui-icons/MoreVert'
+import IconButton from '@material-ui/core/IconButton'
+import Menu from '@material-ui/core/Menu'
+import MoreVertIcon from '@material-ui/icons/MoreVert'
 import PropTypes from 'prop-types'
 import React from 'react'
 

@@ -208,3 +208,19 @@
         float: unset;
     }
 }
+
+.my-resources-radio{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.margin-right-left-20{
+    margin-right: 20px;
+    margin-left: 20px; 
+}
+
+.all-maps-radio{
+    margin-top: 0px !important;
+    margin-bottom: 2px;
+}

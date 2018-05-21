@@ -63,6 +63,14 @@ export default class Bookmarks extends React.Component {
         newBookmarks.splice(index, 1, editedOne)
         this.setState({ bookmarks: newBookmarks })
     }
+    onDescriptionChange = index => event => {
+        const { bookmarks } = this.state
+        let newBookmarks = [...bookmarks]
+        let editedOne = newBookmarks[index]
+        editedOne.description = event.target.value
+        newBookmarks.splice(index, 1, editedOne)
+        this.setState({ bookmarks: newBookmarks })
+    }
     removeBookmark = (index) => {
         const { bookmarks } = this.state
         let newBookmarks = [...bookmarks]
@@ -85,6 +93,10 @@ export default class Bookmarks extends React.Component {
                         <div className="form-group">
                             <label htmlFor={`name${index}`}>{"Name: "}</label>
                             <input onChange={this.onChange(index)} type="text" className="form-control" value={bookmark.name} id={`name${index}`} />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor={`description${index}`}>{"Description: "}</label>
+                            <input onChange={this.onDescriptionChange(index)} type="text" className="form-control" value={bookmark.description} id={`description${index}`} />
                         </div>
                         <div className="form-group">
                             <label htmlFor={`extent${index}`}>{"Extent: "}</label>

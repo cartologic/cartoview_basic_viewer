@@ -1,22 +1,21 @@
-import ExpansionPanel, {
-    ExpansionPanelDetails,
-    ExpansionPanelSummary,
-} from 'material-ui/ExpansionPanel'
 import { Loader, Message } from 'Source/containers/CommonComponents'
 import React, { Component } from 'react'
 
-import CloseIcon from 'material-ui-icons/Close'
-import Divider from 'material-ui/Divider'
-import Drawer from 'material-ui/Drawer'
-import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
-import { FormControl, } from 'material-ui/Form'
-import IconButton from 'material-ui/IconButton'
-import { InputLabel } from 'material-ui/Input'
-import Paper from 'material-ui/Paper'
+import CloseIcon from '@material-ui/icons/Close'
+import Divider from '@material-ui/core/Divider'
+import Drawer from '@material-ui/core/Drawer'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import ExpansionPanel from '@material-ui/core/ExpansionPanel'
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import FormControl from '@material-ui/core/FormControl'
+import IconButton from '@material-ui/core/IconButton'
+import InputLabel from '@material-ui/core/InputLabel'
+import Paper from '@material-ui/core/Paper'
 import PropTypes from 'prop-types'
 import QueryBuilder from 'Source/components/view/QueryBuilder'
-import Select from 'material-ui/Select'
-import { withStyles } from 'material-ui/styles'
+import Select from '@material-ui/core/Select'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = theme => ({
     drawerPaper: {
@@ -56,21 +55,6 @@ const styles = theme => ({
     drawerHeader: theme.mixins.toolbar
 })
 class Sidenav extends Component {
-    shouldComponentUpdate(nextProps, nextState) {
-        const { attributes, drawerOpen, mapLayers, queryComponents, loading,
-            combinationType, tableLayer, children } = this.props
-        if (nextProps.attributes !== attributes ||
-            nextProps.drawerOpen !== drawerOpen ||
-            nextProps.mapLayers !== mapLayers ||
-            nextProps.queryComponents !== queryComponents ||
-            nextProps.loading !== loading ||
-            nextProps.combinationType !== combinationType ||
-            nextProps.children !== children ||
-            nextProps.tableLayer !== tableLayer) {
-            return true
-        }
-        return false
-    }
     render() {
         const { drawerOpen,
             classes,
@@ -80,14 +64,14 @@ class Sidenav extends Component {
             children,
             createQueryPanel,
             removeComponent,
-            queryComponents,
+            filters,
             loading,
             combinationType,
             handleCombinationType,
             tableLayer,
             handleTableLayerChange,
             getFeatureTableData,
-            createQueryRef,
+            handleFilterChange,
             resetQuery,
             attributes } = this.props
         return (
@@ -141,7 +125,7 @@ class Sidenav extends Component {
                                     </FormControl>
                                 </div>
                                 <div className={classes.queryPanel}>
-                                    <QueryBuilder createQueryRef={createQueryRef} components={queryComponents} createQueryPanel={createQueryPanel} removeComponent={removeComponent} resetTablePagination={resetTablePagination} attributes={attributes} getFeatureTableData={getFeatureTableData}
+                                    <QueryBuilder handleFilterChange={handleFilterChange} filters={filters} createQueryPanel={createQueryPanel} removeComponent={removeComponent} resetTablePagination={resetTablePagination} attributes={attributes} getFeatureTableData={getFeatureTableData}
                                         resetQuery={resetQuery} />
                                 </div>
                             </Paper>
@@ -177,8 +161,8 @@ Sidenav.propTypes = {
     getFeatureTableData: PropTypes.func.isRequired,
     createQueryPanel: PropTypes.func.isRequired,
     removeComponent: PropTypes.func.isRequired,
-    queryComponents: PropTypes.array.isRequired,
-    createQueryRef: PropTypes.func.isRequired,
+    filters: PropTypes.array.isRequired,
+    handleFilterChange: PropTypes.func.isRequired,
     resetQuery: PropTypes.func.isRequired,
     combinationType: PropTypes.string.isRequired,
     handleCombinationType: PropTypes.func.isRequired,

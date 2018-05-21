@@ -1,10 +1,10 @@
 import { Loader, Message } from 'Source/containers/CommonComponents'
 
 import Img from 'react-image'
-import Paper from 'material-ui/Paper'
+import Paper from '@material-ui/core/Paper'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = theme => ({
     legendsPaper: {

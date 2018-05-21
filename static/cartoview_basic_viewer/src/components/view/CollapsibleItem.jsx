@@ -1,13 +1,15 @@
-import { ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText } from 'material-ui/List'
-
-import Collapse from 'material-ui/transitions/Collapse'
-import Divider from 'material-ui/Divider'
-import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
-import IconButton from 'material-ui/IconButton'
+import Collapse from '@material-ui/core/Collapse'
+import Divider from '@material-ui/core/Divider'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import IconButton from '@material-ui/core/IconButton'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
+import ListItemText from '@material-ui/core/ListItemText'
 import PropTypes from 'prop-types'
 import React from 'react'
 import classnames from 'classnames'
-import { withStyles } from 'material-ui/styles'
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = theme => ({
     expand: {

@@ -1,14 +1,18 @@
 import 'rc-table/assets/index.css'
 
-import Table, { TableBody, TableCell, TableHead, TablePagination, TableRow } from 'material-ui/Table'
-
-import Button from 'material-ui/Button'
-import IconButton from 'material-ui/IconButton'
+import Button from '@material-ui/core/Button'
+import IconButton from '@material-ui/core/IconButton'
 import { Message } from 'Source/containers/CommonComponents'
 import PropTypes from 'prop-types'
 import React from 'react'
-import ZoomIcon from 'material-ui-icons/ZoomIn'
-import { withStyles } from 'material-ui/styles'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableHead from '@material-ui/core/TableHead'
+import TablePagination from '@material-ui/core/TablePagination';
+import TableRow from '@material-ui/core/TableRow'
+import ZoomIcon from '@material-ui/icons/ZoomIn'
+import { withStyles } from '@material-ui/core/styles'
 
 const CustomTableCell = withStyles(theme => ({
     head: {
@@ -43,17 +47,6 @@ const styles = theme => ({
     },
 })
 class FeaturesTable extends React.Component {
-    shouldComponentUpdate(nextProps, nextState) {
-        const { loading, features, page, rowsPerPage, totalFeatures } = this.props
-        if (nextProps.loading !== loading ||
-            nextProps.features !== features ||
-            nextProps.rowsPerPage !== rowsPerPage ||
-            nextProps.page !== page ||
-            nextProps.totalFeatures !== totalFeatures) {
-            return true
-        }
-        return false
-    }
     getTableCol = () => {
         const { features } = this.props
         let columns = []
@@ -145,4 +138,4 @@ FeaturesTable.propTypes = {
     rowsPerPage: PropTypes.number.isRequired,
     resetQuery: PropTypes.func.isRequired,
 }
-export default withStyles(styles)(FeaturesTable) 
+export default withStyles(styles)(FeaturesTable)

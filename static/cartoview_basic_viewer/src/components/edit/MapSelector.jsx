@@ -7,18 +7,42 @@ import ReactPaginate from 'react-paginate'
 import Spinner from 'react-spinkit'
 import Switch from 'react-toggle-switch'
 
+const MyResourcesRadioButtons = (props) => {
+    return (
+        <form className='my-resources-radio'>
+            <div className="radio margin-right-left-20">
+                <label>
+                    My Maps
+                </label>
+                <input className={'margin-left-10'} type="radio" value="myResources" checked={props.selectedOption === 'myResources'} onChange={props.onChange}/>
+            </div>
+            <div className="radio margin-right-left-20 all-maps-radio">
+                <input type="radio" value="allResources" checked={props.selectedOption === 'allResources'} onChange={props.onChange} />
+                <label>
+                    All Maps
+                </label>
+            </div>
+        </form>
+    )
+}
+MyResourcesRadioButtons.propTypes = {
+    onChange: PropTypes.func.isRequired,
+    selectedOption: PropTypes.string.isRequired
+}
+
 const UserMapSwitch = (props) => {
     const { UserMapsChanged, userMaps } = props
     return (
-        <div className="col-xs-8 col-sm-4 col-md-4 col-lg-4 col-xs-offset-2 col-sm-offset-4 col-md-offset-4 col-lg-offset-4">
-            <div className="flex-display">
-                <p>{'All Maps'}</p>
-                <div>
-                    <Switch on={userMaps} onClick={UserMapsChanged} />
-                </div>
-                <p>{'My Maps'}</p>
-            </div>
-        </div>
+        // <div className="col-xs-8 col-sm-4 col-md-4 col-lg-4 col-xs-offset-2 col-sm-offset-4 col-md-offset-4 col-lg-offset-4">
+        //     <div className="flex-display">
+        //         <p>{'All Maps'}</p>
+        //         <div>
+        //             <Switch on={userMaps} onClick={UserMapsChanged} />
+        //         </div>
+        //         <p>{'My Maps'}</p> 
+        //     </div>
+        // </div>
+        <MyResourcesRadioButtons selectedOption={userMaps ? 'myResources' : 'allResources'} onChange={UserMapsChanged}/>
     )
 }
 UserMapSwitch.propTypes = {

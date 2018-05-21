@@ -1,11 +1,12 @@
-import { FormControl, } from 'material-ui/Form'
-import { InputLabel } from 'material-ui/Input'
-import { MenuItem } from 'material-ui/Menu'
+import FormControl from '@material-ui/core/FormControl'
+import InputLabel from '@material-ui/core/InputLabel'
+import MenuItem from '@material-ui/core/MenuItem'
 import PropTypes from 'prop-types'
 import React from 'react'
-import Select from 'material-ui/Select'
-import TextField from 'material-ui/TextField'
-import { withStyles } from 'material-ui/styles'
+import Select from '@material-ui/core/Select'
+import TextField from '@material-ui/core/TextField'
+import { withStyles } from '@material-ui/core/styles'
+
 //TODO: check if more types supported by  geoserver
 const INITIAL_TYPE_MAPPING = {
     string: "text",
@@ -58,24 +59,8 @@ const styles = theme => ({
     }
 })
 class QueryPanel extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            op: "",
-            value: "",
-            start: new Date().toISOString(),
-            end: new Date().toISOString(),
-            attribute: ""
-        }
-    }
     handleChange = event => {
         this.setState({ [event.target.name]: event.target.value })
-    }
-    shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.attributes !== this.props.attributes || nextState !== this.state) {
-            return true
-        }
-        return false
     }
     resetForm = () => {
         this.setState({ value: "", op: "", attribute: "" })
@@ -95,55 +80,17 @@ class QueryPanel extends React.Component {
         return attributeType
     }
     getSupportedFilters = () => {
-        const { attributes } = this.props
-        const attrType = this.getAttributeType(attributes, this.state.attribute)
+        const { attributes, filter } = this.props
+        const { attribute } = filter
+        const attrType = this.getAttributeType(attributes, attribute)
         const localType = INITIAL_TYPE_MAPPING[attrType] || "text"
         const supportedFilters = TYPE_FILTERS_MAPPING[localType] || []
         return supportedFilters
     }
-    componentWillReceiveProps(nextProps) {
-        const { attributes } = this.props
-        if (attributes !== nextProps.attributes) {
-            this.resetForm()
-        }
-    }
-    isValid = () => {
-        const { value, attribute, op, start, end } = this.state
-        let valid = false
-        if (op !== "DURING") {
-            if (value && attribute && op) {
-                valid = true
-            }
-        } else {
-            if (start && end && attribute && op) {
-                valid = true
-            }
-        }
-        return valid
-    }
-    getFilterObj = () => {
-        const { attributes } = this.props
-        const attrType = this.getAttributeType(attributes, this.state.attribute)
-        const localType = INITIAL_TYPE_MAPPING[attrType]
-        const { value, attribute, op, start, end } = this.state
-        this.formSubmit.click()
-        if (this.isValid()) {
-            if (op === "DURING") {
-                return {
-                    attribute, operator: op, value,
-                    start: new Date(start).toISOString(),
-                    end: new Date(end).toISOString()
-                }
-            }
-            if (localType === "date" || localType === "datetime") {
-                return { attribute, operator: op, value: new Date(start).toISOString() }
-            }
-            return { attribute, operator: op, value }
-        }
-    }
     getValueFieldProps = () => {
-        const { attributes } = this.props
-        const attrType = this.getAttributeType(attributes, this.state.attribute)
+        const { attributes, filter } = this.props
+        const { attribute } = filter
+        const attrType = this.getAttributeType(attributes, attribute)
         const localType = INITIAL_TYPE_MAPPING[attrType]
         let props = {}
         if (localType === "date") {
@@ -154,50 +101,51 @@ class QueryPanel extends React.Component {
         return props
     }
     getTextInput = () => {
-        const { attributes, classes } = this.props
-        const attrType = this.getAttributeType(attributes, this.state.attribute)
+        const { attributes, classes, handleFilterChange, filter } = this.props
+        const { attribute, value, op, start, end } = filter
+        const attrType = this.getAttributeType(attributes, attribute)
         const localType = INITIAL_TYPE_MAPPING[attrType]
         let component = <TextField {...this.getValueFieldProps()}
             id="value"
             required
-            error={this.state.value ? false : true}
+            error={value ? false : true}
             label="Value"
             InputProps={{
                 name: 'value',
             }}
 
             className={classes.textField}
-            value={this.state.value}
-            onChange={this.handleChange}
+            value={value}
+            onChange={handleFilterChange}
             margin="normal"
         />
-        if ((localType === "date" || localType === "datetime") && this.state.op === "DURING") {
+        if ((localType === "date" || localType === "datetime") && op === "DURING") {
             component = [
                 <TextField key="start" {...this.getValueFieldProps()}
                     id="start"
                     required
-                    error={this.state.start ? false : true}
+                    error={start ? false : true}
                     label="start"
                     InputProps={{
                         name: 'start',
                     }}
                     className={classes.textField}
-                    value={this.state.start}
-                    onChange={this.handleChange}
+                    value={start}
+                    onChange={handleFilterChange}
                     margin="normal"
                 />,
                 <TextField key="end"  {...this.getValueFieldProps()}
                     id="end"
                     required
-                    error={this.state.end ? false : true}
+                    error={end ? false : true}
                     label="end"
                     InputProps={{
                         name: 'end',
                     }}
 
                     className={classes.textField}
-                    value={this.state.end}
-                    onChange={this.handleChange}
+                    value={end}
+                    onChange={handleFilterChange}
                     margin="normal"
                 />
             ]
@@ -206,14 +154,14 @@ class QueryPanel extends React.Component {
     }
 
     render() {
-        const { attributes, classes } = this.props
+        const { attributes, classes, handleFilterChange, filter } = this.props
         return (
             <form className={classes.form} onSubmit={this.handleSubmit} autoComplete="off">
-                <FormControl className={classes.formControl} error={this.state.attribute ? false : true}>
+                <FormControl className={classes.formControl} error={filter.attribute ? false : true}>
                     <InputLabel htmlFor="layer-select">{"Attribute"}</InputLabel>
                     <Select
-                        value={this.state.attribute}
-                        onChange={this.handleChange}
+                        value={filter.attribute}
+                        onChange={handleFilterChange}
                         inputProps={{
                             name: 'attribute',
                             id: 'attribute-select',
@@ -228,11 +176,11 @@ class QueryPanel extends React.Component {
                         })}
                     </Select>
                 </FormControl>
-                <FormControl className={classes.formControl} error={this.state.op ? false : true}>
+                <FormControl className={classes.formControl} error={filter.op ? false : true}>
                     <InputLabel htmlFor="layer-select">{"Operation"}</InputLabel>
                     <Select
-                        value={this.state.op}
-                        onChange={this.handleChange}
+                        value={filter.op}
+                        onChange={handleFilterChange}
                         inputProps={{
                             name: 'op',
                             id: 'op-select',
@@ -257,8 +205,8 @@ class QueryPanel extends React.Component {
 QueryPanel.propTypes = {
     classes: PropTypes.object.isRequired,
     attributes: PropTypes.array.isRequired,
-    getFeatureTableData: PropTypes.func.isRequired,
-    resetTablePagination: PropTypes.func.isRequired,
+    filter: PropTypes.object.isRequired,
+    handleFilterChange: PropTypes.func.isRequired,
 
 }
 export default withStyles(styles)(QueryPanel)
