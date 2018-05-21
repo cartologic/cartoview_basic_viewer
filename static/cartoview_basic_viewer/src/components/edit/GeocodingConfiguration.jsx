@@ -35,8 +35,8 @@ export default class GeocodingConfiguration extends React.Component {
     getFormValue = (props) => {
         const { config } = props
         const value = {
-            boundlessGeoCodingEnabled: config.boundlessGeoCodingEnabled ? config.boundlessGeoCodingEnabled : false,
-            geocodingKey: config.geocodingKey ? config.geocodingKey : null,
+            boundlessGeoCodingEnabled: config ? config.boundlessGeoCodingEnabled : false,
+            geocodingKey: config ? config.geocodingKey : null,
         }
         return value
     }
