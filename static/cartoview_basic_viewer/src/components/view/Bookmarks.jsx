@@ -16,6 +16,18 @@ const styles = theme => ({
     root: {
         padding: theme.spacing.unit * 2
     },
+    bookmarkDetails: {
+        display: 'flex',
+        flexDirection: 'column'
+    },
+    bookmarkName:{
+        padding: '0 16px !important'
+    },
+    bookmarkDescription:{
+        fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+        fontWeight: '300',
+        fontSize: 'smaller',
+    },
 })
 class Bookmarks extends React.Component {
     constructor(props) {
@@ -42,7 +54,10 @@ class Bookmarks extends React.Component {
                             <Avatar>
                                 <CityIcon />
                             </Avatar>
-                            <ListItemText primary={bookmark.name} />
+                            <div className={classes.bookmarkDetails}>
+                                <ListItemText primary={bookmark.name} className={classes.bookmarkName}/>
+                                <ListItemText primary={bookmark.description} className={classes.bookmarkDescription} disableTypography={true}/>
+                            </div>
                             <ListItemSecondaryAction>
                                 <IconButton onClick={() => this.handleChange(bookmark)} aria-label={`Zoom To ${bookmark.name}`}>
                                     <ZoomInIcon />
