@@ -1,9 +1,11 @@
-import List, { ListItem, ListItemSecondaryAction, ListItemText } from '@material-ui/core/List'
-
 import Avatar from '@material-ui/core/Avatar'
 import BasicViewerHelper from 'cartoview-sdk/helpers/BasicViewerHelper'
 import CityIcon from '@material-ui/icons/LocationCity'
 import IconButton from '@material-ui/core/IconButton'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
+import ListItemText from '@material-ui/core/ListItemText'
 import { Message } from 'Source/containers/CommonComponents'
 import PropTypes from 'prop-types'
 import React from 'react'
