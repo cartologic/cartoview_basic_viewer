@@ -310,8 +310,8 @@ class BasicViewerContainer extends Component {
         let position = mouseCoordinates
         if (featureIdentifyResult.length > 0) {
             const currentFeature = featureIdentifyResult[activeFeature]
-            const featureExtent = currentFeature.getGeometry().getExtent()
-            position = BasicViewerHelper.getCenterOfExtent(featureExtent)
+            const geometry = currentFeature.getGeometry()
+            position = FeaturesHelper.getGeometryCenter(geometry)
         }
         this.overlay.setElement(node)
         this.overlay.setPosition(position)

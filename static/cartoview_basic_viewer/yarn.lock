@@ -1322,9 +1322,9 @@ caniuse-lite@^1.0.30000757:
   version "1.0.30000758"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000758.tgz#e261140076651049cf6891ed4bc649b5c8c26c69"
 
-cartoview-sdk@^2.0.0-beta2:
-  version "2.0.0-beta2"
-  resolved "https://registry.yarnpkg.com/cartoview-sdk/-/cartoview-sdk-2.0.0-beta2.tgz#aeb4d9a71c430514339674009e3edb9af35697d4"
+cartoview-sdk@^2.0.0-beta9:
+  version "2.0.0-beta9"
+  resolved "https://registry.yarnpkg.com/cartoview-sdk/-/cartoview-sdk-2.0.0-beta9.tgz#84922d7b212bb72b9e8f4f584476440408bd3c0f"
   dependencies:
     babel-plugin-transform-es2015-modules-commonjs "^6.26.0"
     babel-preset-stage-2 "^6.24.1"
@@ -1332,6 +1332,7 @@ cartoview-sdk@^2.0.0-beta2:
     ol "^4.6.4"
     pica "^4.0.2"
     proj4 "^2.4.4"
+    randomcolor "^0.5.3"
     tcomb-form "^0.9.19"
     validator "^9.4.1"
 
@@ -4308,6 +4309,10 @@ randombytes@^2.0.0, randombytes@^2.0.1:
   resolved "https://registry.yarnpkg.com/randombytes/-/randombytes-2.0.5.tgz#dc009a246b8d09a177b4b7a0ae77bc570f4b1b79"
   dependencies:
     safe-buffer "^5.1.0"
+
+randomcolor@^0.5.3:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/randomcolor/-/randomcolor-0.5.3.tgz#7f90f2f2a7f6d5a52232161eeaeeaea9ac3b5815"
 
 range-parser@~1.2.0:
   version "1.2.0"
