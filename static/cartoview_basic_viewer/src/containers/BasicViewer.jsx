@@ -81,6 +81,12 @@ class BasicViewerContainer extends Component {
         this.urls = new URLS(urls.proxy)
         this.wfsService = new WFSService(urls.wfsURL, urls.proxy)
     }
+    handleLayerOpacity = (layerIndex) => (value) => {
+        let { mapLayers } = this.state
+        const layer = mapLayers[layerIndex]
+        layer.setOpacity(value)
+        this.setState({ mapLayers })
+    }
     createQueryPanel = () => {
         const { filters } = this.state
         let filter = {
@@ -542,6 +548,7 @@ class BasicViewerContainer extends Component {
             handleFeaturesTableDrawer: this.handleFeaturesTableDrawer,
             handleGeocodingChange: this.handleGeocodingChange,
             resetGeocoding: this.resetGeocoding,
+            handleLayerOpacity: this.handleLayerOpacity
         }
         return childrenProps
     }

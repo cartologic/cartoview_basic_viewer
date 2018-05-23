@@ -122,6 +122,7 @@ class ContentGrid extends Component {
             handleLayerVisibilty: childrenProps.handleLayerVisibilty,
             changeLayerOrder: childrenProps.changeLayerOrder,
             mapLayers: childrenProps.mapLayers,
+            handleLayerOpacity: childrenProps.handleLayerOpacity,
             downloadLayer: childrenProps.downloadLayer,
             urls: childrenProps.urls,
             createLegends: childrenProps.createLegends,

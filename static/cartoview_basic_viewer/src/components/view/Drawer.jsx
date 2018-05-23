@@ -1,4 +1,4 @@
-import CartoviewLayerSwitcher, {BaseMapSwitcher} from 'Source/components/view/LayerSwitcher'
+import CartoviewLayerSwitcher, { BaseMapSwitcher } from 'Source/components/view/LayerSwitcher'
 
 import CameraIcon from '@material-ui/icons/PhotoCamera'
 import CartoviewAbout from 'Source/components/view/About'
@@ -14,7 +14,7 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
-import {Loader} from 'Source/containers/CommonComponents'
+import { Loader } from 'Source/containers/CommonComponents'
 import LocationIcon from '@material-ui/icons/LocationOn'
 import MapIcon from '@material-ui/icons/Map'
 import NavBar from 'Source/components/view/NavBar.jsx'
@@ -26,11 +26,7 @@ import React from 'react'
 import SearchIcon from '@material-ui/icons/Search'
 import UploadIcon from '@material-ui/icons/InsertPhoto'
 import classnames from 'classnames'
-import {withStyles} from '@material-ui/core/styles'
-import Divider from '@material-ui/core/Divider';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles'
 
 const styles = theme => ({
     root: {
@@ -43,11 +39,6 @@ const styles = theme => ({
     },
     button: {
         margin: theme.spacing.unit,
-    },
-    drawerTitle: {
-        fontSize: '30px',
-        // fontWeight: 'bold',
-        fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
     }
 })
 
@@ -56,8 +47,8 @@ class CartoviewDrawer extends React.Component {
         about: false
     }
     handleAboutChange = () => {
-        const {about} = this.state
-        this.setState({about: !about})
+        const { about } = this.state
+        this.setState({ about: !about })
     }
 
     render() {
@@ -71,84 +62,82 @@ class CartoviewDrawer extends React.Component {
             setThumbnail,
             thumbnailSaving,
             baseMaps,
+            handleLayerOpacity,
             handleBaseMapVisibilty,
             handlePrintModal,
             downloadLayer,
             handleTableLayerChange
         } = this.props
-        const {about} = this.state
+        const { about } = this.state
         return (
             <Paper elevation={6} className={classnames(classes.root, className)}>
-                <NavBar/>
+                <NavBar />
                 <Paper className={classes.drawerPaper} elevation={0}>
                     <List>
-                        <ListItem >
-                        <ListItemText primary={config.title} className={classes.drawerTitle} disableTypography={true}/>
-                        </ListItem>
-                        <Divider />
                         <ListItem onTouchTap={() => window.location.href = urls.appInstancesPage} button>
                             <ListItemIcon>
-                                <HomeIcon/>
+                                <HomeIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Home"/>
+                            <ListItemText primary="Home" />
                         </ListItem>
                         <ListItem onTouchTap={this.handleAboutChange} button>
                             <ListItemIcon>
-                                <InfoIcons/>
+                                <InfoIcons />
                             </ListItemIcon>
-                            <ListItemText primary="About"/>
+                            <ListItemText primary="About" />
                         </ListItem>
                         {config.enableFeatureTable && <ListItem onTouchTap={handleFeaturesTableDrawer} button>
                             <ListItemIcon>
-                                <SearchIcon/>
+                                <SearchIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Query"/>
+                            <ListItemText primary="Query" />
                         </ListItem>}
                         <ListItem onTouchTap={setThumbnail} button>
                             <ListItemIcon>
-                                <UploadIcon/>
+                                <UploadIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Set Thumbnail"/>
+                            <ListItemText primary="Set Thumbnail" />
                             {thumbnailSaving && <ListItemSecondaryAction>
-                                <Loader size={20} thickness={4}/>
+                                <Loader size={20} thickness={4} />
                             </ListItemSecondaryAction>}
                         </ListItem>
-                        <CollapsibleListItem open={false} title="Print Tools" icon={<PrintIcon/>}>
+                        <CollapsibleListItem open={false} title="Print Tools" icon={<PrintIcon />}>
                             <List>
                                 <ListItem onTouchTap={handlePrintModal} button>
                                     <ListItemIcon>
-                                        <PictureAsPdfIcon/>
+                                        <PictureAsPdfIcon />
                                     </ListItemIcon>
-                                    <ListItemText primary="Print PDF"/>
+                                    <ListItemText primary="Print PDF" />
                                 </ListItem>
                                 {config.showExportMap && <ListItem onTouchTap={exportMap} button>
                                     <ListItemIcon>
-                                        <CameraIcon/>
+                                        <CameraIcon />
                                     </ListItemIcon>
-                                    <ListItemText primary="Export Map (PNG/JPG)"/>
+                                    <ListItemText primary="Export Map (PNG/JPG)" />
                                 </ListItem>}
                             </List>
                         </CollapsibleListItem>
-                        {config.bookmarks && <CollapsibleListItem open={false} title="Bookmarks" icon={<LocationIcon/>}>
-                            <CartoviewBookmarks map={map} bookmarks={config.bookmarks}/>
+                        {config.bookmarks && <CollapsibleListItem open={false} title="Bookmarks" icon={<LocationIcon />}>
+                            <CartoviewBookmarks map={map} bookmarks={config.bookmarks} />
                         </CollapsibleListItem>}
                         {config.showLayerSwitcher &&
-                        <CollapsibleListItem open={false} title="Layers" icon={<LayersIcons/>}>
-                            <CartoviewLayerSwitcher handleFeaturesTableDrawer={handleFeaturesTableDrawer}
-                                                    handleTableLayerChange={handleTableLayerChange} urls={urls}
-                                                    downloadLayer={downloadLayer}
-                                                    handleLayerVisibilty={handleLayerVisibilty}
-                                                    changeLayerOrder={changeLayerOrder} mapLayers={mapLayers}/>
-                        </CollapsibleListItem>}
-                        <CollapsibleListItem open={false} title="Base Maps" icon={<MapIcon/>}>
-                            <BaseMapSwitcher baseMaps={baseMaps} handleBaseMapVisibilty={handleBaseMapVisibilty}/>
+                            <CollapsibleListItem open={false} title="Layers" icon={<LayersIcons />}>
+                                <CartoviewLayerSwitcher handleFeaturesTableDrawer={handleFeaturesTableDrawer}
+                                    handleLayerOpacity={handleLayerOpacity}
+                                    handleTableLayerChange={handleTableLayerChange} urls={urls}
+                                    downloadLayer={downloadLayer}
+                                    handleLayerVisibilty={handleLayerVisibilty}
+                                    changeLayerOrder={changeLayerOrder} mapLayers={mapLayers} />
+                            </CollapsibleListItem>}
+                        <CollapsibleListItem open={false} title="Base Maps" icon={<MapIcon />}>
+                            <BaseMapSwitcher baseMaps={baseMaps} handleBaseMapVisibilty={handleBaseMapVisibilty} />
                         </CollapsibleListItem>
-                        {config.showLegend && <CollapsibleListItem open={false} title="Legend" icon={<ImageIcon/>}>
-                            <CartoviewLegends createLegends={createLegends}/>
+                        {config.showLegend && <CollapsibleListItem open={false} title="Legend" icon={<ImageIcon />}>
+                            <CartoviewLegends createLegends={createLegends} />
                         </CollapsibleListItem>}
 
                         <CartoviewAbout open={about} title={config.title} abstract={config.abstract}
-                                        close={this.handleAboutChange}/>
+                            close={this.handleAboutChange} />
                     </List>
                 </Paper>
             </Paper>
@@ -173,6 +162,7 @@ CartoviewDrawer.propTypes = {
     config: PropTypes.object.isRequired,
     map: PropTypes.object.isRequired,
     setThumbnail: PropTypes.func.isRequired,
+    handleLayerOpacity: PropTypes.func.isRequired,
     thumbnailSaving: PropTypes.bool.isRequired,
     handleBaseMapVisibilty: PropTypes.func.isRequired,
     handlePrintModal: PropTypes.func.isRequired,
