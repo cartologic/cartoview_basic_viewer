@@ -224,3 +224,16 @@
     margin-top: 0px !important;
     margin-bottom: 2px;
 }
+
+.general-step-title-form{
+    display: flex;
+    flex-direction: row;
+    min-width: 100%;
+    align-items: flex-end;
+    justify-content: flex-start;
+}
+
+.form-group-titleForm-title{
+    flex-grow: .85;
+    margin-right: 25px;
+}

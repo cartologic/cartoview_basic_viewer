@@ -4,9 +4,12 @@ export const generalFormSchema = () => {
         value: t.String,
         label: t.String
     })
-    const formSchema = t.struct({
+    const titleForm = t.struct({
         title: t.String,
         showTitle: t.maybe(t.Boolean),
+    })
+    const formSchema = t.struct({
+        titleForm: titleForm,
         abstract: t.maybe(t.String),
         keywords: t.list(selectKeywordItem)
     })

@@ -243,19 +243,20 @@ class EditPage extends React.Component {
         return arr
     }
     prepareServerData = () => {
-        const keywords = this.generalStep.getComponentValue().keywords
         const { selectedMap } = this.state
+        const generalStepValue = this.generalStep.getComponentValue()
         let finalConfiguration = {
             map: selectedMap.id,
-            ...this.generalStep.getComponentValue(),
+            title: generalStepValue.titleForm.title,
+            abstract: generalStepValue.abstract,
+            keywords: this.toArray(generalStepValue.keywords),
             config: {
-                showTitle: this.generalStep.getComponentValue().showTitle,
+                showTitle: generalStepValue.titleForm.showTitle,
                 ...this.toolsStep.getComponentValue(),
                 ...this.bookmarksStep.getComponentValue(),
                 ...this.geocodingStep.getComponentValue(),
             },
             access: this.accessConfigurationStep.getComponentValue(),
-            keywords: this.toArray(keywords)
         }
         return finalConfiguration
 

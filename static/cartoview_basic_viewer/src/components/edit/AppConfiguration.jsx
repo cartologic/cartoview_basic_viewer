@@ -7,6 +7,17 @@ import {
 import { getPropertyFromConfig } from 'Source/containers/staticMethods'
 import t from 'tcomb-form'
 const Form = t.form.Form
+
+const customTemplateTitle = (locals) => {
+    console.dir(locals)
+    return (
+        <div className={'general-step-title-form'}>
+            {locals.inputs.title}
+            {locals.inputs.showTitle}
+        </div>
+    )
+}
+        
 export default class AppConfiguration extends React.Component {
     constructor(props) {
         super(props)
@@ -59,7 +70,11 @@ export default class AppConfiguration extends React.Component {
         const { title, selectedMap, abstract, config } =
             props
         const value = {
-            title: title ? title : selectedMap ? selectedMap.title : null,
+            // title: title ? title : selectedMap ? selectedMap.title : null,
+            titleForm: {
+                title: title ? title : selectedMap ? selectedMap.title : null,
+                showTitle: config ? config.showTitle : false,
+            },
             abstract: abstract ? abstract : selectedMap ?
                 selectedMap.abstract : null,
             showTitle: config ? config.showTitle : false,
@@ -70,8 +85,17 @@ export default class AppConfiguration extends React.Component {
     getFormOptions = () => {
         const options = {
             fields: {
-                title: {
-                    label: "App Title"
+                titleForm: {
+                    auto: 'none', // to disable label or placeholders auto generation
+                    fields: {
+                        title:{
+                            label: "App Title",
+                        },
+                        showTitle:{
+                            label: "Show App Title",
+                        }
+                    },
+                    template: customTemplateTitle
                 },
                 showTitle: {
                     label: "Show App Title"
