@@ -59,7 +59,16 @@ class CartoviewDrawer extends React.Component {
         const {about} = this.state
         this.setState({about: !about})
     }
-
+    renderAppTitle(config, classes) {
+        return (
+            <div>
+                <ListItem >
+                    <ListItemText primary={config.title} className={classes.drawerTitle} disableTypography={true} />
+                </ListItem>
+                <Divider />
+            </div>
+        )
+    }
     render() {
         const {
             classes, className, createLegends, urls, mapLayers, changeLayerOrder,
@@ -82,10 +91,7 @@ class CartoviewDrawer extends React.Component {
                 <NavBar/>
                 <Paper className={classes.drawerPaper} elevation={0}>
                     <List>
-                        <ListItem >
-                        <ListItemText primary={config.title} className={classes.drawerTitle} disableTypography={true}/>
-                        </ListItem>
-                        <Divider />
+                        {config.showTitle && this.renderAppTitle(config, classes)}
                         <ListItem onTouchTap={() => window.location.href = urls.appInstancesPage} button>
                             <ListItemIcon>
                                 <HomeIcon/>
