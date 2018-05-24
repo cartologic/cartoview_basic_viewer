@@ -6,6 +6,7 @@ export const generalFormSchema = () => {
     })
     const formSchema = t.struct({
         title: t.String,
+        showTitle: t.maybe(t.Boolean),
         abstract: t.maybe(t.String),
         keywords: t.list(selectKeywordItem)
     })

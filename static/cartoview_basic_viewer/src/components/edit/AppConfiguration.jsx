@@ -62,6 +62,7 @@ export default class AppConfiguration extends React.Component {
             title: title ? title : selectedMap ? selectedMap.title : null,
             abstract: abstract ? abstract : selectedMap ?
                 selectedMap.abstract : null,
+            showTitle: config ? config.showTitle : false,
             keywords: this.keywordsToOptions(getPropertyFromConfig(config, 'keywords',[]))
         }
         return value
@@ -71,6 +72,9 @@ export default class AppConfiguration extends React.Component {
             fields: {
                 title: {
                     label: "App Title"
+                },
+                showTitle: {
+                    label: "Show App Title"
                 },
                 keywords: {
                     factory: t.form.Textbox,

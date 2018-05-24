@@ -249,6 +249,7 @@ class EditPage extends React.Component {
             map: selectedMap.id,
             ...this.generalStep.getComponentValue(),
             config: {
+                showTitle: this.generalStep.getComponentValue().showTitle,
                 ...this.toolsStep.getComponentValue(),
                 ...this.bookmarksStep.getComponentValue(),
                 ...this.geocodingStep.getComponentValue(),
@@ -274,7 +275,6 @@ class EditPage extends React.Component {
             })
 
         }
-
     }
     showComponentsErrors = (callBack) => {
         let errors = []
