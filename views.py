@@ -117,6 +117,10 @@ class BasicViewer(StandardAppViews):
         return render(request, '%s/layer_view.html' % (self.app_name),
                       context={'layer': layer})
 
+    def maputnik(self, request):
+        return render(request, '%s/maputnik.html' % (self.app_name),
+                      context={})
+
     def map_thumbnail(self, request, mapid):
         if request.method == 'POST':
             map_obj = _resolve_map(request, mapid)
@@ -151,7 +155,10 @@ class BasicViewer(StandardAppViews):
                              self.layer_view,
                              name='%s.layer.view' % self.app_name),
                          url(r'^(?P<mapid>\d+)/thumbnail$',
-                             self.map_thumbnail, name='%s_map_thumbnail' % self.app_name),
+                             self.map_thumbnail, name='%s_map_thumbnail' %
+                             self.app_name),
+                         url(r'^maputnik$',
+                             self.maputnik, name='%s_maputnik' % self.app_name),
                          )
         return urls
 
