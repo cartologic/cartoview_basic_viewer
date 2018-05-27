@@ -4,6 +4,7 @@ import CameraIcon from '@material-ui/icons/PhotoCamera'
 import CartoviewAbout from 'Source/components/view/About'
 import CartoviewBookmarks from 'Source/components/view/Bookmarks'
 import CartoviewLegends from 'Source/components/view/Legends'
+import CartoviewPrint from 'Source/components/view/PrintModal'
 import CollapsibleListItem from 'Source/components/view/CollapsibleItem'
 import HomeIcon from '@material-ui/icons/Home'
 import ImageIcon from '@material-ui/icons/Image'
@@ -64,9 +65,8 @@ class CartoviewDrawer extends React.Component {
             baseMaps,
             handleLayerOpacity,
             handleBaseMapVisibilty,
-            handlePrintModal,
             downloadLayer,
-            handleTableLayerChange
+            handleTableLayerChange,
         } = this.props
         const { about } = this.state
         return (
@@ -103,12 +103,15 @@ class CartoviewDrawer extends React.Component {
                         </ListItem>
                         <CollapsibleListItem open={false} title="Print Tools" icon={<PrintIcon />}>
                             <List>
-                                <ListItem onTouchTap={handlePrintModal} button>
+                                {/* <ListItem onTouchTap={addPrintLayer} button>
                                     <ListItemIcon>
                                         <PictureAsPdfIcon />
                                     </ListItemIcon>
                                     <ListItemText primary="Print PDF" />
-                                </ListItem>
+                                </ListItem> */}
+                                <CollapsibleListItem open={false} title="Print Tools" icon={<PictureAsPdfIcon />}>
+                                <CartoviewPrint token={config.token} urls={urls} map={map} />
+                                </CollapsibleListItem>
                                 {config.showExportMap && <ListItem onTouchTap={exportMap} button>
                                     <ListItemIcon>
                                         <CameraIcon />

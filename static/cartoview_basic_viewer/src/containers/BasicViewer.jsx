@@ -43,7 +43,7 @@ proj.setProj4(proj4)
 class BasicViewerContainer extends Component {
     constructor(props) {
         super(props)
-        const { urls } = this.props
+        const { urls, config } = this.props
         this.state = {
             mapIsLoading: true,
             drawerOpen: false,
@@ -77,10 +77,17 @@ class BasicViewerContainer extends Component {
             printOpened: false,
 
         }
+        global.map=this.state.map
         this.styleHelper = new StyleHelper()
         this.urls = new URLS(urls.proxy)
         this.wfsService = new WFSService(urls.wfsURL, urls.proxy)
     }
+    // addPrintLayer = () => {
+    //     const coords = this.printModule.getPolygonCoords(2187500.0)
+    //     console.log(coords)
+    //     let f = this.printModule.getPolygonFeature(coords)
+    //     this.printModule.addPrintLayer(f)
+    // }
     handleLayerOpacity = (layerIndex) => (value) => {
         let { mapLayers } = this.state
         const layer = mapLayers[layerIndex]
@@ -548,7 +555,7 @@ class BasicViewerContainer extends Component {
             handleFeaturesTableDrawer: this.handleFeaturesTableDrawer,
             handleGeocodingChange: this.handleGeocodingChange,
             resetGeocoding: this.resetGeocoding,
-            handleLayerOpacity: this.handleLayerOpacity
+            handleLayerOpacity: this.handleLayerOpacity,
         }
         return childrenProps
     }

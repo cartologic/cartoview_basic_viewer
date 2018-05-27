@@ -769,9 +769,18 @@ babel-plugin-transform-es2015-modules-amd@^6.22.0, babel-plugin-transform-es2015
     babel-runtime "^6.22.0"
     babel-template "^6.24.1"
 
-babel-plugin-transform-es2015-modules-commonjs@^6.23.0, babel-plugin-transform-es2015-modules-commonjs@^6.24.1, babel-plugin-transform-es2015-modules-commonjs@^6.26.0:
+babel-plugin-transform-es2015-modules-commonjs@^6.23.0, babel-plugin-transform-es2015-modules-commonjs@^6.24.1:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-es2015-modules-commonjs/-/babel-plugin-transform-es2015-modules-commonjs-6.26.0.tgz#0d8394029b7dc6abe1a97ef181e00758dd2e5d8a"
+  dependencies:
+    babel-plugin-transform-strict-mode "^6.24.1"
+    babel-runtime "^6.26.0"
+    babel-template "^6.26.0"
+    babel-types "^6.26.0"
+
+babel-plugin-transform-es2015-modules-commonjs@^6.26.0:
+  version "6.26.2"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-es2015-modules-commonjs/-/babel-plugin-transform-es2015-modules-commonjs-6.26.2.tgz#58a793863a9e7ca870bdc5a881117ffac27db6f3"
   dependencies:
     babel-plugin-transform-strict-mode "^6.24.1"
     babel-runtime "^6.26.0"
@@ -1326,9 +1335,9 @@ caniuse-lite@^1.0.30000757:
   version "1.0.30000758"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000758.tgz#e261140076651049cf6891ed4bc649b5c8c26c69"
 
-cartoview-sdk@^2.0.0-beta15:
-  version "2.0.0-beta15"
-  resolved "https://registry.yarnpkg.com/cartoview-sdk/-/cartoview-sdk-2.0.0-beta15.tgz#975d2c698205c9cb4becbbd161a70a08e0f5faac"
+cartoview-sdk@^2.0.0-beta35:
+  version "2.0.0-beta35"
+  resolved "https://registry.yarnpkg.com/cartoview-sdk/-/cartoview-sdk-2.0.0-beta35.tgz#cbd44991e2a4f2b7f7be458865f712c775b0dda9"
   dependencies:
     babel-plugin-transform-es2015-modules-commonjs "^6.26.0"
     babel-preset-stage-2 "^6.24.1"

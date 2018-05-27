@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 
 import CartoviewDrawer from 'Source/components/view/Drawer'
 import CartoviewPopup from 'Source/components/view/popup'
-import CartoviewPrint from 'Source/components/view/PrintModal'
 import FeatureTableDrawer from 'Source/components/view/FeatureTableDrawer'
 import FeaturesTable from 'Source/components/view/FeaturesTable'
 import GeoCodeResult from 'Source/components/view/GeoCodeResult'
@@ -202,7 +201,6 @@ class ContentGrid extends Component {
                         <CartoviewPopup {...childrenProps} />
                     </Grid>
                 </Grid>
-                <CartoviewPrint token={childrenProps.config.token} urls={childrenProps.urls} opened={childrenProps.printOpened} handlePrintModal={childrenProps.handlePrintModal} />
                 <CartoviewSnackBar open={childrenProps.featureIdentifyLoading} message={"Searching For Features at this Point"} />
             </div>
         )
