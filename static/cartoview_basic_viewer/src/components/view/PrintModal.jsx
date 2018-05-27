@@ -1,6 +1,7 @@
 import Button from '@material-ui/core/Button'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
+import { Loader } from 'Source/containers/CommonComponents'
 import MenuItem from '@material-ui/core/MenuItem'
 import PrintService from 'cartoview-sdk/services/PrintService'
 import PropTypes from 'prop-types'
@@ -60,6 +61,10 @@ const styles = theme => ({
             overflowY: 'scroll'
         },
     },
+    actionButtons: {
+        display: 'flex',
+        justifyContent: 'center'
+    },
     button: {
         margin: theme.spacing.unit
     },
@@ -73,7 +78,8 @@ class PrintModal extends React.Component {
             comment: "",
             layout: "Landscape",
             dpi: 96,
-            scale: ''
+            scale: '',
+            printLoading: false
         }
         this.printModule = new PrintService(map, urls.geoserverUrl, token, urls.proxy)
         this.printModule.getPrintInfo().then(info => {
@@ -90,8 +96,14 @@ class PrintModal extends React.Component {
     }
     print = () => {
         const { title, comment, layout, dpi, scale } = this.state
+        this.setState({ printLoading: true })
         if (layout && dpi && scale) {
-            this.printModule.createPDF(title, comment, layout, dpi, scale)
+            this.printModule.createPDF(title, comment, layout, dpi, scale).then(dowloaded => {
+                this.setState({ printLoading: !dowloaded })
+            }).catch(err => {
+                this.setState({ printLoading: false })
+            })
+
         }
     }
     handleChange = name => event => {
@@ -114,6 +126,7 @@ class PrintModal extends React.Component {
     }
     render() {
         const { classes } = this.props
+        const { printLoading } = this.state
         let printInfo = this.printModule.pdfInfo
         return (
             <div>
@@ -184,15 +197,18 @@ class PrintModal extends React.Component {
                         </Select>
                     </FormControl>}
                 </div>
-                <Button onClick={this.showBox} color="primary">
-                    {`Show Print Box`}
-                </Button>
-                <Button onClick={this.print} color="primary">
-                    {`Print`}
-                </Button>
-                <Button onClick={() => this.printModule.removePrintLayer()} color="secondary" autoFocus>
-                    {`Cancel`}
-                </Button>
+                <div className={classes.actionButtons}>
+                    <Button onClick={this.showBox} color="primary">
+                        {`Show Print Box`}
+                    </Button>
+                    <Button onClick={this.print} color="primary">
+                        {`Print`}
+                    </Button>
+                    <Button onClick={() => this.printModule.removePrintLayer()} color="secondary" autoFocus>
+                        {`Cancel`}
+                    </Button>
+                    {printLoading && <Loader />}
+                </div>
             </div>
         )
     }

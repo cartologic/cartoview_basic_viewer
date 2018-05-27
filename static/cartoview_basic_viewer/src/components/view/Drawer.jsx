@@ -109,7 +109,7 @@ class CartoviewDrawer extends React.Component {
                                     </ListItemIcon>
                                     <ListItemText primary="Print PDF" />
                                 </ListItem> */}
-                                <CollapsibleListItem open={false} title="Print Tools" icon={<PictureAsPdfIcon />}>
+                                <CollapsibleListItem open={false} title="Print PDF" icon={<PictureAsPdfIcon />}>
                                 <CartoviewPrint token={config.token} urls={urls} map={map} />
                                 </CollapsibleListItem>
                                 {config.showExportMap && <ListItem onTouchTap={exportMap} button>
