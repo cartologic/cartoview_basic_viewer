@@ -82,12 +82,6 @@ class BasicViewerContainer extends Component {
         this.urls = new URLS(urls.proxy)
         this.wfsService = new WFSService(urls.wfsURL, urls.proxy)
     }
-    // addPrintLayer = () => {
-    //     const coords = this.printModule.getPolygonCoords(2187500.0)
-    //     console.log(coords)
-    //     let f = this.printModule.getPolygonFeature(coords)
-    //     this.printModule.addPrintLayer(f)
-    // }
     handleLayerOpacity = (layerIndex) => (value) => {
         let { mapLayers } = this.state
         const layer = mapLayers[layerIndex]

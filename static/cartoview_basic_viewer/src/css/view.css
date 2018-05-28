@@ -7,17 +7,26 @@
     flex-direction: column;
 }
 
+body,
+html {
+    margin: 0px;
+    height: 100%;
+    overflow: hidden;
+}
+
 .input-range__label--min,
 .input-range__label--max,
 .input-range__label--value {
     display: none !important;
 }
+
 .input-range__track--active {
     background: #3196f3 !important;
 }
+
 .input-range__slider {
     background: #3196f3 !important;
-    border: 1px solid #3196f3  !important;
+    border: 1px solid #3196f3 !important;
 }
 
 .geocoding-result {

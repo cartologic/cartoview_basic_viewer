@@ -82,10 +82,16 @@ class PrintModal extends React.Component {
             printLoading: false
         }
         this.printModule = new PrintService(map, urls.geoserverUrl, token, urls.proxy)
+    }
+    componentDidMount() {
+        const { dpi } = this.state
+        const { map } = this.props
+
         this.printModule.getPrintInfo().then(info => {
-            const scales = this.printModule.getGeoserverScales()
-            const initialScale = scales[Math.floor(scales.length / 2)]
-            this.setState({ scale: initialScale, layout: this.printModule._getLayout().name })
+            const resolution = map.getView().getResolution()
+            let scale = this.printModule.getScaleFromResolution(resolution, dpi)
+            scale = this.printModule.getClosestScale(scale)
+            this.setState({ scale, layout: this.printModule._getLayout().name })
         })
     }
     showBox = () => {
@@ -123,6 +129,9 @@ class PrintModal extends React.Component {
         const { value } = event.target
         const name = event.target.name
         this.setState({ [name]: value }, this.showBox)
+    }
+    componentWillUnmount() {
+        this.printModule.removePrintLayer()
     }
     render() {
         const { classes } = this.props
