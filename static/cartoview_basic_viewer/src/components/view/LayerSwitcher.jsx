@@ -41,7 +41,7 @@ const LayerItem = SortableElement(({ layer, layerIndex, handleLayerVisibilty, do
                 onChange={handleLayerVisibilty(layerIndex)}
                 disableRipple
             />
-            <div className="element-flex element-column">
+            <div className="element-flex element-column title-noWrap">
                 <Message message={layerTitle} noWrap={true} align="left" type="body1" />
                 <InputRange
                     minValue={0}

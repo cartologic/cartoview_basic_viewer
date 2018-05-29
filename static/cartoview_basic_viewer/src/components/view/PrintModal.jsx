@@ -85,13 +85,12 @@ class PrintModal extends React.Component {
     }
     componentDidMount() {
         const { dpi } = this.state
-        const { map } = this.props
 
         this.printModule.getPrintInfo().then(info => {
-            const resolution = map.getView().getResolution()
-            let scale = this.printModule.getScaleFromResolution(resolution, dpi)
-            scale = this.printModule.getClosestScale(scale)
-            this.setState({ scale, layout: this.printModule._getLayout().name })
+            const layout = this.printModule._getLayout()
+            const mapSize = [layout.map.width, layout.map.height]
+            const scale = this.printModule.getOptimalScale(mapSize, dpi)
+            this.setState({ scale, layout: layout.name })
         })
     }
     showBox = () => {

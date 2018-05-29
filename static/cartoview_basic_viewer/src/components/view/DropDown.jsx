@@ -14,7 +14,7 @@ export const guidGenerator = () => {
 }
 const styles = theme => ({
     button: {
-        margin: theme.spacing.unit,
+        margin: 0,
     }
 })
 class DropDown extends React.Component {

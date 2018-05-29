@@ -34,7 +34,7 @@ const styles = theme => ({
         height: "100%",
     },
     drawerPaper: {
-        padding: theme.spacing.unit,
+        padding: 0,
         height: "calc(100% - 64px)",
         overflowY: 'scroll',
     },
@@ -73,7 +73,7 @@ class CartoviewDrawer extends React.Component {
             <Paper elevation={6} className={classnames(classes.root, className)}>
                 <NavBar />
                 <Paper className={classes.drawerPaper} elevation={0}>
-                    <List>
+                    <List disablePadding={true}>
                         <ListItem onTouchTap={() => window.location.href = urls.appInstancesPage} button>
                             <ListItemIcon>
                                 <HomeIcon />
