@@ -1335,9 +1335,9 @@ caniuse-lite@^1.0.30000757:
   version "1.0.30000758"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000758.tgz#e261140076651049cf6891ed4bc649b5c8c26c69"
 
-cartoview-sdk@^2.0.0-beta50:
-  version "2.0.0-beta50"
-  resolved "https://registry.yarnpkg.com/cartoview-sdk/-/cartoview-sdk-2.0.0-beta50.tgz#0fae3decb62046c42d90662a35bb14a101252a1f"
+cartoview-sdk@^2.0.0-beta55:
+  version "2.0.0-beta55"
+  resolved "https://registry.yarnpkg.com/cartoview-sdk/-/cartoview-sdk-2.0.0-beta55.tgz#5fb27e1ecb70ee5485b0a86346aaf45e533774cc"
   dependencies:
     babel-plugin-transform-es2015-modules-commonjs "^6.26.0"
     babel-preset-stage-2 "^6.24.1"
@@ -5244,8 +5244,8 @@ tcomb-form@^0.9.17:
     tcomb-validation "^3.0.0"
 
 tcomb-form@^0.9.19:
-  version "0.9.19"
-  resolved "https://registry.yarnpkg.com/tcomb-form/-/tcomb-form-0.9.19.tgz#635c41a50f8fdb6dab1fc2337f059d7214e48f93"
+  version "0.9.20"
+  resolved "https://registry.yarnpkg.com/tcomb-form/-/tcomb-form-0.9.20.tgz#074a43eb2cbd4f98448964d1a60b8805a8882055"
   dependencies:
     tcomb-form-templates-bootstrap "^0.2.0"
     tcomb-validation "^3.0.0"

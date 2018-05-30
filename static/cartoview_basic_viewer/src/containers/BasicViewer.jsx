@@ -77,7 +77,6 @@ class BasicViewerContainer extends Component {
             printOpened: false,
 
         }
-        global.map=this.state.map
         this.styleHelper = new StyleHelper()
         this.urls = new URLS(urls.proxy)
         this.wfsService = new WFSService(urls.wfsURL, urls.proxy)
