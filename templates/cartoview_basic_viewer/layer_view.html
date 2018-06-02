@@ -28,6 +28,11 @@
             {% else %}
                 const PROXY_URL=null
             {% endif %}
+            {% if OPENCAGE_KEY %}
+                const openCageKey='{{OPENCAGE_KEY}}'
+            {% else %}
+                const openCageKey=null
+            {% endif %}
             const urls={
                 mapJsonUrl: "{% url 'layer_json' layername=layer.typename %}",
                 proxy: PROXY_URL,
@@ -62,6 +67,7 @@
     props.formAbstract={{layer.abstract|dump_json}}
     props.username="{{request.user.username}}"
     props.token="{{request.session.access_token}}"
+    props.openCageKey=openCageKey
     BasicViewerContainer.show('root', props,urls);
   </script>
 </body>

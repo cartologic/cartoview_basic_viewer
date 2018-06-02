@@ -4,13 +4,13 @@ import 'typeface-roboto'
 import 'whatwg-fetch'
 
 import FeaturesHelper, { wmsGetFeatureInfoFormats } from 'cartoview-sdk/helpers/FeaturesHelper'
+import OSMGeocoding, { Geocoding, OPENCADGE_GEOCODING_URL, OPENCAGE_SETTINGS } from 'cartoview-sdk/services/GeoCodingService'
 import React, { Component } from 'react'
 
 import Animation from 'cartoview-sdk/helpers/AnimationHelper'
 import BasicViewer from 'Source/components/view/BasicViewer'
 import BasicViewerHelper from 'cartoview-sdk/helpers/BasicViewerHelper'
 import Collection from 'ol/collection'
-import GeoCoding from 'cartoview-sdk/services/GeoCodingService'
 import GeoJSON from 'ol/format/geojson'
 import Group from 'ol/layer/group'
 import LayersHelper from 'cartoview-sdk/helpers/LayersHelper'
@@ -77,9 +77,19 @@ class BasicViewerContainer extends Component {
             printOpened: false,
 
         }
+        global.map = this.state.map
         this.styleHelper = new StyleHelper()
         this.urls = new URLS(urls.proxy)
         this.wfsService = new WFSService(urls.wfsURL, urls.proxy)
+        this.initGeocoding()
+    }
+    initGeocoding() {
+        const { config } = this.props
+        if (config.openCageKey) {
+            this.geocoding = new Geocoding(OPENCADGE_GEOCODING_URL, { ...OPENCAGE_SETTINGS, key: config.openCageKey })
+        } else {
+            this.geocoding = OSMGeocoding
+        }
     }
     handleLayerOpacity = (layerIndex) => (value) => {
         let { mapLayers } = this.state
@@ -305,7 +315,7 @@ class BasicViewerContainer extends Component {
     geocodeSearch = (text = null, callback = () => { }) => {
         this.setState({ geocodeSearchLoading: true })
         const { searchText } = this.state
-        GeoCoding.search(text ? text : searchText, (result) => {
+        this.geocoding.search(text ? text : searchText, (result) => {
             this.setState({ geocodeSearchLoading: false, geocodingResult: result })
             callback(result)
         })
@@ -416,6 +426,10 @@ class BasicViewerContainer extends Component {
     zoomToLocation = (pointArray) => {
         let { map } = this.state
         BasicViewerHelper.zoomToLocation(pointArray, map)
+    }
+    zoomToExtent = (extent) => {
+        let { map } = this.state
+        BasicViewerHelper.fitExtent(BasicViewerHelper.reprojectExtent(extent, map), map)
     }
     handleLayerVisibilty = name => (event, checked) => {
         let { mapLayers } = this.state
@@ -535,6 +549,7 @@ class BasicViewerContainer extends Component {
             changeLayerOrder: this.changeLayerOrder,
             handleLayerVisibilty: this.handleLayerVisibilty,
             zoomToLocation: this.zoomToLocation,
+            zoomToExtent: this.zoomToExtent,
             resetTablePagination: this.resetTablePagination,
             exportMap: this.exportMap,
             geocodeSearch: this.geocodeSearch,

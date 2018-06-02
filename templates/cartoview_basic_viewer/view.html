@@ -30,6 +30,11 @@
             {% else %}
                 const PROXY_URL=null
             {% endif %}
+            {% if OPENCAGE_KEY %}
+                const openCageKey='{{OPENCAGE_KEY}}'
+            {% else %}
+                const openCageKey=null
+            {% endif %}
             
             const urls={
                 mapJsonUrl: "{% url 'map_json' mapid=instance.map.id %}",
@@ -69,6 +74,7 @@
     props.abstract={{instance.abstract|dump_json}}
     props.username="{{request.user.username}}"
     props.token="{{request.session.access_token}}"
+    props.openCageKey=openCageKey
     BasicViewerContainer.show('root', props,urls);
   </script>
 </body>

@@ -15,10 +15,10 @@ const styles = theme => ({
     }
 })
 class GeocodeResult extends React.Component {
-    zoomTo = (lon, lat) => {
+    zoomTo = (extent) => {
         const { action, resetGeocoding } = this.props
         resetGeocoding()
-        action([parseFloat(lon), parseFloat(lat)])
+        action(extent)
     }
     render() {
         const { geocodingResult, classes, geocodeSearchLoading } = this.props
@@ -27,9 +27,9 @@ class GeocodeResult extends React.Component {
                 <List className="full-width" component="nav">
                     {geocodingResult.map(((item, index) => {
                         return (
-                            <ListItem onTouchTap={() => this.zoomTo(item.lon, item.lat)} key={index} button>
+                            <ListItem onTouchTap={() => this.zoomTo(item.bbox)} key={index} button>
                                 {item.icon && <Img src={item.icon} loader={<Loader />} />}
-                                <ListItemText inset primary={item.display_name} secondary={item.class} />
+                                <ListItemText inset primary={item.formatted} />
                             </ListItem>
                         )
                     }))}
