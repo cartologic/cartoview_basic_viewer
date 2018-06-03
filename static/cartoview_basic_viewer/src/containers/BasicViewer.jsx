@@ -245,7 +245,9 @@ class BasicViewerContainer extends Component {
                 wfsOptions = {
                     ...wfsOptions,
                     combinationType,
-                    maxFeatures, startIndex, pagination: true,
+                    maxFeatures,
+                    startIndex,
+                    pagination: true,
                     outputFormat: 'application/json'
                 }
             } else {
