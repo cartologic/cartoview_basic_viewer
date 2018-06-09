@@ -11,7 +11,7 @@
     "author": "cartologic",
     "license": "BSD-2-Clause",
     "dependencies": {
-        "@material-ui/core": "^1.0.0",
+        "@material-ui/core": "^1.2.0",
         "@material-ui/icons": "^1.0.0",
         "cartoview-sdk": "^2.0.0-beta86",
         "classnames": "^2.2.5",

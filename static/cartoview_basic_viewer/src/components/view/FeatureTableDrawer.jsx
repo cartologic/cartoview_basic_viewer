@@ -1,16 +1,12 @@
-import { Loader, Message } from 'Source/containers/CommonComponents'
 import React, { Component } from 'react'
 
 import CloseIcon from '@material-ui/icons/Close'
 import Divider from '@material-ui/core/Divider'
 import Drawer from '@material-ui/core/Drawer'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import FormControl from '@material-ui/core/FormControl'
 import IconButton from '@material-ui/core/IconButton'
 import InputLabel from '@material-ui/core/InputLabel'
+import { Loader } from 'Source/containers/CommonComponents'
 import Paper from '@material-ui/core/Paper'
 import PropTypes from 'prop-types'
 import QueryBuilder from 'Source/components/view/QueryBuilder'
@@ -88,57 +84,43 @@ class Sidenav extends Component {
                 </IconButton>
                 <Divider />
                 <div>
-                    <ExpansionPanel className={classes.expansion}>
-                        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                            <Message align="left" type={"subheading"} message="Query & Layers" />
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails className={classes.expansion}>
-                            <Paper elevation={0} className={classes.query}>
-                                <div className={classes.layerSelector}>
-                                    <FormControl className={classes.formControl}>
-                                        <InputLabel htmlFor="layer-select">{"Layer"}</InputLabel>
-                                        <Select
-                                            native
-                                            onChange={handleTableLayerChange}
-                                            value={tableLayer}
+                    <Paper elevation={0} className={classes.query}>
+                        <div className={classes.layerSelector}>
+                            <FormControl className={classes.formControl}>
+                                <InputLabel htmlFor="layer-select">{"Layer"}</InputLabel>
+                                <Select
+                                    native
+                                    onChange={handleTableLayerChange}
+                                    value={tableLayer}
 
-                                            inputProps={{
-                                                id: 'layer-select',
-                                            }}
-                                        >
-                                            {mapLayers.map((layer, index) => <option key={index} value={layer.get('name')}>{layer.get('name')}</option>)}
-                                        </Select>
-                                    </FormControl>
-                                    <FormControl className={classes.formControl}>
-                                        <InputLabel htmlFor="filters-match-select">{"Filters Matching"}</InputLabel>
-                                        <Select
-                                            native
-                                            onChange={handleCombinationType}
-                                            value={combinationType}
-                                            inputProps={{
-                                                id: 'filters-match-select',
-                                            }}
-                                        >
-                                            <option value={'any'}>{"Any"}</option>
-                                            <option value={'all'}>{"All"}</option>
-                                        </Select>
-                                    </FormControl>
-                                </div>
-                                <div className={classes.queryPanel}>
-                                    <QueryBuilder handleFilterChange={handleFilterChange} filters={filters} createQueryPanel={createQueryPanel} removeComponent={removeComponent} resetTablePagination={resetTablePagination} attributes={attributes} getFeatureTableData={getFeatureTableData}
-                                        resetQuery={resetQuery} />
-                                </div>
-                            </Paper>
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
-                    <ExpansionPanel defaultExpanded={true} className={classes.expansion}>
-                        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                            <Message type={"subheading"} align="left" message="Feature Table" />
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails className={classes.expansion}>
-                            {children}
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
+                                    inputProps={{
+                                        id: 'layer-select',
+                                    }}
+                                >
+                                    {mapLayers.map((layer, index) => <option key={index} value={layer.get('name')}>{layer.get('name')}</option>)}
+                                </Select>
+                            </FormControl>
+                            <FormControl className={classes.formControl}>
+                                <InputLabel htmlFor="filters-match-select">{"Filters Matching"}</InputLabel>
+                                <Select
+                                    native
+                                    onChange={handleCombinationType}
+                                    value={combinationType}
+                                    inputProps={{
+                                        id: 'filters-match-select',
+                                    }}
+                                >
+                                    <option value={'any'}>{"Any"}</option>
+                                    <option value={'all'}>{"All"}</option>
+                                </Select>
+                            </FormControl>
+                        </div>
+                        <div className={classes.queryPanel}>
+                            <QueryBuilder handleFilterChange={handleFilterChange} filters={filters} createQueryPanel={createQueryPanel} removeComponent={removeComponent} resetTablePagination={resetTablePagination} attributes={attributes} getFeatureTableData={getFeatureTableData}
+                                resetQuery={resetQuery} />
+                        </div>
+                        {children}
+                    </Paper>
                 </div>
                 {loading && <Loader />}
             </Drawer>
