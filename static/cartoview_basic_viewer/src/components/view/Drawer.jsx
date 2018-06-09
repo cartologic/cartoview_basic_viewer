@@ -80,12 +80,37 @@ class CartoviewDrawer extends React.Component {
                             </ListItemIcon>
                             <ListItemText primary="Home" />
                         </ListItem>
-                        <ListItem onTouchTap={this.handleAboutChange} button>
-                            <ListItemIcon>
-                                <InfoIcons />
-                            </ListItemIcon>
-                            <ListItemText primary="About" />
-                        </ListItem>
+                        {config.showLayerSwitcher &&
+                            <CollapsibleListItem open={false} title="Layers" icon={<LayersIcons />}>
+                                <CartoviewLayerSwitcher handleFeaturesTableDrawer={handleFeaturesTableDrawer}
+                                    handleLayerOpacity={handleLayerOpacity}
+                                    handleTableLayerChange={handleTableLayerChange} urls={urls}
+                                    downloadLayer={downloadLayer}
+                                    handleLayerVisibilty={handleLayerVisibilty}
+                                    changeLayerOrder={changeLayerOrder} mapLayers={mapLayers} />
+                            </CollapsibleListItem>}
+                        {config.showLegend && <CollapsibleListItem open={false} title="Legend" icon={<ImageIcon />}>
+                            <CartoviewLegends createLegends={createLegends} />
+                        </CollapsibleListItem>}
+                        <CollapsibleListItem open={false} title="Base Maps" icon={<MapIcon />}>
+                            <BaseMapSwitcher baseMaps={baseMaps} handleBaseMapVisibilty={handleBaseMapVisibilty} />
+                        </CollapsibleListItem>
+                        {config.bookmarks && <CollapsibleListItem open={false} title="Bookmarks" icon={<LocationIcon />}>
+                            <CartoviewBookmarks map={map} bookmarks={config.bookmarks} />
+                        </CollapsibleListItem>}
+                        <CollapsibleListItem open={false} title="Print Tools" icon={<PrintIcon />}>
+                            <List>
+                                <CollapsibleListItem open={false} title="Print PDF" icon={<PictureAsPdfIcon />}>
+                                    <CartoviewPrint token={config.token} urls={urls} map={map} />
+                                </CollapsibleListItem>
+                                {config.showExportMap && <ListItem onTouchTap={exportMap} button>
+                                    <ListItemIcon>
+                                        <CameraIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Export Map (PNG/JPG)" />
+                                </ListItem>}
+                            </List>
+                        </CollapsibleListItem>
                         {config.enableFeatureTable && <ListItem onTouchTap={handleFeaturesTableDrawer} button>
                             <ListItemIcon>
                                 <SearchIcon />
@@ -101,44 +126,12 @@ class CartoviewDrawer extends React.Component {
                                 <Loader size={20} thickness={4} />
                             </ListItemSecondaryAction>}
                         </ListItem>
-                        <CollapsibleListItem open={false} title="Print Tools" icon={<PrintIcon />}>
-                            <List>
-                                {/* <ListItem onTouchTap={addPrintLayer} button>
-                                    <ListItemIcon>
-                                        <PictureAsPdfIcon />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Print PDF" />
-                                </ListItem> */}
-                                <CollapsibleListItem open={false} title="Print PDF" icon={<PictureAsPdfIcon />}>
-                                <CartoviewPrint token={config.token} urls={urls} map={map} />
-                                </CollapsibleListItem>
-                                {config.showExportMap && <ListItem onTouchTap={exportMap} button>
-                                    <ListItemIcon>
-                                        <CameraIcon />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Export Map (PNG/JPG)" />
-                                </ListItem>}
-                            </List>
-                        </CollapsibleListItem>
-                        {config.bookmarks && <CollapsibleListItem open={false} title="Bookmarks" icon={<LocationIcon />}>
-                            <CartoviewBookmarks map={map} bookmarks={config.bookmarks} />
-                        </CollapsibleListItem>}
-                        {config.showLayerSwitcher &&
-                            <CollapsibleListItem open={false} title="Layers" icon={<LayersIcons />}>
-                                <CartoviewLayerSwitcher handleFeaturesTableDrawer={handleFeaturesTableDrawer}
-                                    handleLayerOpacity={handleLayerOpacity}
-                                    handleTableLayerChange={handleTableLayerChange} urls={urls}
-                                    downloadLayer={downloadLayer}
-                                    handleLayerVisibilty={handleLayerVisibilty}
-                                    changeLayerOrder={changeLayerOrder} mapLayers={mapLayers} />
-                            </CollapsibleListItem>}
-                        <CollapsibleListItem open={false} title="Base Maps" icon={<MapIcon />}>
-                            <BaseMapSwitcher baseMaps={baseMaps} handleBaseMapVisibilty={handleBaseMapVisibilty} />
-                        </CollapsibleListItem>
-                        {config.showLegend && <CollapsibleListItem open={false} title="Legend" icon={<ImageIcon />}>
-                            <CartoviewLegends createLegends={createLegends} />
-                        </CollapsibleListItem>}
-
+                        <ListItem onTouchTap={this.handleAboutChange} button>
+                            <ListItemIcon>
+                                <InfoIcons />
+                            </ListItemIcon>
+                            <ListItemText primary="About" />
+                        </ListItem>
                         <CartoviewAbout open={about} title={config.title} abstract={config.abstract}
                             close={this.handleAboutChange} />
                     </List>
