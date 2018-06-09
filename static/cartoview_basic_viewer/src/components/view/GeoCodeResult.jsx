@@ -1,8 +1,6 @@
-import Img from 'react-image'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
-import { Loader } from 'Source/containers/CommonComponents'
 import Paper from '@material-ui/core/Paper'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -28,8 +26,7 @@ class GeocodeResult extends React.Component {
                     {geocodingResult.map(((item, index) => {
                         return (
                             <ListItem onTouchTap={() => this.zoomTo(item.bbox)} key={index} button>
-                                {item.icon && <Img src={item.icon} loader={<Loader />} />}
-                                <ListItemText inset primary={item.formatted} />
+                                <ListItemText primary={item.formatted} />
                             </ListItem>
                         )
                     }))}
