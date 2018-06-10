@@ -2,6 +2,7 @@ import 'ol/ol.css'
 import 'Source/css/view.css'
 import 'typeface-roboto'
 import 'whatwg-fetch'
+import 'babel-polyfill'
 
 import FeaturesHelper, { wmsGetFeatureInfoFormats } from 'cartoview-sdk/helpers/FeaturesHelper'
 import OSMGeocoding, { Geocoding, OPENCADGE_GEOCODING_URL, OPENCAGE_SETTINGS } from 'cartoview-sdk/services/GeoCodingService'

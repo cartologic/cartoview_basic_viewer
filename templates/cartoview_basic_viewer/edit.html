@@ -5,7 +5,8 @@
 {% block title %} {{ block.super }} - {% trans "Basic Viewer" %} {% endblock %}
 {% block head %}
     {{ block.super }}
-    <link rel="stylesheet" type="text/css" href="{% static 'cartoview_basic_viewer/dist/commons.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'cartoview_basic_viewer/dist/vendors-BasicViewer-config.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'cartoview_basic_viewer/dist/vendors-config.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'cartoview_basic_viewer/dist/config.css' %}"/>
 {% endblock %}
 {% block body %}
@@ -17,8 +18,8 @@
 
 {% endblock %}
 {% block extra_script %}
-
-    <script src="{{ STATIC_URL }}cartoview_basic_viewer/dist/commons.js"></script>
+    <script src="{{ STATIC_URL }}cartoview_basic_viewer/dist/vendors-BasicViewer-config-chunk.js"></script>
+    <script src="{{ STATIC_URL }}cartoview_basic_viewer/dist/vendors-config-chunk.js"></script>
     <script src="{{ STATIC_URL }}cartoview_basic_viewer/dist/config.bundle.js"></script>
     <script>
         {% if instance %}
