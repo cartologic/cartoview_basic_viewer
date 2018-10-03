@@ -1,8 +1,6 @@
-import Img from 'react-image'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
-import { Loader } from 'Source/containers/CommonComponents'
 import Paper from '@material-ui/core/Paper'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -15,10 +13,10 @@ const styles = theme => ({
     }
 })
 class GeocodeResult extends React.Component {
-    zoomTo = (lon, lat) => {
+    zoomTo = (extent) => {
         const { action, resetGeocoding } = this.props
         resetGeocoding()
-        action([parseFloat(lon), parseFloat(lat)])
+        action(extent)
     }
     render() {
         const { geocodingResult, classes, geocodeSearchLoading } = this.props
@@ -27,9 +25,8 @@ class GeocodeResult extends React.Component {
                 <List className="full-width" component="nav">
                     {geocodingResult.map(((item, index) => {
                         return (
-                            <ListItem onTouchTap={() => this.zoomTo(item.lon, item.lat)} key={index} button>
-                                {item.icon && <Img src={item.icon} loader={<Loader />} />}
-                                <ListItemText inset primary={item.display_name} secondary={item.class} />
+                            <ListItem onTouchTap={() => this.zoomTo(item.bbox)} key={index} button>
+                                <ListItemText primary={item.formatted} />
                             </ListItem>
                         )
                     }))}

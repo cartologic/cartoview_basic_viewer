@@ -5,6 +5,7 @@ import ArrowRight from '@material-ui/icons/KeyboardArrowRight'
 import Button from '@material-ui/core/Button'
 import CloseIcon from '@material-ui/icons/Close'
 import IconButton from '@material-ui/core/IconButton'
+import { Message } from 'Source/containers/CommonComponents'
 import Paper from '@material-ui/core/Paper'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -173,7 +174,7 @@ class CartoviewPopup extends React.Component {
                     <div className={classnames("cartoview-popup-content", { [classes.content]: true })}>{featureIdentifyResult.length > 0 && <div>
                         <FeatureAttributesTable currentFeature={currentFeature} />
                     </div>}
-                        {featureIdentifyResult.length == 0 && !featureIdentifyLoading && <h5>{"No Features at this Point"}</h5>}
+                        {featureIdentifyResult.length == 0 && !featureIdentifyLoading && <Message message={"No Features at this Point"} type={"subheading"} />}
                     </div>
                     <div className="cartoview-popup-actions center">
                         <div ref={(input) => { this.zoomToButton = input }} >

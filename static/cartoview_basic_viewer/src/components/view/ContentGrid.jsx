@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 
 import CartoviewDrawer from 'Source/components/view/Drawer'
 import CartoviewPopup from 'Source/components/view/popup'
-import CartoviewPrint from 'Source/components/view/PrintModal'
 import FeatureTableDrawer from 'Source/components/view/FeatureTableDrawer'
 import FeaturesTable from 'Source/components/view/FeaturesTable'
 import GeoCodeResult from 'Source/components/view/GeoCodeResult'
@@ -122,6 +121,7 @@ class ContentGrid extends Component {
             handleLayerVisibilty: childrenProps.handleLayerVisibilty,
             changeLayerOrder: childrenProps.changeLayerOrder,
             mapLayers: childrenProps.mapLayers,
+            handleLayerOpacity: childrenProps.handleLayerOpacity,
             downloadLayer: childrenProps.downloadLayer,
             urls: childrenProps.urls,
             createLegends: childrenProps.createLegends,
@@ -184,7 +184,7 @@ class ContentGrid extends Component {
                             </IconButton>
                             <GeoCodeSearchInput config={this.geoCodingProps()} />
                         </div>
-                        {!childrenProps.geocodeSearchLoading && childrenProps.geocodingResult.length > 0 && <GeoCodeResult resetGeocoding={childrenProps.resetGeocoding} action={childrenProps.zoomToLocation} geocodingResult={childrenProps.geocodingResult} geocodeSearchLoading={childrenProps.geocodeSearchLoading} />}
+                        {!childrenProps.geocodeSearchLoading && childrenProps.geocodingResult.length > 0 && <GeoCodeResult resetGeocoding={childrenProps.resetGeocoding} action={childrenProps.zoomToExtent} geocodingResult={childrenProps.geocodingResult} geocodeSearchLoading={childrenProps.geocodeSearchLoading} />}
                     </Paper>
                     <Transition in={childrenProps.drawerOpen} direction={"right"}>
                         <CartoviewDrawer {...this.getDrawerProps()} className={classnames({ [classes.drawerContentClose]: !childrenProps.drawerOpen })} />
@@ -201,7 +201,6 @@ class ContentGrid extends Component {
                         <CartoviewPopup {...childrenProps} />
                     </Grid>
                 </Grid>
-                <CartoviewPrint token={childrenProps.config.token} urls={childrenProps.urls} opened={childrenProps.printOpened} handlePrintModal={childrenProps.handlePrintModal} />
                 <CartoviewSnackBar open={childrenProps.featureIdentifyLoading} message={"Searching For Features at this Point"} />
             </div>
         )

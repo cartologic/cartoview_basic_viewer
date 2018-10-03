@@ -3,6 +3,7 @@ import Menu from '@material-ui/core/Menu'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import PropTypes from 'prop-types'
 import React from 'react'
+import { withStyles } from '@material-ui/core/styles'
 
 const ITEM_HEIGHT = 30
 export const guidGenerator = () => {
@@ -11,6 +12,11 @@ export const guidGenerator = () => {
     }
     return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4())
 }
+const styles = theme => ({
+    button: {
+        margin: 0,
+    }
+})
 class DropDown extends React.Component {
     constructor(props) {
         super(props)
@@ -29,12 +35,13 @@ class DropDown extends React.Component {
     };
 
     render() {
-        const { children } = this.props
+        const { children, classes } = this.props
         const { anchorEl } = this.state
 
         return (
             <div>
                 <IconButton
+                    className={classes.button}
                     aria-label="More"
                     aria-owns={anchorEl ? this.id : null}
                     aria-haspopup="true"
@@ -61,6 +68,7 @@ class DropDown extends React.Component {
     }
 }
 DropDown.propTypes = {
-    children: PropTypes.any.isRequired
+    children: PropTypes.any.isRequired,
+    classes: PropTypes.object.isRequired,
 }
-export default DropDown
+export default withStyles(styles)(DropDown)

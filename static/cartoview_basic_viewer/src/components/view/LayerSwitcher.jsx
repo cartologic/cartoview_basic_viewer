@@ -1,3 +1,5 @@
+import 'react-input-range/lib/css/index.css'
+
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc'
 
 import Checkbox from '@material-ui/core/Checkbox'
@@ -6,6 +8,7 @@ import DropDown from './DropDown'
 import FormControl from '@material-ui/core/FormControl'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import FormLabel from '@material-ui/core/FormLabel'
+import InputRange from 'react-input-range'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListSubheader from '@material-ui/core/ListSubheader'
@@ -26,7 +29,7 @@ const styles = theme => ({
         padding: theme.spacing.unit * 2,
     }
 })
-const LayerItem = SortableElement(({ layer, layerIndex, handleLayerVisibilty, downloadLayer, urls, handleTableLayerChange, handleFeaturesTableDrawer }) => {
+const LayerItem = SortableElement(({ layer, layerIndex, handleLayerVisibilty, downloadLayer, urls, handleTableLayerChange, handleFeaturesTableDrawer, handleLayerOpacity }) => {
     const layerName = layer.getProperties().name
     const layerTitle = layer.getProperties().title
     return (
@@ -38,7 +41,16 @@ const LayerItem = SortableElement(({ layer, layerIndex, handleLayerVisibilty, do
                 onChange={handleLayerVisibilty(layerIndex)}
                 disableRipple
             />
-            <Message message={layerTitle} noWrap={true} align="left" type="body1" />
+            <div className="element-flex element-column title-noWrap">
+                <Message message={layerTitle} noWrap={true} align="left" type="body1" />
+                <InputRange
+                    minValue={0}
+                    maxValue={1}
+                    step={.1}
+                    value={layer.getOpacity()}
+                    onChange={handleLayerOpacity(layerIndex)}
+                />
+            </div>
             <DropDown>
                 <MenuItem onTouchTap={() => downloadLayer(layerName)}>
                     {"Download Layer"}
@@ -60,17 +72,14 @@ const LayerItem = SortableElement(({ layer, layerIndex, handleLayerVisibilty, do
                     {"Query/Table"}
                 </MenuItem>
             </DropDown>
-            {/* <IconButton color="primary" onTouchTap={() => downloadLayer(layer.getProperties().name)} aria-label="Download">
-                <DownloadIcon />
-            </IconButton> */}
         </ListItem >
     )
 })
-const LayerList = SortableContainer(({ layers, handleLayerVisibilty, downloadLayer, urls, handleTableLayerChange, handleFeaturesTableDrawer }) => {
+const LayerList = SortableContainer(({ layers, handleLayerVisibilty, downloadLayer, urls, handleTableLayerChange, handleFeaturesTableDrawer, handleLayerOpacity }) => {
     return (
         <List disablePadding={true} subheader={<ListSubheader>{"Drag & Drop To Order the Layers"}</ListSubheader>}>
             {layers.map((layer, index) => (
-                <LayerItem handleLayerVisibilty={handleLayerVisibilty} downloadLayer={downloadLayer} urls={urls} handleTableLayerChange={handleTableLayerChange} handleFeaturesTableDrawer={handleFeaturesTableDrawer} key={`item-${index}`} index={index} layerIndex={index} layer={layer} />
+                <LayerItem handleLayerVisibilty={handleLayerVisibilty} downloadLayer={downloadLayer} urls={urls} handleTableLayerChange={handleTableLayerChange} handleFeaturesTableDrawer={handleFeaturesTableDrawer} handleLayerOpacity={handleLayerOpacity} key={`item-${index}`} index={index} layerIndex={index} layer={layer} />
             ))}
         </List>
     )
@@ -82,7 +91,7 @@ const baseMapsStyles = theme => ({
     group: {
         margin: `${theme.spacing.unit}px 0`,
     },
-});
+})
 class BaseMapsList extends React.Component {
     render() {
         const { baseMaps, handleBaseMapVisibilty, classes } = this.props
@@ -129,11 +138,12 @@ class CartoviewLayerSwitcher extends React.Component {
             downloadLayer,
             urls,
             handleTableLayerChange,
+            handleLayerOpacity,
             handleFeaturesTableDrawer
         } = this.props
         return (
             <Paper className={classes.legendsPaper} elevation={0}>
-                {mapLayers.length > 0 && <LayerList useDragHandle={true} layers={mapLayers} handleLayerVisibilty={handleLayerVisibilty} downloadLayer={downloadLayer} urls={urls} handleTableLayerChange={handleTableLayerChange} handleFeaturesTableDrawer={handleFeaturesTableDrawer} helperClass="sortable-container" onSortEnd={changeLayerOrder} />}
+                {mapLayers.length > 0 && <LayerList useDragHandle={true} layers={mapLayers} handleLayerVisibilty={handleLayerVisibilty} downloadLayer={downloadLayer} urls={urls} handleTableLayerChange={handleTableLayerChange} handleFeaturesTableDrawer={handleFeaturesTableDrawer} handleLayerOpacity={handleLayerOpacity} helperClass="sortable-container" onSortEnd={changeLayerOrder} />}
                 {mapLayers.length == 0 && <Message message="No Layers" align="center" type="body1" />}
             </Paper>
         )
@@ -144,6 +154,7 @@ CartoviewLayerSwitcher.propTypes = {
     classes: PropTypes.object.isRequired,
     downloadLayer: PropTypes.func.isRequired,
     handleFeaturesTableDrawer: PropTypes.func.isRequired,
+    handleLayerOpacity: PropTypes.func.isRequired,
     handleTableLayerChange: PropTypes.func.isRequired,
     mapLayers: PropTypes.array.isRequired,
     changeLayerOrder: PropTypes.func.isRequired,

@@ -59,7 +59,7 @@
 }
 .ol-popup-cartoview .cartoview-popup-content {
     max-height: 250px;
-    overflow-y: auto;
+    overflow-y: scroll;
     padding: 5px;
     border-color: 0 solid #121310;
 }

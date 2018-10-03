@@ -2,15 +2,16 @@ import 'ol/ol.css'
 import 'Source/css/view.css'
 import 'typeface-roboto'
 import 'whatwg-fetch'
+import 'babel-polyfill'
 
 import FeaturesHelper, { wmsGetFeatureInfoFormats } from 'cartoview-sdk/helpers/FeaturesHelper'
+import OSMGeocoding, { Geocoding, OPENCADGE_GEOCODING_URL, OPENCAGE_SETTINGS } from 'cartoview-sdk/services/GeoCodingService'
 import React, { Component } from 'react'
 
 import Animation from 'cartoview-sdk/helpers/AnimationHelper'
 import BasicViewer from 'Source/components/view/BasicViewer'
 import BasicViewerHelper from 'cartoview-sdk/helpers/BasicViewerHelper'
 import Collection from 'ol/collection'
-import GeoCoding from 'cartoview-sdk/services/GeoCodingService'
 import GeoJSON from 'ol/format/geojson'
 import Group from 'ol/layer/group'
 import LayersHelper from 'cartoview-sdk/helpers/LayersHelper'
@@ -43,7 +44,7 @@ proj.setProj4(proj4)
 class BasicViewerContainer extends Component {
     constructor(props) {
         super(props)
-        const { urls } = this.props
+        const { urls, config } = this.props
         this.state = {
             mapIsLoading: true,
             drawerOpen: false,
@@ -77,9 +78,25 @@ class BasicViewerContainer extends Component {
             printOpened: false,
 
         }
+        global.map = this.state.map
         this.styleHelper = new StyleHelper()
         this.urls = new URLS(urls.proxy)
         this.wfsService = new WFSService(urls.wfsURL, urls.proxy)
+        this.initGeocoding()
+    }
+    initGeocoding() {
+        const { config } = this.props
+        if (config.openCageKey) {
+            this.geocoding = new Geocoding(OPENCADGE_GEOCODING_URL, { ...OPENCAGE_SETTINGS, key: config.openCageKey })
+        } else {
+            this.geocoding = OSMGeocoding
+        }
+    }
+    handleLayerOpacity = (layerIndex) => (value) => {
+        let { mapLayers } = this.state
+        const layer = mapLayers[layerIndex]
+        layer.setOpacity(value)
+        this.setState({ mapLayers })
     }
     createQueryPanel = () => {
         const { filters } = this.state
@@ -229,7 +246,9 @@ class BasicViewerContainer extends Component {
                 wfsOptions = {
                     ...wfsOptions,
                     combinationType,
-                    maxFeatures, startIndex, pagination: true,
+                    maxFeatures,
+                    startIndex,
+                    pagination: true,
                     outputFormat: 'application/json'
                 }
             } else {
@@ -299,7 +318,7 @@ class BasicViewerContainer extends Component {
     geocodeSearch = (text = null, callback = () => { }) => {
         this.setState({ geocodeSearchLoading: true })
         const { searchText } = this.state
-        GeoCoding.search(text ? text : searchText, (result) => {
+        this.geocoding.search(text ? text : searchText, (result) => {
             this.setState({ geocodeSearchLoading: false, geocodingResult: result })
             callback(result)
         })
@@ -410,6 +429,10 @@ class BasicViewerContainer extends Component {
     zoomToLocation = (pointArray) => {
         let { map } = this.state
         BasicViewerHelper.zoomToLocation(pointArray, map)
+    }
+    zoomToExtent = (extent) => {
+        let { map } = this.state
+        BasicViewerHelper.fitExtent(BasicViewerHelper.reprojectExtent(extent, map), map)
     }
     handleLayerVisibilty = name => (event, checked) => {
         let { mapLayers } = this.state
@@ -529,6 +552,7 @@ class BasicViewerContainer extends Component {
             changeLayerOrder: this.changeLayerOrder,
             handleLayerVisibilty: this.handleLayerVisibilty,
             zoomToLocation: this.zoomToLocation,
+            zoomToExtent: this.zoomToExtent,
             resetTablePagination: this.resetTablePagination,
             exportMap: this.exportMap,
             geocodeSearch: this.geocodeSearch,
@@ -542,6 +566,7 @@ class BasicViewerContainer extends Component {
             handleFeaturesTableDrawer: this.handleFeaturesTableDrawer,
             handleGeocodingChange: this.handleGeocodingChange,
             resetGeocoding: this.resetGeocoding,
+            handleLayerOpacity: this.handleLayerOpacity,
         }
         return childrenProps
     }
