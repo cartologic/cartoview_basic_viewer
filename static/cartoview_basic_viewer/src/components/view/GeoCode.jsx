@@ -5,7 +5,7 @@ import React from 'react'
 
 export default class GeoCode extends React.Component {
     render() {
-        const { geocodeSearch, action,geocodeSearchLoading } = this.props
+        const { geocodeSearch, action,geocodeSearchLoading } = this.props     
         return (
             <Grid className="geocode-search" container justify="center" alignItems={"stretch"} spacing={0}>
                 <Grid item xs={8} sm={8} md={6} lg={6} xl={6}>
