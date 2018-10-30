@@ -4,14 +4,13 @@ import 'typeface-roboto'
 import 'whatwg-fetch'
 import 'babel-polyfill'
 
+import { BOUNDLESS_GEOCODING_URL, BOUNDLESS_SETTINGS, ESRI_GEOCODING_URL, ESRI_SETTINGS, Geocoding } from 'cartoview-sdk/services/GeoCodingService'
 import FeaturesHelper, { wmsGetFeatureInfoFormats } from 'cartoview-sdk/helpers/FeaturesHelper'
-import OSMGeocoding, { Geocoding, OPENCADGE_GEOCODING_URL, OPENCAGE_SETTINGS } from 'cartoview-sdk/services/GeoCodingService'
 import React, { Component } from 'react'
 
 import Animation from 'cartoview-sdk/helpers/AnimationHelper'
 import BasicViewer from 'Source/components/view/BasicViewer'
 import BasicViewerHelper from 'cartoview-sdk/helpers/BasicViewerHelper'
-import BoundlessGeoCoding from './GeoCodingService'
 import Collection from 'ol/collection'
 import GeoJSON from 'ol/format/geojson'
 import Group from 'ol/layer/group'
@@ -86,12 +85,21 @@ class BasicViewerContainer extends Component {
         this.initGeocoding()
     }
     initGeocoding() {
+        let url = null
+        let settings = null
         const { config } = this.props
-        if (config.openCageKey) {
-            this.geocoding = new Geocoding(OPENCADGE_GEOCODING_URL, { ...OPENCAGE_SETTINGS, key: config.openCageKey })
+        if (config.boundlessGeoCodingEnabled) {
+            url = BOUNDLESS_GEOCODING_URL
+            settings = {
+                ...BOUNDLESS_SETTINGS,
+                apikey: config.geocodingKey || ""
+            }
+
         } else {
-            this.geocoding = OSMGeocoding
+            url = ESRI_GEOCODING_URL
+            settings = { ...ESRI_SETTINGS }
         }
+        this.geocoding = new Geocoding(url, settings)
     }
     handleLayerOpacity = (layerIndex) => (value) => {
         let { mapLayers } = this.state
@@ -322,16 +330,6 @@ class BasicViewerContainer extends Component {
         this.geocoding.search(text ? text : searchText, (result) => {
             this.setState({ geocodeSearchLoading: false, geocodingResult: result })
             callback(result)
-        })
-    }
-    boundlessGeocodeSearch = (text = null, callback = () => { }) => {
-        console.log('Inside boundlessgeocodesearch')
-        this.setState({ geocodeSearchLoading: true })
-        const { searchText } = this.state
-        const {config} = this.props
-        BoundlessGeoCoding.search(text ? text : searchText, config.geocodingKey, (result) => {
-            this.setState({ geocodeSearchLoading: false, geocodingResult: result.geocodePoints })
-            callback(result.geocodePoints)
         })
     }
     addOverlay = (node) => {
@@ -566,7 +564,7 @@ class BasicViewerContainer extends Component {
             zoomToExtent: this.zoomToExtent,
             resetTablePagination: this.resetTablePagination,
             exportMap: this.exportMap,
-            geocodeSearch: config.boundlessGeoCodingEnabled ? this.boundlessGeocodeSearch : this.geocodeSearch,
+            geocodeSearch: this.geocodeSearch,
             handlePageChange: this.handlePageChange,
             handleRowsPerPage: this.handleRowsPerPage,
             handleBaseMapVisibilty: this.handleBaseMapVisibilty,

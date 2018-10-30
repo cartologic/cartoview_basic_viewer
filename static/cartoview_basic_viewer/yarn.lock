@@ -1778,10 +1778,10 @@ caniuse-lite@^1.0.30000844:
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000851.tgz#3b498aebf9f92cf6cff4ab54d13b557c0b590533"
   integrity sha512-Y1ecA1cL9wg0vni8t33nBw/poX8ypm+2c3fbwAESj8cm4ufK9CBFQ1+nUK8Dp5dtFo5Fc3JzkI5DKmQbuIo6hQ==
 
-cartoview-sdk@^2.0.0-beta121:
-  version "2.0.0-beta121"
-  resolved "https://registry.yarnpkg.com/cartoview-sdk/-/cartoview-sdk-2.0.0-beta121.tgz#382e095fc06b5abc1c42da4ad6f09dfe601bdb67"
-  integrity sha512-rXb79n8Kf+VBGSRcIrLRVzj59AphOcGe1+Ig8RpZveHnimKgkDgCf4Do2xXhTVoqEJe50ZStNU5UxjRk6l1iAw==
+cartoview-sdk@^2.0.0-beta122:
+  version "2.0.0-beta122"
+  resolved "https://registry.yarnpkg.com/cartoview-sdk/-/cartoview-sdk-2.0.0-beta122.tgz#7ae0fdb21a8b3c41c6d35227dec0385a294218a9"
+  integrity sha512-cJ6JM00hJgo1Xv7kAVMdN9q1WwQMi3dLEk9w2Ck9tryUnJCbrCGHEsed1j83UABmGowAMxjhinHIjn4bVQvCPw==
   dependencies:
     "@boundlessgeo/jsonix" "^2.4.3"
     babel-plugin-transform-es2015-modules-commonjs "^6.26.0"
