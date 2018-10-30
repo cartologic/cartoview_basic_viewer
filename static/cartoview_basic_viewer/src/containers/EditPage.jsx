@@ -8,6 +8,7 @@ import AppConfiguration from 'Source/components/edit/AppConfiguration'
 import Bookmarks from 'Source/components/edit/Bookmarks'
 import Configuration from 'cartoview-sdk/services/Configuration'
 import EditPageComponent from 'Source/components/edit/EditPage'
+import GeocodingConfiguration from 'Source/components/edit/GeocodingConfiguration'
 import MapSelector from 'Source/components/edit/MapSelector'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -207,6 +208,16 @@ class EditPage extends React.Component {
                 }
             },
             {
+                title: "GeoCoding",
+                component: GeocodingConfiguration,
+                ref: 'geocodingStep',
+                hasErrors: false,
+                props: {
+                    config,
+                    instanceId
+                }
+            },
+            {
                 title: "Navigation Tools",
                 component: ToolConfiguration,
                 ref: 'toolsStep',
@@ -239,7 +250,8 @@ class EditPage extends React.Component {
             ...this.generalStep.getComponentValue(),
             config: {
                 ...this.toolsStep.getComponentValue(),
-                ...this.bookmarksStep.getComponentValue()
+                ...this.bookmarksStep.getComponentValue(),
+                ...this.geocodingStep.getComponentValue(),
             },
             access: this.accessConfigurationStep.getComponentValue(),
             keywords: this.toArray(keywords)

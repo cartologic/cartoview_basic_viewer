@@ -104,7 +104,8 @@ class ContentGrid extends Component {
             geocodeSearch: childrenProps.geocodeSearch,
             resetGeocoding: childrenProps.resetGeocoding,
             geocodingResult: childrenProps.geocodingResult,
-            handleGeocodingChange: childrenProps.handleGeocodingChange
+            handleGeocodingChange: childrenProps.handleGeocodingChange,
+            boundlessGeoCodingEnabled: childrenProps.config.boundlessGeoCodingEnabled,
         }
         return props
     }
@@ -184,8 +185,14 @@ class ContentGrid extends Component {
                             </IconButton>
                             <GeoCodeSearchInput config={this.geoCodingProps()} />
                         </div>
-                        {!childrenProps.geocodeSearchLoading && childrenProps.geocodingResult.length > 0 && <GeoCodeResult resetGeocoding={childrenProps.resetGeocoding} action={childrenProps.zoomToExtent} geocodingResult={childrenProps.geocodingResult} geocodeSearchLoading={childrenProps.geocodeSearchLoading} />}
-                    </Paper>
+                        {!childrenProps.geocodeSearchLoading && childrenProps.geocodingResult.length > 0 && 
+                        <GeoCodeResult 
+                            resetGeocoding={childrenProps.resetGeocoding} 
+                            action={childrenProps.zoomToLocation} 
+                            geocodingResult={childrenProps.geocodingResult} 
+                            geocodeSearchLoading={childrenProps.geocodeSearchLoading} 
+                            boundlessGeoCodingEnabled = {childrenProps.config.boundlessGeoCodingEnabled}
+                            />}                    </Paper>
                     <Transition in={childrenProps.drawerOpen} direction={"right"}>
                         <CartoviewDrawer {...this.getDrawerProps()} className={classnames({ [classes.drawerContentClose]: !childrenProps.drawerOpen })} />
                     </Transition>

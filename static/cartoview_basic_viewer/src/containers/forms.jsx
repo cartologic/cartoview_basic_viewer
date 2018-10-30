@@ -44,3 +44,11 @@ export const toolFormSchema = () => {
     })
     return formSchema
 }
+
+export const geocodingFormSchema = () => {
+    const formSchema = t.struct({
+        boundlessGeoCodingEnabled: t.maybe(t.Boolean),
+        geocodingKey: t.maybe(t.String),
+    })
+    return formSchema
+}
