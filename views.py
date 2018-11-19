@@ -4,7 +4,7 @@ from cartoview.app_manager.models import App, AppInstance
 from cartoview.app_manager.views import StandardAppViews
 from django.shortcuts import HttpResponse, render
 from geonode.layers.views import layer_detail
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from geonode.utils import resolve_object
 from geonode.maps.models import Map
 import base64
@@ -146,13 +146,13 @@ class BasicViewer(StandardAppViews):
 
     def get_url_patterns(self):
         urls = super(BasicViewer, self).get_url_patterns()
-        urls += patterns('',
+        urls += [
                          url(r'^(?P<layername>[^/]*)/view/$',
                              self.layer_view,
                              name='%s.layer.view' % self.app_name),
                          url(r'^(?P<mapid>\d+)/thumbnail$',
                              self.map_thumbnail, name='%s_map_thumbnail' % self.app_name),
-                         )
+        ]
         return urls
 
 

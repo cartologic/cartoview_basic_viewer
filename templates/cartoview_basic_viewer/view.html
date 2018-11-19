@@ -6,9 +6,9 @@
     <title>{{ instance.title }}</title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1, user-scalable=no" />  
     <link rel="shortcut icon" type="image/png" href="{{ STATIC_URL }}cartoview/img/icon.png" />
-    <link rel="stylesheet" type="text/css" href="{% static 'cartoview_basic_viewer/dist/vendors-BasicViewer-config.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'cartoview_basic_viewer/dist/vendors-BasicViewer.css' %}"/>
-    <link rel="stylesheet" type="text/css" href="{% static 'cartoview_basic_viewer/dist/BasicViewer.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'cartoview_basic_viewer/dist/vendors-BasicViewer-config.css' %}?version=1.8.6"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'cartoview_basic_viewer/dist/vendors-BasicViewer.css' %}?version=1.8.6"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'cartoview_basic_viewer/dist/BasicViewer.css' %}?version=1.8.6"/>
     <style>
         html,body {
             height: 100%;
@@ -21,9 +21,9 @@
 </head>
 <body>
 <div style="height: 100%;" id="root"></div>
-<script src="{{ STATIC_URL }}cartoview_basic_viewer/dist/vendors-BasicViewer-config-chunk.js"></script>
-<script src="{{ STATIC_URL }}cartoview_basic_viewer/dist/vendors-BasicViewer-chunk.js"></script>
-<script src="{% static 'cartoview_basic_viewer/dist/BasicViewer.bundle.js?version=1.7.10' %}"></script>
+<script src="{{ STATIC_URL }}cartoview_basic_viewer/dist/vendors-BasicViewer-config-chunk.js?version=1.8.6"></script>
+<script src="{{ STATIC_URL }}cartoview_basic_viewer/dist/vendors-BasicViewer-chunk.js?version=1.8.6"></script>
+<script src="{% static 'cartoview_basic_viewer/dist/BasicViewer.bundle.js' %}?version=1.8.6"></script>
 <script type="text/javascript">
     {% if instance %}
             const instanceId= {{ instance.id }}
@@ -37,7 +37,6 @@
             {% else %}
                 const openCageKey=null
             {% endif %}
-            
             const urls={
                 mapJsonUrl: "{% url 'map_json' mapid=instance.map.id %}",
                 proxy: PROXY_URL,
@@ -52,7 +51,7 @@
                 {% endif %}
                 static: "{{ STATIC_URL }}",
                 media: "{{ MEDIA_URL }}",
-                layerAttributes:{% reverse_url 'api_dispatch_list' api_name='api' resource_name='attributes'|safe %},
+                layerAttributes:"{% url 'api_dispatch_list' api_name='api' resource_name='attributes' %}",
                 thumbnailURL:"{% url ''|add:"cartoview_basic_viewer"|add:'_map_thumbnail' mapid=instance.map.id %}",
                 rest: "{% url 'app_manager_base_url' %}rest/app_manager/",
                 geonodeRest: "{% url 'api_api_top_level' 'api' %}",
