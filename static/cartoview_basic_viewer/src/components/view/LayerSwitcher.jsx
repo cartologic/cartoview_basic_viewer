@@ -29,7 +29,7 @@ const styles = theme => ({
         padding: theme.spacing.unit * 2,
     }
 })
-const LayerItem = SortableElement(({ layer, layerIndex, handleLayerVisibilty, downloadLayer, urls, handleTableLayerChange, handleFeaturesTableDrawer, handleLayerOpacity }) => {
+const LayerItem = SortableElement(({ layer, layerIndex, handleLayerVisibilty, zoomToLayerData, downloadLayer, urls, handleTableLayerChange, handleFeaturesTableDrawer, handleLayerOpacity }) => {
     const layerName = layer.getProperties().name
     const layerTitle = layer.getProperties().title
     return (
@@ -52,6 +52,9 @@ const LayerItem = SortableElement(({ layer, layerIndex, handleLayerVisibilty, do
                 />
             </div>
             <DropDown>
+                <MenuItem onTouchTap={() => zoomToLayerData(layerName)}>
+                    {"Zoom To Layer Data"}
+                </MenuItem>
                 <MenuItem onTouchTap={() => downloadLayer(layerName)}>
                     {"Download Layer"}
                 </MenuItem>
@@ -75,11 +78,11 @@ const LayerItem = SortableElement(({ layer, layerIndex, handleLayerVisibilty, do
         </ListItem >
     )
 })
-const LayerList = SortableContainer(({ layers, handleLayerVisibilty, downloadLayer, urls, handleTableLayerChange, handleFeaturesTableDrawer, handleLayerOpacity }) => {
+const LayerList = SortableContainer(({ layers, handleLayerVisibilty, zoomToLayerData, downloadLayer, urls, handleTableLayerChange, handleFeaturesTableDrawer, handleLayerOpacity }) => {
     return (
         <List disablePadding={true} subheader={<ListSubheader>{"Drag & Drop To Order the Layers"}</ListSubheader>}>
             {layers.map((layer, index) => (
-                <LayerItem handleLayerVisibilty={handleLayerVisibilty} downloadLayer={downloadLayer} urls={urls} handleTableLayerChange={handleTableLayerChange} handleFeaturesTableDrawer={handleFeaturesTableDrawer} handleLayerOpacity={handleLayerOpacity} key={`item-${index}`} index={index} layerIndex={index} layer={layer} />
+                <LayerItem handleLayerVisibilty={handleLayerVisibilty} zoomToLayerData={zoomToLayerData} downloadLayer={downloadLayer} urls={urls} handleTableLayerChange={handleTableLayerChange} handleFeaturesTableDrawer={handleFeaturesTableDrawer} handleLayerOpacity={handleLayerOpacity} key={`item-${index}`} index={index} layerIndex={index} layer={layer} />
             ))}
         </List>
     )
@@ -135,6 +138,7 @@ class CartoviewLayerSwitcher extends React.Component {
             mapLayers,
             changeLayerOrder,
             handleLayerVisibilty,
+            zoomToLayerData,
             downloadLayer,
             urls,
             handleTableLayerChange,
@@ -143,7 +147,7 @@ class CartoviewLayerSwitcher extends React.Component {
         } = this.props
         return (
             <Paper className={classes.legendsPaper} elevation={0}>
-                {mapLayers.length > 0 && <LayerList useDragHandle={true} layers={mapLayers} handleLayerVisibilty={handleLayerVisibilty} downloadLayer={downloadLayer} urls={urls} handleTableLayerChange={handleTableLayerChange} handleFeaturesTableDrawer={handleFeaturesTableDrawer} handleLayerOpacity={handleLayerOpacity} helperClass="sortable-container" onSortEnd={changeLayerOrder} />}
+                {mapLayers.length > 0 && <LayerList useDragHandle={true} layers={mapLayers} handleLayerVisibilty={handleLayerVisibilty} zoomToLayerData={zoomToLayerData} downloadLayer={downloadLayer} urls={urls} handleTableLayerChange={handleTableLayerChange} handleFeaturesTableDrawer={handleFeaturesTableDrawer} handleLayerOpacity={handleLayerOpacity} helperClass="sortable-container" onSortEnd={changeLayerOrder} />}
                 {mapLayers.length == 0 && <Message message="No Layers" align="center" type="body1" />}
             </Paper>
         )
@@ -158,6 +162,7 @@ CartoviewLayerSwitcher.propTypes = {
     handleTableLayerChange: PropTypes.func.isRequired,
     mapLayers: PropTypes.array.isRequired,
     changeLayerOrder: PropTypes.func.isRequired,
-    handleLayerVisibilty: PropTypes.func.isRequired
+    handleLayerVisibilty: PropTypes.func.isRequired,
+    zoomToLayerData: PropTypes.func.isRequired,
 }
 export default withStyles(styles)(CartoviewLayerSwitcher)

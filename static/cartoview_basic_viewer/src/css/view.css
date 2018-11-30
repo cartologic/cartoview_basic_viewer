@@ -197,7 +197,6 @@ html {
     right: .5em !important;
     text-align: left;
 } */
-
 .layer-switcher.shown.ol-control {
     background-color: transparent !important;
 }
@@ -268,7 +267,9 @@ html {
 
 .ol-zoomslider {
     width: 12px !important;
-    left: 1% !important;
+    right: 1% !important;
+    top: 15%;
+    left: auto;
     background-color: #9e9e9ec7 !important;
 }
 
@@ -276,14 +277,20 @@ html {
     .big-avatar {
         width: 85px
     }
+
     .list-item {
         max-height: 85px;
     }
+
     .list-item-text {
         position: relative;
         display: block;
         width: calc(100% - 85px);
     }
+}
+
+@media only screen and (max-device-width:480px) {
+    /* styles for mobile browsers smaller than 480px; (iPhone) */
 }
 
 .ol-control {

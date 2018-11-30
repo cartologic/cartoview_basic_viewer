@@ -7,6 +7,7 @@ import 'babel-polyfill'
 import { BOUNDLESS_GEOCODING_URL, BOUNDLESS_SETTINGS, ESRI_GEOCODING_URL, ESRI_SETTINGS, Geocoding } from 'cartoview-sdk/services/GeoCodingService'
 import FeaturesHelper, { wmsGetFeatureInfoFormats } from 'cartoview-sdk/helpers/FeaturesHelper'
 import React, { Component } from 'react'
+import { doGet, doPost } from 'cartoview-sdk/utils/utils'
 
 import Animation from 'cartoview-sdk/helpers/AnimationHelper'
 import BasicViewer from 'Source/components/view/BasicViewer'
@@ -23,7 +24,6 @@ import Vector from 'ol/layer/vector'
 import { default as VectorSource } from 'ol/source/vector'
 import WFSService from 'cartoview-sdk/services/WFSService'
 import { arrayMove } from 'react-sortable-hoc'
-import { doPost } from 'cartoview-sdk/utils/utils'
 import { downloadFile } from 'cartoview-sdk/utils/utils'
 import proj from 'ol/proj'
 import proj4 from 'proj4'
@@ -76,6 +76,7 @@ class BasicViewerContainer extends Component {
             page: 0,
             rowsPerPage: 25,
             printOpened: false,
+            mapJson: null
 
         }
         global.map = this.state.map
@@ -100,6 +101,34 @@ class BasicViewerContainer extends Component {
             settings = { ...ESRI_SETTINGS }
         }
         this.geocoding = new Geocoding(url, settings)
+    }
+    getMapJsonLayer = (layername) => {
+        let layer = null
+        const { mapJson } = this.state
+        if (mapJson && mapJson.map) {
+            const layers = mapJson.map.layers
+            for (let index = 0; index < layers.length; index++) {
+                const l = layers[index];
+                if (l.name === layername) {
+                    layer = l
+                    break
+                }
+
+            }
+        }
+        return layer
+    }
+    getLayerDataExtent = (layername) => {
+        let extent = null
+        const { map } = this.state
+        const projCode = map.getView().getProjection().getCode()
+        const layer = this.getMapJsonLayer(layername)
+        if (layer) {
+            const cap = layer.capability
+            const bboxes = cap.bbox
+            extent = bboxes[projCode]
+        }
+        return extent
     }
     handleLayerOpacity = (layerIndex) => (value) => {
         let { mapLayers } = this.state
@@ -384,6 +413,7 @@ class BasicViewerContainer extends Component {
         })
         map.addOverlay(this.overlay)
         this.addSelectionLayer()
+        doGet(urls.mapJsonUrl).then(mapJson => this.setState({ mapJson }))
         BasicViewerHelper.mapInit(urls.mapJsonUrl, map, urls.proxy, config.token, this.mapLoaded)
     }
     componentDidMount() {
@@ -500,6 +530,13 @@ class BasicViewerContainer extends Component {
             featureCollection.extend(features)
         }
     }
+    zoomToLayerData = (layername) => {
+        const extent = this.getLayerDataExtent(layername)
+        if (extent) {
+            let { map } = this.state
+            BasicViewerHelper.fitExtent(extent.bbox, map)
+        }
+    }
     featureIdentify = (map, coordinate) => {
         const { urls, config } = this.props
         FeaturesHelper.featureIdentify(map, coordinate, urls.proxy, config.token,
@@ -559,6 +596,8 @@ class BasicViewerContainer extends Component {
             nextFeature: this.nextFeature,
             previousFeature: this.previousFeature,
             changeLayerOrder: this.changeLayerOrder,
+            getLayerDataExtent: this.getLayerDataExtent,
+            zoomToLayerData: this.zoomToLayerData,
             handleLayerVisibilty: this.handleLayerVisibilty,
             zoomToLocation: this.zoomToLocation,
             zoomToExtent: this.zoomToExtent,

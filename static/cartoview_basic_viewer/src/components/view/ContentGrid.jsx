@@ -48,14 +48,15 @@ const styles = theme => ({
     },
     DrawerBar: {
         width: '28%',
-        [theme.breakpoints.down('md')]: {
-            width: "88%"
-        },
         zIndex: '12',
         display: 'flex',
         flexDirection: 'column',
         position: 'fixed',
         top: '1%',
+        [theme.breakpoints.down('md')]: {
+            width: "88%",
+            top: ".5%"
+        },
         left: '1%',
     },
     DrawerOpenBar: {
@@ -65,6 +66,9 @@ const styles = theme => ({
         flexDirection: 'column',
         position: 'absolute',
         top: '1%',
+        [theme.breakpoints.down('md')]: {
+            top: ".5%"
+        },
         left: '1%',
     }
 })
@@ -128,7 +132,8 @@ class ContentGrid extends Component {
             handleTableLayerChange: childrenProps.handleTableLayerChange,
             baseMaps: childrenProps.baseMaps,
             handleBaseMapVisibilty: childrenProps.handleBaseMapVisibilty,
-            handlePrintModal: childrenProps.handlePrintModal
+            handlePrintModal: childrenProps.handlePrintModal,
+            zoomToLayerData: childrenProps.zoomToLayerData
         }
 
     }

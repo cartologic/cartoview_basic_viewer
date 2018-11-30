@@ -67,6 +67,7 @@ class CartoviewDrawer extends React.Component {
             handleBaseMapVisibilty,
             downloadLayer,
             handleTableLayerChange,
+            zoomToLayerData,
         } = this.props
         const { about } = this.state
         return (
@@ -87,7 +88,8 @@ class CartoviewDrawer extends React.Component {
                                     handleTableLayerChange={handleTableLayerChange} urls={urls}
                                     downloadLayer={downloadLayer}
                                     handleLayerVisibilty={handleLayerVisibilty}
-                                    changeLayerOrder={changeLayerOrder} mapLayers={mapLayers} />
+                                    changeLayerOrder={changeLayerOrder} mapLayers={mapLayers}
+                                    zoomToLayerData={zoomToLayerData} />
                             </CollapsibleListItem>}
                         {config.showLegend && <CollapsibleListItem open={false} title="Legend" icon={<ImageIcon />}>
                             <CartoviewLegends createLegends={createLegends} />
@@ -162,5 +164,6 @@ CartoviewDrawer.propTypes = {
     thumbnailSaving: PropTypes.bool.isRequired,
     handleBaseMapVisibilty: PropTypes.func.isRequired,
     handlePrintModal: PropTypes.func.isRequired,
+    zoomToLayerData: PropTypes.func.isRequired,
 }
 export default withStyles(styles)(CartoviewDrawer)
