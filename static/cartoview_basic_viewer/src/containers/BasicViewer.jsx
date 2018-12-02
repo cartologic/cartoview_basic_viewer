@@ -508,15 +508,23 @@ class BasicViewerContainer extends Component {
         let { mapLayers } = this.state
         const { config, urls } = this.props
         let legends = []
-        mapLayers.map(layer => {
+        for (let index = 0; index < mapLayers.length; index++) {
+            const layer = mapLayers[index];
             const layerTitle = layer.getProperties().title
             if (layer.getVisible()) {
-                legends.push({
-                    layer: layerTitle,
-                    url: LayersHelper.getLegendURL(layer, config.token, urls.proxy)
-                })
+                let url = LayersHelper.getLegendURL(layer, config.token, urls.proxy)
+                if (url && typeof (url) === 'string') {
+                    url = url.toLowerCase()
+                    if (url.indexOf('/ows') > -1)
+                        url = url.replace('/ows', '/wms')
+                    legends.push({
+                        layer: layerTitle,
+                        url,
+                    })
+                }
             }
-        })
+
+        }
         return legends
     }
     resetFeatureCollection = () => {
