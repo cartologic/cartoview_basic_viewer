@@ -4,11 +4,14 @@ var path = require( 'path' )
 var BUILD_DIR = path.resolve( __dirname, 'dist' )
 var APP_DIR = path.resolve( __dirname, 'src' )
 var filename = '[name].bundle.js'
+const CaseSensitivePathsPlugin = require(
+    'case-sensitive-paths-webpack-plugin' )
 const plugins = [
     new ExtractTextPlugin( {
         allChunks: true,
         filename: "[name].css",
     } ),
+    new CaseSensitivePathsPlugin(),
     new webpack.SourceMapDevToolPlugin( {
         filename: 'sourcemaps/[file].map',
         publicPath: '/static/cartoview_basic_viewer/dist/',

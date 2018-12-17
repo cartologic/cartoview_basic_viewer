@@ -54,7 +54,7 @@ class CartoviewDrawer extends React.Component {
 
     render() {
         const {
-            classes, className, createLegends, urls, mapLayers, changeLayerOrder,
+            classes, className, createLegends, legends, urls, mapLayers, changeLayerOrder,
             handleLayerVisibilty,
             config,
             exportMap,
@@ -92,7 +92,7 @@ class CartoviewDrawer extends React.Component {
                                     zoomToLayerData={zoomToLayerData} />
                             </CollapsibleListItem>}
                         {config.showLegend && <CollapsibleListItem open={false} title="Legend" icon={<ImageIcon />}>
-                            <CartoviewLegends createLegends={createLegends} />
+                            <CartoviewLegends createLegends={createLegends} legends={legends} />
                         </CollapsibleListItem>}
                         <CollapsibleListItem open={false} title="Base Maps" icon={<MapIcon />}>
                             <BaseMapSwitcher baseMaps={baseMaps} handleBaseMapVisibilty={handleBaseMapVisibilty} />
@@ -148,6 +148,7 @@ CartoviewDrawer.propTypes = {
     className: PropTypes.string.isRequired,
     changeLayerOrder: PropTypes.func.isRequired,
     createLegends: PropTypes.func.isRequired,
+    legends: PropTypes.array.isRequired,
     handleTableLayerChange: PropTypes.func.isRequired,
     resetTablePagination: PropTypes.func.isRequired,
     urls: PropTypes.object.isRequired,

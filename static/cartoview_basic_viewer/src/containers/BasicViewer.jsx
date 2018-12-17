@@ -67,6 +67,7 @@ class BasicViewerContainer extends Component {
             combinationType: 'any',
             selectedRegion: "",
             baseMaps: [],
+            legends: [],
             filters: [],
             features: [],
             totalFeatures: 0,
@@ -446,6 +447,7 @@ class BasicViewerContainer extends Component {
         this.setState(data, () => {
             this.createLegends()
             this.getTableLayerAttributes()
+            this.getLegends()
         })
     }
     handleBaseMapVisibilty = (event, value) => {
@@ -501,6 +503,31 @@ class BasicViewerContainer extends Component {
                 showPopup: false
             })
             this.featureIdentify(map, e.coordinate)
+        })
+
+    }
+    getLegends = () => {
+        let { mapLayers } = this.state
+        const { config, urls } = this.props
+        let layers = mapLayers.map(layer => {
+            return layer.getProperties().name
+        })
+        doPost(urls.legendsURL, JSON.stringify({ layers })).then(res => {
+            let legends = res.legends.map(legend => {
+                if (legend.url && !legend.url.includes('access_token')) {
+                    return {
+                        ...legend,
+                        layer: legend.title,
+                        url: this.urls.getParamterizedURL(legend.url, { 'access_token': config.token })
+                    }
+                } else {
+                    return {
+                        ...legend,
+                        layer: legend.title,
+                    }
+                }
+            })
+            this.setState({ legends })
         })
 
     }
@@ -595,6 +622,7 @@ class BasicViewerContainer extends Component {
             handleFilterChange: this.handleFilterChange,
             handleCombinationType: this.handleCombinationType,
             createLegends: this.createLegends,
+            getLegends: this.getLegends,
             setThumbnail: this.setThumbnail,
             getFeatures: this.wfsService.getFeatures,
             wfsService: this.wfsService,

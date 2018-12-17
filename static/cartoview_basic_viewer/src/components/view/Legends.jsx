@@ -31,9 +31,9 @@ class CartoviewLegends extends React.Component {
     render() {
         const {
             classes,
-            createLegends
+            createLegends,
+            legends,
         } = this.props
-        const  legends = createLegends()
         return (
             <Paper className={classes.legendsPaper} elevation={0}>
                 {legends.length > 0 && legends.map((legend, index) => <LegendItem key={index} legend={legend} />)}

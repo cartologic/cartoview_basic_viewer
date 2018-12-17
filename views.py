@@ -1,17 +1,23 @@
+import base64
 import json
+
+from django.conf.urls import url
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.http import JsonResponse
+from django.utils.decorators import method_decorator
+from django.views.decorators.http import require_http_methods
+from django.shortcuts import HttpResponse, render
+from django.utils.translation import ugettext as _
 
 from cartoview.app_manager.models import App, AppInstance
 from cartoview.app_manager.views import StandardAppViews
-from django.shortcuts import HttpResponse, render
 from geonode.layers.views import layer_detail
-from django.conf.urls import url
-from geonode.utils import resolve_object
 from geonode.maps.models import Map
-import base64
-from django.utils.translation import ugettext as _
-
-
+from geonode.layers.models import Layer
+from geonode.utils import resolve_object
+from guardian.shortcuts import get_objects_for_user
 from . import APP_NAME
+
 _js_permissions_mapping = {
     'whoCanView': 'view_resourcebase',
     'whoCanChangeMetadata': 'change_resourcebase_metadata',
@@ -27,8 +33,11 @@ def change_dict_None_to_list(access):
             access[permission] = []
 
 
-def _resolve_map(request, id, permission='base.change_resourcebase',
-                 msg=_PERMISSION_MSG_GENERIC, **kwargs):
+def _resolve_map(request,
+                 id,
+                 permission='base.change_resourcebase',
+                 msg=_PERMISSION_MSG_GENERIC,
+                 **kwargs):
     '''
     Resolve the Map by the provided typename and check the optional permission.
     '''
@@ -36,8 +45,12 @@ def _resolve_map(request, id, permission='base.change_resourcebase',
         key = 'pk'
     else:
         key = 'urlsuffix'
-    return resolve_object(request, Map, {key: id}, permission=permission,
-                          permission_msg=msg, **kwargs)
+    return resolve_object(
+        request,
+        Map, {key: id},
+        permission=permission,
+        permission_msg=msg,
+        **kwargs)
 
 
 class BasicViewer(StandardAppViews):
@@ -57,9 +70,11 @@ class BasicViewer(StandardAppViews):
             if len(user_permissions) > 0 and user != owner:
                 initial['users'].update({'{}'.format(user): user_permissions})
         if not access["whoCanView"]:
-            initial['users'].update({'AnonymousUser': [
-                'view_resourcebase',
-            ]})
+            initial['users'].update({
+                'AnonymousUser': [
+                    'view_resourcebase',
+                ]
+            })
 
     def save(self, request, instance_id=None):
         user = request.user
@@ -104,18 +119,49 @@ class BasicViewer(StandardAppViews):
         instance_obj.set_permissions(permessions)
         if hasattr(instance_obj, 'keywords') and keywords:
             new_keywords = [
-                k for k in keywords if k not in instance_obj.keyword_list()]
+                k for k in keywords if k not in instance_obj.keyword_list()
+            ]
             instance_obj.keywords.add(*new_keywords)
 
         res_json.update(dict(success=True, id=instance_obj.id))
-        return HttpResponse(json.dumps(res_json),
-                            content_type="application/json")
+        return HttpResponse(
+            json.dumps(res_json), content_type="application/json")
 
     def layer_view(self, request, layername):
-        layer = layer_detail(
-            request, layername).context_data['resource']
-        return render(request, '%s/layer_view.html' % (self.app_name),
-                      context={'layer': layer})
+        layer = layer_detail(request, layername).context_data['resource']
+        return render(
+            request,
+            '%s/layer_view.html' % (self.app_name),
+            context={'layer': layer})
+
+    @method_decorator(require_http_methods(['POST']))
+    def get_layers_legend(self, request):
+        permitted = get_objects_for_user(request.user,
+                                         'base.view_resourcebase')
+        data = json.loads(request.body)
+        layernames = data.get('layers', [])
+        try:
+            filtered = permitted.filter(alternate__in=layernames).values_list(
+                'id', flat=True)
+            layers = Layer.objects.filter(id__in=filtered)
+
+        except (PermissionDenied, ObjectDoesNotExist) as e:
+            resource = None
+            return JsonResponse({
+                'error':
+                'You are not allowed to change permissions for this resource'
+            },
+                                status=401)
+        if len(layers) > 0:
+            legends = [{
+                "layername": layer.alternate,
+                "title": layer.title,
+                "url": layer.get_legend_url()
+            } for layer in layers]
+            print(legends)
+        else:
+            legends = []
+        return JsonResponse({"legends": legends}, status=200)
 
     def map_thumbnail(self, request, mapid):
         if request.method == 'POST':
@@ -141,17 +187,20 @@ class BasicViewer(StandardAppViews):
                 return HttpResponse(
                     content='error saving thumbnail',
                     status=500,
-                    content_type='text/plain'
-                )
+                    content_type='text/plain')
 
     def get_url_patterns(self):
         urls = super(BasicViewer, self).get_url_patterns()
         urls += [
-                         url(r'^(?P<layername>[^/]*)/view/$',
-                             self.layer_view,
-                             name='%s.layer.view' % self.app_name),
-                         url(r'^(?P<mapid>\d+)/thumbnail$',
-                             self.map_thumbnail, name='%s_map_thumbnail' % self.app_name),
+            url(r'^(?P<layername>[^/]*)/view/$',
+                self.layer_view,
+                name='%s.layer.view' % self.app_name),
+            url(r'^(?P<mapid>\d+)/thumbnail$',
+                self.map_thumbnail,
+                name='%s_map_thumbnail' % self.app_name),
+            url(r'^legends$',
+                self.get_layers_legend,
+                name='%s_layers_legend' % self.app_name),
         ]
         return urls
 

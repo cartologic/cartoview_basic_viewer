@@ -4,12 +4,15 @@ var path = require( 'path' )
 const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' ).BundleAnalyzerPlugin
 var BUILD_DIR = path.resolve( __dirname, 'dist' )
 var APP_DIR = path.resolve( __dirname, 'src' )
+const CaseSensitivePathsPlugin = require(
+    'case-sensitive-paths-webpack-plugin' )
 var filename = '[name].bundle.js'
 const plugins = [
     new ExtractTextPlugin( {
         allChunks: true,
         filename: "[name].css",
     } ),
+    new CaseSensitivePathsPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.HashedModuleIdsPlugin(),
