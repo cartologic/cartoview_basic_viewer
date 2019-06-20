@@ -75,7 +75,7 @@ class CartoviewDrawer extends React.Component {
                 <NavBar />
                 <Paper className={classes.drawerPaper} elevation={0}>
                     <List disablePadding={true}>
-                        <ListItem onTouchTap={() => window.location.href = urls.appInstancesPage} button>
+                        <ListItem onClick={() => window.location.href = urls.appInstancesPage} button>
                             <ListItemIcon>
                                 <HomeIcon />
                             </ListItemIcon>
@@ -105,7 +105,7 @@ class CartoviewDrawer extends React.Component {
                                 <CollapsibleListItem open={false} title="Print PDF" icon={<PictureAsPdfIcon />}>
                                     <CartoviewPrint token={config.token} urls={urls} map={map} />
                                 </CollapsibleListItem>
-                                {config.showExportMap && <ListItem onTouchTap={exportMap} button>
+                                {config.showExportMap && <ListItem onClick={exportMap} button>
                                     <ListItemIcon>
                                         <CameraIcon />
                                     </ListItemIcon>
@@ -113,13 +113,13 @@ class CartoviewDrawer extends React.Component {
                                 </ListItem>}
                             </List>
                         </CollapsibleListItem>
-                        {config.enableFeatureTable && <ListItem onTouchTap={handleFeaturesTableDrawer} button>
+                        {config.enableFeatureTable && <ListItem onClick={handleFeaturesTableDrawer} button>
                             <ListItemIcon>
                                 <SearchIcon />
                             </ListItemIcon>
                             <ListItemText primary="Query" />
                         </ListItem>}
-                        <ListItem onTouchTap={setThumbnail} button>
+                        <ListItem onClick={setThumbnail} button>
                             <ListItemIcon>
                                 <UploadIcon />
                             </ListItemIcon>
@@ -128,7 +128,7 @@ class CartoviewDrawer extends React.Component {
                                 <Loader size={20} thickness={4} />
                             </ListItemSecondaryAction>}
                         </ListItem>
-                        <ListItem onTouchTap={this.handleAboutChange} button>
+                        <ListItem onClick={this.handleAboutChange} button>
                             <ListItemIcon>
                                 <InfoIcons />
                             </ListItemIcon>

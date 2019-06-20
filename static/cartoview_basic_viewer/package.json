@@ -13,7 +13,7 @@
     "dependencies": {
         "@material-ui/core": "^1.2.0",
         "@material-ui/icons": "^1.0.0",
-        "cartoview-sdk": "^2.0.0-beta136",
+        "cartoview-sdk": "^2.0.0-beta157",
         "case-sensitive-paths-webpack-plugin": "^2.1.2",
         "classnames": "^2.2.5",
         "extract-text-webpack-plugin": "^4.0.0-beta.0",

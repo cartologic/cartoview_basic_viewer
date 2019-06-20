@@ -38,8 +38,8 @@ class GeoCodeSearchInput extends React.Component {
                     inputProps={{ onKeyPress: this.handleKeyPress }}
                     value={config.searchText}
                 />
-                {config.searchText && config.searchText !== '' && <SearchIcon onTouchTap={() => config.geocodeSearch()} className={classes.icon} />}
-                {config.geocodingResult.length > 0 && <CloseIcon onTouchTap={config.resetGeocoding} className={classes.icon} />}
+                {config.searchText && config.searchText !== '' && <SearchIcon onClick={() => config.geocodeSearch()} className={classes.icon} />}
+                {config.geocodingResult.length > 0 && <CloseIcon onClick={config.resetGeocoding} className={classes.icon} />}
                 {config.geocodeSearchLoading && <Loader size={30} thickness={3} />}
             </div>
         )

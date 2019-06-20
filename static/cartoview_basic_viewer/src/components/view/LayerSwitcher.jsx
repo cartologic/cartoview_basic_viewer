@@ -52,23 +52,23 @@ const LayerItem = SortableElement(({ layer, layerIndex, handleLayerVisibilty, zo
                 />
             </div>
             <DropDown>
-                <MenuItem onTouchTap={() => zoomToLayerData(layerName)}>
+                <MenuItem onClick={() => zoomToLayerData(layerName)}>
                     {"Zoom To Layer Data"}
                 </MenuItem>
-                <MenuItem onTouchTap={() => downloadLayer(layerName)}>
+                <MenuItem onClick={() => downloadLayer(layerName)}>
                     {"Download Layer"}
                 </MenuItem>
-                <MenuItem onTouchTap={() => window.open(urls.layerMetaData(layerName), '_blank')}>
+                <MenuItem onClick={() => window.open(urls.layerMetaData(layerName), '_blank')}>
                     {"Metadata Details"}
                 </MenuItem>
-                <MenuItem onTouchTap={() => {
+                <MenuItem onClick={() => {
                     let urlHelper = new URLS(urls.proxy)
                     let url = urlHelper.getParamterizedURL(urls.wfsURL, { service: 'wfs', version: '2.0.0', request: 'GetFeature', typeNames: layer.get('name'), outputFormat: 'json' })
                     copyToClipboard(url).then(result => alert("WFS URL Copied Successfully"))
                 }}>
                     {"Copy WFS URL"}
                 </MenuItem>
-                <MenuItem onTouchTap={() => {
+                <MenuItem onClick={() => {
                     handleTableLayerChange({ target: { value: layerName } })
                     handleFeaturesTableDrawer()
                 }}>

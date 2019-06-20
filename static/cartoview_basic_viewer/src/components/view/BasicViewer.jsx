@@ -4,7 +4,6 @@ import ContentGrid from 'Source/components/view/ContentGrid'
 import ErrorHandler from './ErrorHandler'
 import { MuiThemeProvider } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
-import injectTapEventPlugin from 'react-tap-event-plugin'
 import { theme } from 'Source/components/view/theme.jsx'
 import { withStyles } from '@material-ui/core/styles'
 
@@ -13,7 +12,6 @@ const styles = theme => ({
         height: '100%'
     }
 })
-injectTapEventPlugin()
 class BasicViewer extends Component {
     render() {
         let { classes, childrenProps } = this.props

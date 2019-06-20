@@ -27,7 +27,7 @@ class GeocodeResult extends React.Component {
                 <List className="full-width" component="nav">
                     {geocodingResult.map(((item, index) => {
                         return (
-                            <ListItem onTouchTap={() => this.zoomTo(item.bbox)} key={index} button>
+                            <ListItem onClick={() => this.zoomTo(item.bbox)} key={index} button>
                                 <ListItemText primary={item.formatted} />
                             </ListItem>
                         )

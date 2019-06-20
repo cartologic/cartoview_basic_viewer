@@ -185,7 +185,7 @@ class ContentGrid extends Component {
                 <div className={classnames({ [classes.drawer]: childrenProps.drawerOpen ? true : false, [classes.drawerClose]: childrenProps.drawerOpen ? false : true })}>
                     <Paper className={classnames(classes.DrawerBar, { [classes.DrawerOpenBar]: childrenProps.drawerOpen })}>
                         <div className="element-flex ">
-                            <IconButton onTouchTap={childrenProps.toggleDrawer} color="default" aria-label="Open Menu">
+                            <IconButton onClick={childrenProps.toggleDrawer} color="default" aria-label="Open Menu">
                                 <MenuIcon />
                             </IconButton>
                             <GeoCodeSearchInput config={this.geoCodingProps()} />
