@@ -10,6 +10,7 @@ import GeoCodeSearchInput from 'Source/components/view/SearchInput'
 import Grid from '@material-ui/core/Grid'
 import IconButton from '@material-ui/core/IconButton'
 import { Loader } from 'Source/containers/CommonComponents'
+import MapSwitcher from './MapSwitcher';
 import MapViewer from 'Source/components/view/MapViewer'
 import MenuIcon from '@material-ui/icons/Menu'
 import Paper from '@material-ui/core/Paper'
@@ -205,7 +206,9 @@ class ContentGrid extends Component {
                 <Grid className={classes.root} container alignItems={"stretch"} spacing={0}>
                     <Grid item xs={12} sm={12} md={12} lg={12} xl={12}>
                         <HashRouter>
-                            <Route exact path="/:x0?/:y0?/:x1?/:y1?" render={(props) => <MapViewer loading={childrenProps.mapIsLoading} {...props} enableHistory={childrenProps.config.enableHistory} map={childrenProps.map} />} />
+                            <Route exact path="/:x0?/:y0?/:x1?/:y1?" render={(props) => <MapViewer loading={childrenProps.mapIsLoading} {...props} enableHistory={childrenProps.config.enableHistory} map={childrenProps.map} >
+                                <MapSwitcher urls={childrenProps.urls} urlsHelper={childrenProps.urlsHelper} map={childrenProps.map} />
+                            </MapViewer>} />
                         </HashRouter>
                         {childrenProps.mapLayers.length > 0 && childrenProps.config.enableFeatureTable && <FeatureTableDrawer {...this.getFeatureTableDrawerProps()}>
                             <FeaturesTable {...this.getFeatureTableProps()} />
