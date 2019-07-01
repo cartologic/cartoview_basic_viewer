@@ -50,7 +50,9 @@ const styles = theme => ({
     },
     form: {
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'row',
+        alignItems: 'center',
+        flexWrap: 'wrap',
         // [theme.breakpoints.down('md')]: {
         //     display: 'flex',
         //     flexDirection: 'column'
@@ -117,7 +119,6 @@ class QueryPanel extends React.Component {
             className={classes.textField}
             value={value}
             onChange={handleFilterChange}
-            margin="normal"
         />
         if ((localType === "date" || localType === "datetime") && op === "DURING") {
             component = [
@@ -132,7 +133,7 @@ class QueryPanel extends React.Component {
                     className={classes.textField}
                     value={start}
                     onChange={handleFilterChange}
-                    margin="normal"
+    
                 />,
                 <TextField key="end"  {...this.getValueFieldProps()}
                     id="end"
@@ -146,7 +147,7 @@ class QueryPanel extends React.Component {
                     className={classes.textField}
                     value={end}
                     onChange={handleFilterChange}
-                    margin="normal"
+    
                 />
             ]
         }

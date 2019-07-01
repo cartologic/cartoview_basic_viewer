@@ -14,17 +14,17 @@ const styles = theme => ({
         flexGrow: '1', 
         flexDirection: 'column', 
     }, 
-    queryBuilderTools: { 
-        display: 'flex', 
-        flexWrap: 'wrap', 
-        alignItems: 'center', 
-        justifyContent: 'center', 
-    }, 
-    queryItemsContainer: { 
-        display: 'flex', 
-        flexGrow: '1', 
-        flexWrap: 'wrap', 
-        justifyContent: 'center' 
+    queryBuilderTools: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    queryItemsContainer: {
+        display: 'flex',
+        flexGrow: '1',
+        flexWrap: 'wrap',
+        justifyContent: 'flex-start'
     }, 
     item: { 
         display: 'flex', 

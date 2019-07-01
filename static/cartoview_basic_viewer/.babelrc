@@ -10,5 +10,5 @@
     "stage-1",
     "react"
   ],
-    "plugins": [ "transform-object-rest-spread", "transform-runtime" ]
+    "plugins": [ "transform-object-rest-spread", "transform-runtime", ]
 }

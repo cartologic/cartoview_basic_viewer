@@ -158,7 +158,6 @@ class BasicViewer(StandardAppViews):
                 "title": layer.title,
                 "url": layer.get_legend_url()
             } for layer in layers]
-            print(legends)
         else:
             legends = []
         return JsonResponse({"legends": legends}, status=200)
