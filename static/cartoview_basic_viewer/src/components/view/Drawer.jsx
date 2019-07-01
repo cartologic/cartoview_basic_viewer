@@ -75,11 +75,14 @@ class CartoviewDrawer extends React.Component {
                 <NavBar />
                 <Paper className={classes.drawerPaper} elevation={0}>
                     <List disablePadding={true}>
-                        <ListItem onClick={() => window.location.href = urls.appInstancesPage} button>
+                        <ListItem onClick={() => {
+                            let url = config.homeButton ? config.homeButton.link : urls.appInstancesPage
+                            window.location.href = url
+                        }} button>
                             <ListItemIcon>
                                 <HomeIcon />
                             </ListItemIcon>
-                            <ListItemText primary="Home" />
+                            <ListItemText primary={config.homeButton ? config.homeButton.title : "Home"} />
                         </ListItem>
                         {config.showLayerSwitcher &&
                             <CollapsibleListItem open={false} title="Layers" icon={<LayersIcons />}>
