@@ -86,7 +86,6 @@ class BasicViewerContainer extends Component {
         this.wfsService = new WFSService(urls.wfsURL, urls.proxy)
         this.initGeocoding()
     }
-
     initGeocoding() {
         let url = null
         let settings = null
