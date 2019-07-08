@@ -18,7 +18,7 @@ const plugins = [
     new webpack.HashedModuleIdsPlugin(),
     new webpack.SourceMapDevToolPlugin( {
         filename: 'sourcemaps/[file].map',
-        publicPath: '/static/mitigation_basic_viewer/static/cartoview_basic_viewer/dist/',
+        publicPath: '/static/dashboard_basic_viewer/static/cartoview_basic_viewer/dist/',
         fileContext: 'public'
     } ),
     new BundleAnalyzerPlugin()
