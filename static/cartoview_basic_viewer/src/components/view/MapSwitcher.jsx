@@ -18,10 +18,15 @@ const styles = theme => ({
     switcher: {
         position: 'fixed',
         zIndex: '12',
+        display: 'flex',
+        flexDirection: 'column',
         right: 'auto',
         top: 'auto',
-        bottom: '3em',
+        bottom: '1.8em',
         left: '1%',
+    },
+    switcherItem: {
+        margin: theme.spacing.unit
     },
     selectEmpty: {
         marginTop: theme.spacing.unit * 2,
@@ -33,15 +38,23 @@ class MapSwitcher extends React.Component {
         this.state = {
             regions: [],
             selectedRegion: '',
-            regionsLoading: true
+            regionsLoading: true,
+            communities: [],
+            selectedCommunity: '',
+            communitiesLoading: true
         }
     }
-    switchMap = (event, desiredMap, callback = () => { }) => {
+    switchMap = (event, community = false, desiredMap, callback = () => { }) => {
         if (!desiredMap) {
             desiredMap = this.props.map
         }
-        const { regions } = this.state
-        const value = event.target.value ? regions[parseInt(event.target.value)] : null
+        let value = undefined
+        const { regions, communities } = this.state
+        if (community) {
+            value = event.target.value ? communities[parseInt(event.target.value)] : null
+        } else {
+            value = event.target.value ? regions[parseInt(event.target.value)] : null
+        }
         if (value) {
             let extent = [parseFloat(value.bbox_x0), parseFloat(value.bbox_y0), parseFloat(value.bbox_x1), parseFloat(value.bbox_y1)]
             FeaturesHelper.getCRS(value.srid.split(":").pop()).then(newCRS => {
@@ -50,7 +63,12 @@ class MapSwitcher extends React.Component {
                 callback()
             })
         }
-        this.setState({ selectedRegion: event.target.value })
+        if (community) {
+            this.setState({ selectedCommunity: event.target.value })
+        } else {
+            this.setState({ selectedRegion: event.target.value })
+        }
+
     }
     getRegions = () => {
         const { urls, urlsHelper } = this.props
@@ -59,30 +77,55 @@ class MapSwitcher extends React.Component {
             this.setState({ regions: result.objects, regionsLoading: false })
         })
     }
+    getCommunities = () => {
+        const { urls, urlsHelper } = this.props
+        const targetURL = urlsHelper.getParamterizedURL(urls.communityAPI, null)
+        doGet(targetURL).then(result => {
+            this.setState({ communities: result.objects, communitiesLoading: false })
+        })
+    }
     componentDidMount() {
         this.getRegions()
+        this.getCommunities()
     }
     render() {
         const { classes } = this.props
-        const { regions, selectedRegion } = this.state
+        const { regions, selectedRegion, selectedCommunity, communities } = this.state
         return (
-            <Paper className={classes.switcher}>
-                <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="region-selector">{"Counties & Communities"}</InputLabel>
-                    <NativeSelect
-                        value={selectedRegion}
-                        onChange={this.switchMap}
-                        className={classes.selectEmpty}
-                        input={<Input id="region-selector" />}
-                    >
-                        <option value="" />
-                        {regions.map(((region, index) => {
-                            return <option key={index} value={index} >{region.name}</option>
-                        }))}
-                    </NativeSelect>
-                </FormControl>
-            </Paper >
-
+            <div className={classes.switcher}>
+                <Paper className={classes.switcherItem} >
+                    <FormControl className={classes.formControl}>
+                        <InputLabel htmlFor="region-selector">{"Counties"}</InputLabel>
+                        <NativeSelect
+                            value={selectedRegion}
+                            onChange={this.switchMap}
+                            className={classes.selectEmpty}
+                            input={<Input id="region-selector" />}
+                        >
+                            <option value="" />
+                            {regions.map(((region, index) => {
+                                return <option key={index} value={index} >{region.name}</option>
+                            }))}
+                        </NativeSelect>
+                    </FormControl>
+                </Paper >
+                <Paper className={classes.switcherItem}>
+                    <FormControl className={classes.formControl}>
+                        <InputLabel htmlFor="region-selector">{"Communities"}</InputLabel>
+                        <NativeSelect
+                            value={selectedCommunity}
+                            onChange={(e) => this.switchMap(e, true)}
+                            className={classes.selectEmpty}
+                            input={<Input id="region-selector" />}
+                        >
+                            <option value="" />
+                            {communities.map(((community, index) => {
+                                return <option key={index} value={index} >{community.name}</option>
+                            }))}
+                        </NativeSelect>
+                    </FormControl>
+                </Paper >
+            </div>
         )
     }
 }
