@@ -90,7 +90,7 @@ class PrintModal extends React.Component {
             const layout = this.printModule._getLayout()
             const mapSize = [layout.map.width, layout.map.height]
             const scale = this.printModule.getOptimalScale(mapSize, dpi)
-            this.setState({ scale, layout: layout.name })
+            this.setState({ scale, layout: layout.name }, () => this.showBox())
         })
     }
     showBox = () => {
@@ -103,7 +103,7 @@ class PrintModal extends React.Component {
         const { title, comment, layout, dpi, scale } = this.state
         this.setState({ printLoading: true })
         if (layout && dpi && scale) {
-            this.printModule.createPDF(title, comment, layout, dpi, scale).then(dowloaded => {
+            this.printModule.createPDF(title, comment, layout, dpi, scale, "ft").then(dowloaded => {
                 this.setState({ printLoading: !dowloaded })
             }).catch(err => {
                 this.setState({ printLoading: false })
@@ -133,7 +133,7 @@ class PrintModal extends React.Component {
         this.printModule.removePrintLayer()
     }
     render() {
-        const { classes } = this.props
+        const { classes, } = this.props
         const { printLoading } = this.state
         let printInfo = this.printModule.pdfInfo
         return (
@@ -206,14 +206,8 @@ class PrintModal extends React.Component {
                     </FormControl>}
                 </div>
                 <div className={classes.actionButtons}>
-                    <Button onClick={this.showBox} color="primary">
-                        {`Show Print Box`}
-                    </Button>
                     <Button onClick={this.print} color="primary">
-                        {`Print`}
-                    </Button>
-                    <Button onClick={() => this.printModule.removePrintLayer()} color="secondary" autoFocus>
-                        {`Cancel`}
+                        {`Create & Download PDF`}
                     </Button>
                     {printLoading && <Loader />}
                 </div>
