@@ -14,7 +14,7 @@ const plugins = [
     new CaseSensitivePathsPlugin(),
     new webpack.SourceMapDevToolPlugin( {
         filename: 'sourcemaps/[file].map',
-        publicPath: '/static/dashboard_basic_viewer/static/cartoview_basic_viewer/dist/',
+        publicPath: '/static/mitigation_basic_viewer/static/cartoview_basic_viewer/dist/',
         fileContext: 'public'
     } ),
 
