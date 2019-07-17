@@ -122,7 +122,7 @@ class CartoviewDrawer extends React.Component {
                             </ListItemIcon>
                             <ListItemText primary="Query" />
                         </ListItem>}
-                        <ListItem onClick={setThumbnail} button>
+                        {(config.enableSetThumbnail || false) && <ListItem onClick={setThumbnail} button>
                             <ListItemIcon>
                                 <UploadIcon />
                             </ListItemIcon>
@@ -130,13 +130,13 @@ class CartoviewDrawer extends React.Component {
                             {thumbnailSaving && <ListItemSecondaryAction>
                                 <Loader size={20} thickness={4} />
                             </ListItemSecondaryAction>}
-                        </ListItem>
-                        <ListItem onClick={this.handleAboutChange} button>
+                        </ListItem>}
+                        {(config.enableAbout || false) && <ListItem onClick={this.handleAboutChange} button>
                             <ListItemIcon>
                                 <InfoIcons />
                             </ListItemIcon>
                             <ListItemText primary="About" />
-                        </ListItem>
+                        </ListItem>}
                         <CartoviewAbout open={about} title={config.title} abstract={config.abstract}
                             close={this.handleAboutChange} />
                     </List>
