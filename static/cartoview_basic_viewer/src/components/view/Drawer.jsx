@@ -112,7 +112,7 @@ class CartoviewDrawer extends React.Component {
                                     <ListItemIcon>
                                         <CameraIcon />
                                     </ListItemIcon>
-                                    <ListItemText primary="Export Map (PNG/JPG)" />
+                                    <ListItemText primary="Export Map (PNG)" />
                                 </ListItem>}
                             </List>
                         </CollapsibleListItem>
