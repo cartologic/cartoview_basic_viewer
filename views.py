@@ -1,7 +1,7 @@
 import base64
 import json
 
-from django.conf.urls import url
+from django.urls import path
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
@@ -191,13 +191,13 @@ class BasicViewer(StandardAppViews):
     def get_url_patterns(self):
         urls = super(BasicViewer, self).get_url_patterns()
         urls += [
-            url(r'^(?P<layername>[^/]*)/view/$',
+            path('<str:layername>/view/',
                 self.layer_view,
                 name='%s.layer.view' % self.app_name),
-            url(r'^(?P<mapid>\d+)/thumbnail$',
+            path('<int:mapid>/thumbnail/',
                 self.map_thumbnail,
                 name='%s_map_thumbnail' % self.app_name),
-            url(r'^legends$',
+            path('legends',
                 self.get_layers_legend,
                 name='%s_layers_legend' % self.app_name),
         ]
